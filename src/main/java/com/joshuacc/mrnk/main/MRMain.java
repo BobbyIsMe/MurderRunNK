@@ -38,9 +38,6 @@ public class MRMain extends PluginBase {
 	@Override
 	public void onEnable()
 	{
-		newFile("Maps");
-		newFile("Normal");
-		newFile("Escape");
 		Generator.addGenerator(EmptyGenerator.class, "emptyworld", Generator.TYPE_INFINITE);
 		Entity.registerEntity(NPCHuman.class.getSimpleName(), NPCHuman.class);
 		textUtil = new TextUtils();
@@ -57,6 +54,10 @@ public class MRMain extends PluginBase {
 		registerCommands();
 		getServer().getPluginManager().registerEvents(new MRGameListener(this), this);
 		MRPlayer.registerListener(this);
+		
+		newFile("Maps");
+		newFile("Normal");
+		newFile("Escape");
 
 		if(getMaps() != null)
 		{

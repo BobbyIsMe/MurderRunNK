@@ -35,8 +35,9 @@ public class FormUtils {
 	{
 		this.util = main.getTextUtil();
 		this.main = main;
-		for(int i = 0; i < main.getMaps().length; i++)
-			maps.put(i+2, main.getMaps()[i]);
+		if(main.getMaps() != null)
+			for(int i = 0; i < main.getMaps().length; i++)
+				maps.put(i+2, main.getMaps()[i]);
 	}
 
 	public void addConfigMenu(Player player)
