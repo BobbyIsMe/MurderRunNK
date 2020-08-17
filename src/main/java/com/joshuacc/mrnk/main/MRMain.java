@@ -38,6 +38,14 @@ public class MRMain extends PluginBase {
 	@Override
 	public void onEnable()
 	{
+		try {
+			Class.forName("de.theamychan.scoreboard.api.ScoreboardAPI");
+		} catch (ClassNotFoundException e) {
+			getLogger().info("§cMissing dependency: ScoreboardAPI-1.0 by LucGamesHD");
+			getServer().getPluginManager().disablePlugin(this);
+			return;
+		}
+		
 		Generator.addGenerator(EmptyGenerator.class, "emptyworld", Generator.TYPE_INFINITE);
 		Entity.registerEntity(NPCHuman.class.getSimpleName(), NPCHuman.class);
 		textUtil = new TextUtils();

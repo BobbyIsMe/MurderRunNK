@@ -38,6 +38,8 @@ public class FormUtils {
 		if(main.getMaps() != null)
 			for(int i = 0; i < main.getMaps().length; i++)
 				maps.put(i+2, main.getMaps()[i]);
+		else
+			maps = null;
 	}
 
 	public void addConfigMenu(Player player)
@@ -84,7 +86,7 @@ public class FormUtils {
 
 	public void addMapsSelector(Player player, String type)
 	{
-		if(main.getMaps() != null)
+		if(maps != null)
 		{
 			int formId = 0;
 			int id = 0;

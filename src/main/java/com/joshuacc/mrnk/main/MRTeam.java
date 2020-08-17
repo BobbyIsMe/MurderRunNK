@@ -89,6 +89,11 @@ public class MRTeam {
 	{
 		return Server.getInstance().getLevelByName(directory);
 	}
+	
+	public String getMapOrigin()
+	{
+		return map;
+	}
 
 	public String getMapId()
 	{
@@ -115,7 +120,7 @@ public class MRTeam {
 		if(started != true)
 		{
 			int size = getPlayers().size();
-			if(getPlayers().size() == mapConfig.getMaximumPlayers())
+			if(size == mapConfig.getMaximumPlayers())
 				return MapModes.FULL;
 			else if(size < mapConfig.getMinimumPlayers())
 				return MapModes.READY;

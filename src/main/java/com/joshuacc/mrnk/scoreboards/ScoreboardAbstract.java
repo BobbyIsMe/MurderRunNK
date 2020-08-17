@@ -1,5 +1,7 @@
 package com.joshuacc.mrnk.scoreboards;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.joshuacc.mrnk.files.MRScoreboardConfig;
@@ -19,18 +21,24 @@ public abstract class ScoreboardAbstract {
 	protected Player player;
 	protected Scoreboard board;
 	protected ScoreboardDisplay display;
+	
+	protected ArrayList<Integer> integers;
+	protected HashMap<Integer,DisplayEntry> entry;
+	
 	private MRScoreboardConfig config;
 	private String key;
 	private int line;
 	
 	public ScoreboardAbstract(Player player, String objName, String key, MRMain main)
 	{
+		this.integers = new ArrayList<>();
+		this.entry = new HashMap<>();
 		this.player = player;
 		this.key = key+".";
 		this.board = ScoreboardAPI.createScoreboard();
 		this.config = main.getMRScoreboardConfig();
-		this.display = board.addDisplay(DisplaySlot.SIDEBAR, objName, config.getScoreboardTitle(), SortOrder.DESCENDING);
-		this.line = getStringList().size();
+		this.display = board.addDisplay(DisplaySlot.SIDEBAR, objName, TextFormat.colorize(config.getScoreboardTitle()), SortOrder.DESCENDING);
+		this.line = getStringList().size()-1;
 	}
 	
 	public abstract void scoreboardStuff();
@@ -38,6 +46,7 @@ public abstract class ScoreboardAbstract {
 	public void openScoreboard()
 	{
 		scoreboardStuff();
+		integers = null;
 		ScoreboardAPI.setScoreboard(player, board);
 	}
 	
@@ -48,7 +57,7 @@ public abstract class ScoreboardAbstract {
 	
 	public String getString(String s)
 	{
-		return config.getConfig().getString(key+s);
+		return config.getConfig().getString("Scoreboard-"+s);
 	}
 	
 	public List<String> getStringList()
@@ -56,23 +65,28 @@ public abstract class ScoreboardAbstract {
 		return config.getConfig().getStringList(key+"Lines");
 	}
 	
-	public void addLine(String s)
+	public void updateEntry(String key, String p)
 	{
-		display.addLine(TextFormat.colorize('&', s), line);
-		line--;
+		updateEntry(key, p, "");
 	}
 	
-	public DisplayEntry addLinePl(String s, String p)
+	public void updateEntry(String key, String p, String p2)
 	{
-		DisplayEntry entry = display.addLine(TextFormat.colorize('&', s.replace("%m", p)), line);
-		line--;
-		return entry;
+		int i = getInt(key);
+		if(i == -1)
+			return;
+		
+		display.removeEntry(entry.get(i));
+		entry.put(i, addLinePl(i, p, p2));
 	}
 	
-	public DisplayEntry addLineDupe(String s, String p, String p2)
+	public DisplayEntry addLine(int i)
 	{
-		DisplayEntry entry = display.addLine(TextFormat.colorize('&', s.replace("%m", p).replace("%m2", p2)), line);
-		line--;
-		return entry;
+		return display.addLine(TextFormat.colorize('&', getStringList().get(i)), line-i);
+	}
+	
+	private DisplayEntry addLinePl(int i, String p, String p2)
+	{
+		return display.addLine(TextFormat.colorize('&', getStringList().get(i).replace("%m", p).replace("%n", p2)), line-i);
 	}
 }

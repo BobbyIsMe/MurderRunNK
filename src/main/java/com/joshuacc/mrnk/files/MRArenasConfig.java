@@ -178,6 +178,16 @@ public class MRArenasConfig extends AbstractFiles {
 		return config.getInt(mapName+".Maximum Players");
 	}
 	
+	public int getPointsLimit()
+	{
+		return config.getInt(mapName+".Points Limit");
+	}
+	
+	public int getTimeLimit()
+	{
+		return config.getInt(mapName+".Time Limit");
+	}
+	
 	public Level getOriginalMapLevel()
 	{
 		return level;

@@ -21,19 +21,20 @@ public class MRScoreboardConfig extends AbstractFiles {
 		queueBoard.add(" &8»%m");
 		queueBoard.add("");
 		queueBoard.add(" Map&6» &e&l%m");
-		queueBoard.add(" Players&6» &a%m/%m2");
+		queueBoard.add(" Players&6» &a%m/%n");
 		queueBoard.add(" Points&6» &a%m");
 		queueBoard.add(" ");
-		queueBoard.add(" Points Limit&6» &l%lm");
+		queueBoard.add(" Points Limit&6» &l%m");
 		queueBoard.add(" Queued Pts.&6» &l%m");
 		queueBoard.add("  ");
 		queueBoard.add("%m");
 		queueBoard.add("   ");
 		queueBoard.add(" Mode&6» &a&l%m");
+		queueBoard.add(" Time Limit&6» &a%mm");
 		addDefault("Scoreboard-Title", "&0&kIII&r &4&lMurder Run &r&0&kIII");
 		addDefault("Scoreboard-Message-1", "&6»&fWaiting for players...");
-		addDefault(queue+"Scores", 13);
 		addDefault(queue+"Lines", queueBoard);
+		addDefault(queue+"Real Time", 0);
 		addDefault(queue+"ID", 1);
 		addDefault(queue+"Map", 3);
 		addDefault(queue+"Players", 4);
@@ -42,6 +43,7 @@ public class MRScoreboardConfig extends AbstractFiles {
 		addDefault(queue+"QPts", 8);
 		addDefault(queue+"Message", 10);
 		addDefault(queue+"Mode", 12);
+		addDefault(queue+"Time Limit", 13);
 	}
 	
 	public String getScoreboardTitle()
