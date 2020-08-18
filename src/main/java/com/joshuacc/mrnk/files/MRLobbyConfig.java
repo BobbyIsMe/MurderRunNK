@@ -7,6 +7,7 @@ import java.util.HashMap;
 import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.main.MRMain;
 import com.joshuacc.mrnk.main.MRTeam;
+import com.joshuacc.mrnk.main.MRTeam.MapModes;
 import com.joshuacc.mrnk.utils.TextUtils;
 
 import cn.nukkit.Player;
@@ -26,8 +27,8 @@ public class MRLobbyConfig extends AbstractFiles {
 	public MRLobbyConfig(MRMain main) {
 		super(main, "MRLobbyConfig");
 		this.util = main.getTextUtil();
-		addNPCTexts("Normal", MRTeam.getNormalTeams());
-		addNPCTexts("Escape", MRTeam.getEscapeTeams());
+		addNPCTexts(MapModes.NORMAL);
+		addNPCTexts(MapModes.ESCAPE);
 	}
 
 	@Override
@@ -52,8 +53,9 @@ public class MRLobbyConfig extends AbstractFiles {
 		config.save();
 	}
 
-	public void addJoinNPCDetails(String type, Entity ent, Collection<MRTeam> teams)
+	public void addJoinNPCDetails(MapModes mode, Entity ent)
 	{
+		String type = mode.getMode();
 		int id = config.getInt(type+"-id")+1;
 		String prefix = "NPC."+type+".";
 		config.set(prefix+id+".X", ent.getX());
@@ -64,7 +66,7 @@ public class MRLobbyConfig extends AbstractFiles {
 		config.save();
 		ent.namedTag.putInt("npc-tag", config.getInt(type+"-id"));
 		ent.namedTag.putString("npc-type", type);
-		playerScheduler(getHologramLocation(type, id), type, id, teams);
+		playerScheduler(getHologramLocation(type, id), type, id, MRTeam.getTeams(mode));
 	}
 
 	public Location getMainLobbyLocation()
@@ -147,10 +149,11 @@ public class MRLobbyConfig extends AbstractFiles {
 		ent.close();
 	}
 
-	private void addNPCTexts(String type, Collection<MRTeam> teams)
+	private void addNPCTexts(MapModes mode)
 	{
+		String type = mode.getMode();
 		for(int i = 1; i <= config.getDouble(type+"-id"); i++)
-			playerScheduler(getHologramLocation(type, i), type, i, teams);
+			playerScheduler(getHologramLocation(type, i), type, i, MRTeam.getTeams(mode));
 	}
 
 	private Location getHologramLocation(String type, int i)

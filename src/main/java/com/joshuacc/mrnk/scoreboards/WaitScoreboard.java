@@ -3,7 +3,6 @@ package com.joshuacc.mrnk.scoreboards;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.TimeZone;
 
 import com.joshuacc.mrnk.files.MRArenasConfig;
@@ -12,31 +11,21 @@ import com.joshuacc.mrnk.main.MRPlayer;
 import com.joshuacc.mrnk.main.MRTeam;
 
 import cn.nukkit.Player;
-import cn.nukkit.utils.TextFormat;
-import de.theamychan.scoreboard.api.ScoreboardAPI;
 
 public class WaitScoreboard extends ScoreboardAbstract {
 
-	private static HashMap<Player,WaitScoreboard> scoreboard = new HashMap<>();
-
 	public WaitScoreboard(Player player, MRMain main) {
 		super(player, "uwo", "Scoreboard-Queue", main);
-		scoreboard.put(player, this);
 		integers.add(getInt("Real Time"));
 		integers.add(getInt("ID"));
 		integers.add(getInt("Map"));
 		integers.add(getInt("Players"));
 		integers.add(getInt("Points"));
-		integers.add(getInt("Limit"));
+		integers.add(getInt("Points Limit"));
 		integers.add(getInt("QPts"));
 		integers.add(getInt("Message"));
 		integers.add(getInt("Mode"));
 		integers.add(getInt("Time Limit"));
-	}
-
-	public static WaitScoreboard getPlayScoreboard(Player player)
-	{
-		return scoreboard.get(player);
 	}
 
 	@Override
@@ -60,18 +49,11 @@ public class WaitScoreboard extends ScoreboardAbstract {
 		updateEntry("Real Time", dtf.format(now));
 		updateEntry("ID", team.getMapId());
 		updateEntry("Map", team.getMapOrigin());
-		updateEntry("Players", team.getPlayers().size()+"", config.getMaximumPlayers()+"");
-		updateEntry("Points", "WIP");
-		updateEntry("Limit", config.getPointsLimit()+"");
+		updateEntry("Points", mPlayer.getPlayerConfig().getPoints(player)+"");
+		updateEntry("Points Limit", config.getPointsLimit()+"");
 		updateEntry("QPts", mPlayer.getPlayerQueuedPoints()+"");
 		updateEntry("Message", getString("Message-1"));
-		updateEntry("Mode", TextFormat.GREEN+team.getMode());
+		updateEntry("Mode", team.getMode());
 		updateEntry("Time Limit", format.format(1000 * config.getTimeLimit()));
-	}
-
-	public void removeScoreboard()
-	{
-		ScoreboardAPI.removeScorebaord(player, board);
-		scoreboard.remove(player);
 	}
 }

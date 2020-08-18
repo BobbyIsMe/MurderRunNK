@@ -12,9 +12,11 @@ import com.joshuacc.mrnk.files.MRArenasConfig;
 import com.joshuacc.mrnk.files.MRFormsTextsConfig;
 import com.joshuacc.mrnk.files.MRLanguagesConfig;
 import com.joshuacc.mrnk.files.MRLobbyConfig;
+import com.joshuacc.mrnk.files.MRPlayerConfig;
 import com.joshuacc.mrnk.files.MRScoreboardConfig;
 import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.listeners.MRGameListener;
+import com.joshuacc.mrnk.main.MRTeam.MapModes;
 import com.joshuacc.mrnk.utils.EmptyGenerator;
 import com.joshuacc.mrnk.utils.FormUtils;
 import com.joshuacc.mrnk.utils.NPCHuman;
@@ -30,6 +32,7 @@ public class MRMain extends PluginBase {
 
 	private MRLobbyConfig lobby;
 	private MRScoreboardConfig board;
+	private MRPlayerConfig players;
 	private FormUtils formUtil;
 	private TextUtils textUtil;
 	private HashMap<String,MRArenasConfig> mapConfigs = new HashMap<>();
@@ -41,24 +44,38 @@ public class MRMain extends PluginBase {
 		try {
 			Class.forName("de.theamychan.scoreboard.api.ScoreboardAPI");
 		} catch (ClassNotFoundException e) {
-			getLogger().info("§cMissing dependency: ScoreboardAPI-1.0 by LucGamesHD");
+			getLogger().critical("§cMissing dependency: ScoreboardAPI-1.0 by LucGamesHD");
+			getLogger().info("");
+			getLogger().info("§cDownload Link:");
+			getLogger().info("§chttps://github.com/LucGamesYT/ScoreboardAPI/releases/tag/1.0.0");
 			getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
 		
 		Generator.addGenerator(EmptyGenerator.class, "emptyworld", Generator.TYPE_INFINITE);
 		Entity.registerEntity(NPCHuman.class.getSimpleName(), NPCHuman.class);
+		
 		textUtil = new TextUtils();
+		
 		MRLanguagesConfig language = new MRLanguagesConfig(this);
-		MRFormsTextsConfig forms = new MRFormsTextsConfig(this);
 		language.setupConfig();
+		
 		prefix = ConfigLang.PREFIXMESSAGE.toString();
+		
+		MRFormsTextsConfig forms = new MRFormsTextsConfig(this);
+		MRTeam.registerMapModes(forms);
+		
+		players = new MRPlayerConfig(this);
 		board = new MRScoreboardConfig(this);
 		lobby = new MRLobbyConfig(this);
+		
+		players.setupConfig();
 		board.setupConfig();
 		forms.setupConfig();
 		lobby.setupConfig();
+		
 		formUtil = new FormUtils(this);
+		
 		registerCommands();
 		getServer().getPluginManager().registerEvents(new MRGameListener(this), this);
 		MRPlayer.registerListener(this);
@@ -77,12 +94,12 @@ public class MRMain extends PluginBase {
 				if(config.isMapEnabled())
 					getLogger().info(maps+" is loading!");
 				else
-					getLogger().info(maps+" is disabled, not loading!");
+					getLogger().warning(maps+" is disabled, not loading!");
 				loadNormalModeMaps(maps, config);
 				loadEscapeModeMaps(maps, config);
 			}
 		} else
-			getLogger().info("No available maps were found!");
+			getLogger().warning("No available maps were found!");
 	}
 	
 	public void loadNormalModeMaps(String maps, MRArenasConfig config)
@@ -104,7 +121,7 @@ public class MRMain extends PluginBase {
 		Server.getInstance().generateLevel(levelName, 0, Generator.getGenerator("emptyworld"));
 	}
 	
-	public void removeMapTeam(String maps, int multiple, String type)
+	public void removeMapTeam(String maps, int multiple, MapModes type)
 	{
 		for(int i = 1; i <= multiple; i++)
 			if(MRTeam.getMapTeamByID(maps, i, type) != null)
@@ -155,6 +172,11 @@ public class MRMain extends PluginBase {
 	public MRScoreboardConfig getMRScoreboardConfig()
 	{
 		return board;
+	}
+	
+	public MRPlayerConfig getMRPlayerConfig()
+	{
+		return players;
 	}
 
 	public FormUtils getFormUtil()

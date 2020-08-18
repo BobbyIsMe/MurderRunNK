@@ -5,7 +5,8 @@ import java.nio.charset.StandardCharsets;
 import com.joshuacc.mrnk.files.MRLobbyConfig;
 import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.main.MRMain;
-import com.joshuacc.mrnk.main.MRTeam;
+import com.joshuacc.mrnk.main.MRTeam.MapModes;
+
 import cn.nukkit.Player;
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
@@ -24,6 +25,7 @@ public class PlayerCommand extends Command {
 		super("npcadd", "Adds necessary NPCs for players to see the map selector!");
 		this.lobby = main.getMRLobbyConfig();
 		this.setPermission("mr.npcadd");
+		this.commandParameters.clear();
 		this.commandParameters.put("default", new CommandParameter[] {
 				new CommandParameter("options", new String[] {
 						"normal", "escape"	
@@ -54,11 +56,11 @@ public class PlayerCommand extends Command {
 			{
 			case "normal":
 				Entity e = createEntity(player, "openlist %p normal");
-				lobby.addJoinNPCDetails("Normal", e, MRTeam.getNormalTeams());
+				lobby.addJoinNPCDetails(MapModes.NORMAL, e);
 				break;
 			case "escape":
 				Entity ent = createEntity(player, "openlist %p escape");
-				lobby.addJoinNPCDetails("Escape", ent, MRTeam.getEscapeTeams());
+				lobby.addJoinNPCDetails(MapModes.ESCAPE, ent);
 				break;
 			}
 		}

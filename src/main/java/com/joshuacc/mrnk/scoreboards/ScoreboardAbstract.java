@@ -41,7 +41,7 @@ public abstract class ScoreboardAbstract {
 		this.line = getStringList().size()-1;
 	}
 	
-	public abstract void scoreboardStuff();
+	protected abstract void scoreboardStuff();
 	
 	public void openScoreboard()
 	{
@@ -50,19 +50,9 @@ public abstract class ScoreboardAbstract {
 		ScoreboardAPI.setScoreboard(player, board);
 	}
 	
-	public int getInt(String i)
+	public void removeScoreboard()
 	{
-		return config.getConfig().getInt(key+i);
-	}
-	
-	public String getString(String s)
-	{
-		return config.getConfig().getString("Scoreboard-"+s);
-	}
-	
-	public List<String> getStringList()
-	{
-		return config.getConfig().getStringList(key+"Lines");
+		ScoreboardAPI.removeScorebaord(player, board);
 	}
 	
 	public void updateEntry(String key, String p)
@@ -80,7 +70,22 @@ public abstract class ScoreboardAbstract {
 		entry.put(i, addLinePl(i, p, p2));
 	}
 	
-	public DisplayEntry addLine(int i)
+	protected String getString(String s)
+	{
+		return config.getString(s);
+	}
+	
+	protected int getInt(String i)
+	{
+		return config.getConfig().getInt(key+i);
+	}
+	
+	protected List<String> getStringList()
+	{
+		return config.getConfig().getStringList(key+"Lines");
+	}
+	
+	protected DisplayEntry addLine(int i)
 	{
 		return display.addLine(TextFormat.colorize('&', getStringList().get(i)), line-i);
 	}

@@ -1,6 +1,7 @@
 package com.joshuacc.mrnk.commands;
 
 import com.joshuacc.mrnk.main.MRMain;
+import com.joshuacc.mrnk.main.MRTeam.MapModes;
 import com.joshuacc.mrnk.utils.FormUtils;
 
 import cn.nukkit.Player;
@@ -36,10 +37,10 @@ public class OpenListCommand extends Command {
 			switch(args[1])
 			{
 			case "normal":
-				forms.addMapsSelector(target, "Normal");
+				forms.addMapsSelector(target, MapModes.NORMAL);
 				break;
 			case "escape":
-				forms.addMapsSelector(target, "Escape");
+				forms.addMapsSelector(target, MapModes.ESCAPE);
 				break;
 			}
 			break;

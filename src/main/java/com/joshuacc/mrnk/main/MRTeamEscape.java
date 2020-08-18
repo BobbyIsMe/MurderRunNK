@@ -6,6 +6,6 @@ public class MRTeamEscape extends MRTeam {
 
 	public MRTeamEscape(MRMain main, String map, MRArenasConfig config, int multiple) 
 	{
-		super(main, map, "Escape", config, multiple);
+		super(main, map, MapModes.ESCAPE, config, multiple);
 	}
 }

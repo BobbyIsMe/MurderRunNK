@@ -3,6 +3,7 @@ package com.joshuacc.mrnk.files;
 import java.io.File;
 
 import com.joshuacc.mrnk.main.MRMain;
+import com.joshuacc.mrnk.main.MRTeam.MapModes;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
@@ -71,14 +72,16 @@ public class MRArenasConfig extends AbstractFiles {
 		if(isMapEnabled())
 		{
 			config.set(mapName+".Enabled", false);
-			main.removeMapTeam(mapName, getNormalMultiples(), "Normal");
-			main.removeMapTeam(mapName, getEscapeMultiples(), "Escape");
+			for(MapModes modes : MapModes.values())
+				main.removeMapTeam(mapName, getMultiples(modes), modes);
 			main.initWorld(levelName);
 			level = Server.getInstance().getLevelByName(levelName);
 		} else {
 			config.set(mapName+".Enabled", true);
 			main.loadNormalModeMaps(mapName, this);
 			main.loadEscapeModeMaps(mapName, this);
+			if(level.getPlayers().values().size() != 0)
+				main.getLogger().warning("§eThere were players in arena "+mapName+" and it got enabled, they are now sent back to lobby level.");
 			for(Player players : level.getPlayers().values())
 			{
 				players.sendMessage("Level unloaded, you were teleported back to lobby!");
@@ -198,14 +201,9 @@ public class MRArenasConfig extends AbstractFiles {
 		return String.valueOf(config.getInt(mapName+"."+val+" Multiples"));
 	}
 	
-	public int getNormalMultiples()
+	public int getMultiples(MapModes mode)
 	{
-		return config.getInt(mapName+".Normal Multiples");
-	}
-	
-	public int getEscapeMultiples()
-	{
-		return config.getInt(mapName+".Escape Multiples");
+		return config.getInt(mapName+"."+mode.getMode()+" Multiples");
 	}
 
 	public boolean isMapEnabled()

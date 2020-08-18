@@ -11,6 +11,8 @@ import com.joshuacc.mrnk.lang.FormsLang;
 import com.joshuacc.mrnk.main.MRMain;
 import com.joshuacc.mrnk.main.MRPlayer;
 import com.joshuacc.mrnk.main.MRTeam;
+import com.joshuacc.mrnk.main.MRTeam.MapModes;
+
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.form.element.ElementButton;
@@ -84,35 +86,19 @@ public class FormUtils {
 		player.showFormWindow(editForm, 102);
 	}
 
-	public void addMapsSelector(Player player, String type)
+	public void addMapsSelector(Player player, MapModes type)
 	{
 		if(maps != null)
 		{
-			int formId = 0;
+			int formId = type.getID();
 			int id = 0;
-			FormWindowSimple mapSelector = null;
-
-			if(type == "Normal")
-			{
-				formId = 103;
-				mapSelector = new FormWindowSimple(FormsLang.SELTITLENORMAL.toString(), FormsLang.SELDESCNORMAL.toString());
-			}
-			else if(type == "Escape")
-			{
-				formId = 104;
-				mapSelector = new FormWindowSimple(FormsLang.SELTITLEESCAPE.toString(), FormsLang.SELDESCESCAPE.toString());
-			}
+			FormWindowSimple mapSelector = new FormWindowSimple(type.getTitle(), type.getDesc());
 
 			idMap.put(player, new HashMap<>());
 			for(String maps : main.getMaps())
 			{
 				MRArenasConfig config = main.getMapConfigs().get(maps);
-				int normal = 0;
-
-				if(type == "Normal")
-					normal = config.getNormalMultiples();
-				else if(type == "Escape")
-					normal = config.getEscapeMultiples();
+				int normal = config.getMultiples(type);
 
 				if(config.isMapEnabled())
 				{
@@ -122,8 +108,8 @@ public class FormUtils {
 
 						for(int i = 1; i <= normal; i++)
 						{
-							MapModes mode = MRTeam.getMapTeamByID(maps, i, type).getState();
-							if(mode == MapModes.READY || mode == MapModes.STARTING)
+							MapState mode = MRTeam.getMapTeamByID(maps, i, type).getState();
+							if(mode == MapState.READY || mode == MapState.STARTING)
 								all++;
 						}
 
@@ -156,10 +142,10 @@ public class FormUtils {
 			handleSettingsMapForm(player, (FormResponseCustom) response);
 			return;
 		case 103:
-			handleMapsSelector(player, (FormResponseSimple) response, "Normal");
+			handleMapsSelector(player, (FormResponseSimple) response, MapModes.NORMAL);
 			return;
 		case 104:
-			handleMapsSelector(player, (FormResponseSimple) response, "Escape");
+			handleMapsSelector(player, (FormResponseSimple) response, MapModes.ESCAPE);
 			return;
 		}
 
@@ -250,22 +236,17 @@ public class FormUtils {
 			addConfigMapForm(player, level);
 	}
 
-	private void handleMapsSelector(Player player, FormResponseSimple response, String type)
+	private void handleMapsSelector(Player player, FormResponseSimple response, MapModes type)
 	{
 		String map = idMap.get(player).get(response.getClickedButtonId());
 		MRArenasConfig config = main.getMapConfigs().get(map);
-		int normal = 0;
-
-		if(type == "Normal")
-			normal = config.getNormalMultiples();
-		else if(type == "Escape")
-			normal = config.getEscapeMultiples();
+		int normal = config.getMultiples(type);
 
 		if(main.getMapConfigs().get(map).isMapEnabled())
 			for(int i = 1; i <= normal; i++)
 			{
 				MRTeam team = MRTeam.getMapTeamByID(map, i, type);
-				if(team.getState() == MapModes.READY || team.getState() == MapModes.STARTING)
+				if(team.getState() == MapState.READY || team.getState() == MapState.STARTING)
 				{
 					PlayerJoinGameEvent join = new PlayerJoinGameEvent(player, team);
 					Server.getInstance().getPluginManager().callEvent(join);

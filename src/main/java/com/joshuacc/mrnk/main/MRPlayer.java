@@ -2,11 +2,15 @@ package com.joshuacc.mrnk.main;
 
 import java.util.HashMap;
 
+import com.joshuacc.mrnk.events.GameStartEvent;
+import com.joshuacc.mrnk.events.GameStartEvent.GameAttribute;
 import com.joshuacc.mrnk.events.PlayerJoinGameEvent;
+import com.joshuacc.mrnk.files.MRArenasConfig;
 import com.joshuacc.mrnk.files.MRLobbyConfig;
+import com.joshuacc.mrnk.files.MRPlayerConfig;
 import com.joshuacc.mrnk.lang.ConfigLang;
+import com.joshuacc.mrnk.scoreboards.ScoreboardAbstract;
 import com.joshuacc.mrnk.scoreboards.WaitScoreboard;
-
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.event.EventHandler;
@@ -25,17 +29,27 @@ public class MRPlayer {
 	
 	private Player player;
 	private MRTeam mapTeam;
+	private MRPlayerConfig playerData;
+	private ScoreboardAbstract board;
 	
 	private int time;
 	private int qPts;
 	
-	private MRPlayer(Player player, MRTeam mapTeam)
+	private MRPlayer(MRMain main, Player player, MRTeam mapTeam)
 	{
 		addPlayer.put(player, this);
 		this.player = player;
+		this.playerData = main.getMRPlayerConfig();
 		this.mapTeam = mapTeam;
+		this.board = null;
 		this.time = 0;
-		this.qPts = 0;
+		
+		int max = mapTeam.getMapConfig().getPointsLimit();
+		int i = playerData.getPoints(player);
+		if(i >= max)
+		this.qPts = max;
+		else
+			this.qPts = i;
 	}
 	
 	public void removePlayer()
@@ -49,6 +63,15 @@ public class MRPlayer {
 		player.teleport(loc);
 	}
 	
+	public void setScoreboard(ScoreboardAbstract board)
+	{
+		if(board != null)
+			board.removeScoreboard();
+		
+		this.board = board;
+		board.openScoreboard();
+	}
+	
 	public static MRPlayer getMRPlayer(Player player)
 	{
 		return addPlayer.get(player);
@@ -57,6 +80,16 @@ public class MRPlayer {
 	public MRTeam getMapTeam()
 	{
 		return mapTeam;
+	}
+	
+	public MRPlayerConfig getPlayerConfig()
+	{
+		return playerData;
+	}
+	
+	public ScoreboardAbstract getScoreboard()
+	{
+		return board;
 	}
 	
 	public int getPlayerTime()
@@ -90,6 +123,7 @@ public class MRPlayer {
 		{
 			Player player = event.getPlayer();
 			player.setNameTag(main.getTextUtil().formatPlayer(ConfigLang.LOBBYTAG.toString(), player));
+			main.getMRPlayerConfig().addPlayerData(player);
 		}
 		
 		@EventHandler
@@ -118,12 +152,17 @@ public class MRPlayer {
 		public void onJoinGame(PlayerJoinGameEvent event)
 		{
 			MRTeam team = event.getMapTeam();
+			MRArenasConfig config = team.getMapConfig();
 			Player player = event.getPlayer();
-			MRPlayer mPlayer = new MRPlayer(player, team);
+			MRPlayer mPlayer = new MRPlayer(main, player, team);
 			
-			new WaitScoreboard(player, main).openScoreboard();
-			mPlayer.queue(lobby.getQueueLobbyLocation());
+			mPlayer.setScoreboard(new WaitScoreboard(player, main));
 			team.addAllPlayer(player);
+			team.updateEntry("Players", team.getPlayers().size()+"", config.getMaximumPlayers()+"");
+			mPlayer.queue(lobby.getQueueLobbyLocation());
+			
+			if(team.getPlayers().size() == config.getMinimumPlayers())
+				Server.getInstance().getPluginManager().callEvent(new GameStartEvent(GameAttribute.STARTING, team));
 		}
 		
 		@EventHandler
@@ -134,6 +173,7 @@ public class MRPlayer {
 			{
 				MRPlayer mPlayer = MRPlayer.getMRPlayer(player);
 				MRTeam team = mPlayer.getMapTeam();
+				
 				team.removePlayer(player);
 				mPlayer.removePlayer();
 			}
