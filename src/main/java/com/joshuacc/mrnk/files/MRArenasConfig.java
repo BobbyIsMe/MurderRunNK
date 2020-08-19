@@ -23,11 +23,6 @@ public class MRArenasConfig extends AbstractFiles {
 		this.main = main;
 		this.levelName = new File(main.getFileDirectory("Maps"), mapName)+File.separator;
 		this.level = null;
-		if(!isMapEnabled())
-		{
-			main.initWorld(levelName);
-			level = Server.getInstance().getLevelByName(levelName);
-		}
 	}
 
 	@Override
@@ -37,7 +32,7 @@ public class MRArenasConfig extends AbstractFiles {
 		String mLocation = "Murderer Location.";
 		String sLocation = "Survivor Location.";
 		String eLocation = "Game End Location.";
-		addDefault(prefix+"Enabled", true);
+		addDefault(prefix+"Enabled", false);
 		addDefault(prefix+"Preparing Time", 30);
 		addDefault(prefix+"Time Limit", 480);
 		addDefault(prefix+"Points Limit", 500);
@@ -72,70 +67,97 @@ public class MRArenasConfig extends AbstractFiles {
 		if(isMapEnabled())
 		{
 			config.set(mapName+".Enabled", false);
+
 			for(MapModes modes : MapModes.values())
 				main.removeMapTeam(mapName, getMultiples(modes), modes);
-			main.initWorld(levelName);
-			level = Server.getInstance().getLevelByName(levelName);
+
+			loadOriginMap();
 		} else {
 			config.set(mapName+".Enabled", true);
 			main.loadNormalModeMaps(mapName, this);
 			main.loadEscapeModeMaps(mapName, this);
+
 			if(level.getPlayers().values().size() != 0)
 				main.getLogger().warning("§eThere were players in arena "+mapName+" and it got enabled, they are now sent back to lobby level.");
+
 			for(Player players : level.getPlayers().values())
 			{
 				players.sendMessage("Level unloaded, you were teleported back to lobby!");
 				players.teleport(main.getMRLobbyConfig().getMainLobbyLocation());
 			}
+
 			if(level != null)
-			level.unload(true);
+				level.unload(true);
+
 			level = null;
 		}
 		config.save();
 	}
 
-	public void setSurvivorLocation()
+	public boolean noLocationY(String loc)
+	{
+		return config.getInt(mapName+"."+loc+" Location.Y") == 0;
+	}
+
+	public void loadOriginMap()
+	{
+		main.initWorld(levelName);
+		level = Server.getInstance().getLevelByName(levelName);
+	}
+
+	public void setSurvivorLocation(Player player)
 	{
 		String prefix = mapName+".Survivor Location.";
-		config.set(prefix+"X", 0);
-		config.set(prefix+"Y", 0);
-		config.set(prefix+"Z", 0);
-		config.set(prefix+"Yaw", 0);
-		config.set(prefix+"Pitch", 0);
+		config.set(prefix+"X", player.x);
+		config.set(prefix+"Y", player.y);
+		config.set(prefix+"Z", player.z);
+		config.set(prefix+"Yaw", player.yaw);
+		config.set(prefix+"Pitch", player.pitch);
 		config.save();
 	}
 
-	public void setMurdererLocation()
+	public void setMurdererLocation(Player player)
+	{
+		String prefix = mapName+".Murderer Location.";
+		config.set(prefix+"X", player.x);
+		config.set(prefix+"Y", player.y);
+		config.set(prefix+"Z", player.z);
+		config.set(prefix+"Yaw", player.yaw);
+		config.set(prefix+"Pitch", player.pitch);
+		config.save();
+	}
+
+	public void setGameEndLocation(Player player)
 	{
 		String prefix = mapName+".Game End Location.";
-		config.set(prefix+"X", 0);
-		config.set(prefix+"Y", 0);
-		config.set(prefix+"Z", 0);
-		config.set(prefix+"Yaw", 0);
-		config.set(prefix+"Pitch", 0);
+		config.set(prefix+"X", player.x);
+		config.set(prefix+"Y", player.y);
+		config.set(prefix+"Z", player.z);
+		config.set(prefix+"Yaw", player.yaw);
+		config.set(prefix+"Pitch", player.pitch);
 		config.save();
 	}
 
-	public void setGameEndLocation()
+	public void addVehicleLocation(Player player)
 	{
 		String prefix = mapName+".Vehicle Location.";
-		config.set(prefix+"X", 0);
-		config.set(prefix+"Y", 0);
-		config.set(prefix+"Z", 0);
-		config.set(prefix+"Yaw", 0);
-		config.set(prefix+"Pitch", 0);
+		config.set(prefix+"X", player.x);
+		config.set(prefix+"Y", player.y);
+		config.set(prefix+"Z", player.z);
+		config.set(prefix+"Yaw", player.yaw);
+		config.set(prefix+"Pitch", player.pitch);
 		config.save();
 	}
-
-	public void addVehicleLocation()
+	
+	public Location getSurvivorLocation(Level level)
 	{
-		String prefix = mapName+".Vehicle Location.";
-		config.set(prefix+"X", 0);
-		config.set(prefix+"Y", 0);
-		config.set(prefix+"Z", 0);
-		config.set(prefix+"Yaw", 0);
-		config.set(prefix+"Pitch", 0);
-		config.save();
+		String prefix = mapName+".Survivor Location.";
+		return new Location(
+				config.getDouble(prefix+"X"), 
+				config.getDouble(prefix+"Y"),
+				config.getDouble(prefix+"Z"),
+				config.getDouble(prefix+"Yaw"),
+				config.getDouble(prefix+"Pitch"), level);
 	}
 
 	public Location getMurdererLocation(Level level)
@@ -148,10 +170,10 @@ public class MRArenasConfig extends AbstractFiles {
 				config.getDouble(prefix+"Yaw"),
 				config.getDouble(prefix+"Pitch"), level);
 	}
-
-	public Location getSurvivorLocation(Level level)
+	
+	public Location getGameEndLocation(Level level)
 	{
-		String prefix = mapName+".Survivor Location.";
+		String prefix = mapName+".Game End Location.";
 		return new Location(
 				config.getDouble(prefix+"X"), 
 				config.getDouble(prefix+"Y"),
@@ -180,27 +202,32 @@ public class MRArenasConfig extends AbstractFiles {
 	{
 		return config.getInt(mapName+".Maximum Players");
 	}
-	
+
 	public int getPointsLimit()
 	{
 		return config.getInt(mapName+".Points Limit");
 	}
-	
+
 	public int getTimeLimit()
 	{
 		return config.getInt(mapName+".Time Limit");
 	}
-	
+
 	public Level getOriginalMapLevel()
 	{
 		return level;
 	}
 
+	public String getImageURL()
+	{
+		return config.getString(mapName+".Image URL");
+	}
+
 	public String getInt(String val)
 	{
-		return String.valueOf(config.getInt(mapName+"."+val+" Multiples"));
+		return String.valueOf(config.getInt(mapName+"."+val));
 	}
-	
+
 	public int getMultiples(MapModes mode)
 	{
 		return config.getInt(mapName+"."+mode.getMode()+" Multiples");

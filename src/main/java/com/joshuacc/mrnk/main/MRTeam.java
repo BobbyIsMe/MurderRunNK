@@ -25,45 +25,45 @@ public class MRTeam {
 	{
 		NORMAL("Normal", 103),
 		ESCAPE("Escape", 104);
-		
+
 		private String mode;
 		private static MRFormsTextsConfig LANG;
 		private int id;
-		
+
 		MapModes(String mode, int id)
 		{
 			this.mode = mode;
 			this.id = id;
 		}
-		
+
 		public static void registerModes(MRFormsTextsConfig lang)
 		{
 			LANG = lang;
 		}
-		
+
 		public String getMode()
 		{
 			return mode;
 		}
-		
+
 		public String getTitle()
 		{
 			return TextFormat.colorize(LANG.getConfig().getString("Map-Selector."+getMode()+".Title"));
 		}
-		
+
 		public String getDesc()
 		{
 			return TextFormat.colorize(LANG.getConfig().getString("Map-Selector."+getMode()+".Description"));
 		}
-		
+
 		public int getID()
 		{
 			return id;
 		}
 	}
-	
+
 	private static final HashMap<MapModes, HashMap<String, MRTeam>> mapMode = new HashMap<>();
-	
+
 	private MapModes mode;
 
 	private String map;
@@ -101,12 +101,12 @@ public class MRTeam {
 		new BackupWorlds(main, getMode()).copyOverWorld(map, mapId);
 		main.initWorld(directory);
 	}
-	
+
 	public static void registerMapModes(MRFormsTextsConfig lang)
 	{
 		MapModes.registerModes(lang);
 		for(MapModes modes : MapModes.values())
-		mapMode.put(modes, new HashMap<>());
+			mapMode.put(modes, new HashMap<>());
 	}
 
 	public static MRTeam getMapTeamByID(String map, int id, MapModes mode)
@@ -152,6 +152,12 @@ public class MRTeam {
 	{
 		started = true;
 		updateEntry("Message", board.getString("Message-3"));
+	}
+
+	public void messageAllPlayers(String message)
+	{
+		for(Player players : allPlayers)
+			players.sendMessage(message);
 	}
 
 	public void updateEntry(String key, String p)

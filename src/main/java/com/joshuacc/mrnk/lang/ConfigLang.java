@@ -27,11 +27,14 @@ public enum ConfigLang {
 	NPCESCAPE("Npc-Join-Escape", "&cEscape Mode"),
 	
 	//Messages when you execute the command or config something in the map
+	FAILCONFIG("Map-Config-Fail Message", "&cYou must set all locations for the map! (Vehicle is optional)"),
 	NOAVAILABLEMAPS("No-Available-Maps Message", "&cNo available maps in the list!"),
 	NOTAVAILABLEMAP("Not-Available-Map Message", "&cThis map is not joinable currently!"),
 	NOTPLAYER("Not-Player Message", "&cYou must be a player to do this command!"),
 	NOTNUMBER("Not-Number Message", "&cAt least one of the input isn't a number!"),
 	SHORTARGUEMENTS("Not-Enough-Arguements Message", "&cNot enough arguements!"),
+	NOLOBBYSPAWN("Lobby-Not-Found Message", "&cYou must set the lobby first to do this!"),
+	NOLOBBYQUEUESPAWN("Queue-Not-Found Message", "&cYou must set the queue lobby first to do this!"),
 	DISABLEMAP("Disable-Map Message", "&cYou must disable the map first to do this!"),
 	SUCCESSJOIN("Successful-Join Message", "&aYou are now queued for %l!"),
 	SUCCESSLOBBY("Successful-Made Lobby Message", "&aSuccessfully setup the lobby!"),
@@ -40,7 +43,13 @@ public enum ConfigLang {
 	SLOCATIONMESSAGE("Setup S-Location Message", "&aSuccessfully set survivor location!"),
 	MLOCATIONMESSAGE("Setup M-Location Message", "&aSuccessfully set murderer location!"),
 	GLOCATIONMESSAGE("Setup G-Location Message", "&aSuccessfully set game-end location!"),
-	VLOCATIONMESSAGE("Setup V-Location Message", "&aSuccessfully set vehicle location!");
+	VLOCATIONMESSAGE("Setup V-Location Message", "&aSuccessfully set vehicle location!"),
+	
+	//Messages shown while in a game
+	PLAYERQUEUE("Player-Queue Message", "&eYou have been queued in %l!"),
+	PLAYERLEAVE("Player-Leave Message", "&e%p has left the arena!"),
+	QUEUEBAR("Queue-Bar Message", "&bYou are now being queued for &l%l"),
+	MAPNOTIFYQUEUE("Map-Queue Message", "&a%p &ehas joined the queue.");
 	
 	private String key;
 	private String val;

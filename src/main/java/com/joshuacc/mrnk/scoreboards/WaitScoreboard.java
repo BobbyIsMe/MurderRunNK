@@ -16,16 +16,6 @@ public class WaitScoreboard extends ScoreboardAbstract {
 
 	public WaitScoreboard(Player player, MRMain main) {
 		super(player, "uwo", "Scoreboard-Queue", main);
-		integers.add(getInt("Real Time"));
-		integers.add(getInt("ID"));
-		integers.add(getInt("Map"));
-		integers.add(getInt("Players"));
-		integers.add(getInt("Points"));
-		integers.add(getInt("Points Limit"));
-		integers.add(getInt("QPts"));
-		integers.add(getInt("Message"));
-		integers.add(getInt("Mode"));
-		integers.add(getInt("Time Limit"));
 	}
 
 	@Override
@@ -37,15 +27,15 @@ public class WaitScoreboard extends ScoreboardAbstract {
 		SimpleDateFormat format = new SimpleDateFormat("m");
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yy");
 		LocalDateTime now = LocalDateTime.now();
-		
+
 		format.setTimeZone(TimeZone.getTimeZone("GMT+8"));
-		
+
 		for(int i = 0; i < getStringList().size(); i++)
-			if(!integers.contains(i))
+			if(!queueInt.contains(i))
 				addLine(i);
 			else
 				entry.put(i, addLine(i));
-		
+
 		updateEntry("Real Time", dtf.format(now));
 		updateEntry("ID", team.getMapId());
 		updateEntry("Map", team.getMapOrigin());

@@ -17,6 +17,7 @@ import com.joshuacc.mrnk.files.MRScoreboardConfig;
 import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.listeners.MRGameListener;
 import com.joshuacc.mrnk.main.MRTeam.MapModes;
+import com.joshuacc.mrnk.scoreboards.ScoreboardAbstract;
 import com.joshuacc.mrnk.utils.EmptyGenerator;
 import com.joshuacc.mrnk.utils.FormUtils;
 import com.joshuacc.mrnk.utils.NPCHuman;
@@ -51,35 +52,36 @@ public class MRMain extends PluginBase {
 			getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
-		
+
 		Generator.addGenerator(EmptyGenerator.class, "emptyworld", Generator.TYPE_INFINITE);
 		Entity.registerEntity(NPCHuman.class.getSimpleName(), NPCHuman.class);
-		
+
 		textUtil = new TextUtils();
-		
+
 		MRLanguagesConfig language = new MRLanguagesConfig(this);
 		language.setupConfig();
-		
+
 		prefix = ConfigLang.PREFIXMESSAGE.toString();
-		
+
 		MRFormsTextsConfig forms = new MRFormsTextsConfig(this);
 		MRTeam.registerMapModes(forms);
-		
+
 		players = new MRPlayerConfig(this);
 		board = new MRScoreboardConfig(this);
 		lobby = new MRLobbyConfig(this);
-		
+
 		players.setupConfig();
 		board.setupConfig();
 		forms.setupConfig();
 		lobby.setupConfig();
-		
+
 		formUtil = new FormUtils(this);
-		
+		ScoreboardAbstract.registerScoreboards(board);
+
 		registerCommands();
 		getServer().getPluginManager().registerEvents(new MRGameListener(this), this);
 		MRPlayer.registerListener(this);
-		
+
 		newFile("Maps");
 		newFile("Normal");
 		newFile("Escape");
@@ -91,17 +93,30 @@ public class MRMain extends PluginBase {
 				MRArenasConfig config = new MRArenasConfig(this, maps);
 				config.setupConfig();
 				mapConfigs.put(maps, config);
-				if(config.isMapEnabled())
+
+				if(config.isMapEnabled() && correctMapAreasConfig(config))
 					getLogger().info(maps+" is loading!");
 				else
+				{
 					getLogger().warning(maps+" is disabled, not loading!");
+
+					if(!config.isMapEnabled())
+						config.loadOriginMap();
+					else
+						config.toggleMapEnabled();
+
+					if(!correctMapAreasConfig(config))
+						checkMapAreas(config);
+					continue;
+				}
+
 				loadNormalModeMaps(maps, config);
 				loadEscapeModeMaps(maps, config);
 			}
 		} else
 			getLogger().warning("No available maps were found!");
 	}
-	
+
 	public void loadNormalModeMaps(String maps, MRArenasConfig config)
 	{
 		if(config.isMapEnabled())
@@ -115,12 +130,12 @@ public class MRMain extends PluginBase {
 			for(int i = 1; i <= config.getConfig().getInt(maps+".Escape Multiples"); i++)
 				new MRTeamEscape(this, maps, config, i);
 	}
-	
+
 	public void initWorld(String levelName)
 	{
 		Server.getInstance().generateLevel(levelName, 0, Generator.getGenerator("emptyworld"));
 	}
-	
+
 	public void removeMapTeam(String maps, int multiple, MapModes type)
 	{
 		for(int i = 1; i <= multiple; i++)
@@ -128,7 +143,7 @@ public class MRMain extends PluginBase {
 			{
 				MRTeam team = MRTeam.getMapTeamByID(maps, i, type);
 				if(team.getMapLevel() != null)
-				team.getMapLevel().unload();
+					team.getMapLevel().unload();
 				team.removeMapTeam();
 			}
 	}
@@ -164,16 +179,35 @@ public class MRMain extends PluginBase {
 		return null;
 	}
 
+	private void checkMapAreas(MRArenasConfig config)
+	{
+		getLogger().info("Reason: ");
+		if(config.noLocationY("Survivor"))
+			getLogger().info("No survivor spawn found!");
+
+		if(config.noLocationY("Murderer"))
+			getLogger().info("No murderer spawn found!");
+
+		if(config.noLocationY("Game End"))
+			getLogger().info("No game end spawn found!");
+		getLogger().info("");
+	}
+
+	public boolean correctMapAreasConfig(MRArenasConfig config)
+	{
+		return !config.noLocationY("Survivor") && !config.noLocationY("Murderer") && !config.noLocationY("Game End");
+	}
+
 	public MRLobbyConfig getMRLobbyConfig()
 	{
 		return lobby;
 	}
-	
+
 	public MRScoreboardConfig getMRScoreboardConfig()
 	{
 		return board;
 	}
-	
+
 	public MRPlayerConfig getMRPlayerConfig()
 	{
 		return players;
@@ -193,7 +227,8 @@ public class MRMain extends PluginBase {
 	{
 		return prefix;
 	}
-	
+
+
 	private void newFile(String file)
 	{
 		File f = new File(getDataFolder().getAbsolutePath(), file);

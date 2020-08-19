@@ -11,6 +11,8 @@ import com.joshuacc.mrnk.files.MRPlayerConfig;
 import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.scoreboards.ScoreboardAbstract;
 import com.joshuacc.mrnk.scoreboards.WaitScoreboard;
+import com.joshuacc.mrnk.utils.TextUtils;
+
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.event.EventHandler;
@@ -26,15 +28,15 @@ import cn.nukkit.network.protocol.SetLocalPlayerAsInitializedPacket;
 public class MRPlayer {
 
 	private static final HashMap<Player,MRPlayer> addPlayer = new HashMap<>();
-	
+
 	private Player player;
 	private MRTeam mapTeam;
 	private MRPlayerConfig playerData;
 	private ScoreboardAbstract board;
-	
+
 	private int time;
 	private int qPts;
-	
+
 	private MRPlayer(MRMain main, Player player, MRTeam mapTeam)
 	{
 		addPlayer.put(player, this);
@@ -43,81 +45,80 @@ public class MRPlayer {
 		this.mapTeam = mapTeam;
 		this.board = null;
 		this.time = 0;
-		
+
 		int max = mapTeam.getMapConfig().getPointsLimit();
 		int i = playerData.getPoints(player);
 		if(i >= max)
-		this.qPts = max;
+			this.qPts = max;
 		else
 			this.qPts = i;
 	}
-	
+
 	public void removePlayer()
 	{
 		addPlayer.remove(player);
 	}
-	
+
 	public void queue(Location loc)
 	{
-		if(loc.getLevel() != null)
 		player.teleport(loc);
 	}
-	
+
 	public void setScoreboard(ScoreboardAbstract board)
 	{
 		if(board != null)
 			board.removeScoreboard();
-		
+
 		this.board = board;
 		board.openScoreboard();
 	}
-	
+
 	public static MRPlayer getMRPlayer(Player player)
 	{
 		return addPlayer.get(player);
 	}
-	
+
 	public MRTeam getMapTeam()
 	{
 		return mapTeam;
 	}
-	
+
 	public MRPlayerConfig getPlayerConfig()
 	{
 		return playerData;
 	}
-	
+
 	public ScoreboardAbstract getScoreboard()
 	{
 		return board;
 	}
-	
+
 	public int getPlayerTime()
 	{
 		return time;
 	}
-	
+
 	public int getPlayerQueuedPoints()
 	{
 		return qPts;
 	}
-	
+
 	public static void registerListener(final MRMain main)
 	{
 		Server.getInstance().getPluginManager().registerEvents(new PlayerListener(main), main);
 	}
-	
+
 	private static class PlayerListener implements Listener
 	{
 		private MRLobbyConfig lobby;
 		private MRMain main;
-		
+
 		public PlayerListener(MRMain main)
 		{
 			this.main = main;
 			this.lobby = main.getMRLobbyConfig();
 		}
-		
+
 		@EventHandler
 		public void onJoin(PlayerJoinEvent event)
 		{
@@ -125,46 +126,51 @@ public class MRPlayer {
 			player.setNameTag(main.getTextUtil().formatPlayer(ConfigLang.LOBBYTAG.toString(), player));
 			main.getMRPlayerConfig().addPlayerData(player);
 		}
-		
+
 		@EventHandler
 		public void onDataPk(DataPacketReceiveEvent event) {
-	        if (event.getPacket() instanceof SetLocalPlayerAsInitializedPacket) {
-	            Player player = event.getPlayer();
-	            
-	            for(FloatingTextParticle particles : main.getMRLobbyConfig().getHolograms())
-	            	player.getLevel().addParticle(particles, player);
-	            
-	            for(FloatingTextParticle particles : main.getMRLobbyConfig().getModesHologram())
-	            	player.getLevel().addParticle(particles, player);
-	            
-	            if(lobby.getMainLobbyLocation().getLevel() != null)
-	    			player.teleport(lobby.getMainLobbyLocation());
-	        }
+			if (event.getPacket() instanceof SetLocalPlayerAsInitializedPacket) {
+				Player player = event.getPlayer();
+
+				for(FloatingTextParticle particles : main.getMRLobbyConfig().getHolograms())
+					player.getLevel().addParticle(particles, player);
+
+				for(FloatingTextParticle particles : main.getMRLobbyConfig().getModesHologram())
+					player.getLevel().addParticle(particles, player);
+
+				if(lobby.getMainLobbyLocation().getLevel() != null)
+					player.teleport(lobby.getMainLobbyLocation());
+			}
 		}
-		
+
 		@EventHandler
 		public void onRespond(PlayerFormRespondedEvent event)
 		{	
 			main.getFormUtil().handleAllResponse(event.getPlayer(), event.getFormID(), event.getWindow(), event.getResponse());
 		}
-		
+
 		@EventHandler
 		public void onJoinGame(PlayerJoinGameEvent event)
 		{
+			Player player = event.getPlayer();
 			MRTeam team = event.getMapTeam();
 			MRArenasConfig config = team.getMapConfig();
-			Player player = event.getPlayer();
 			MRPlayer mPlayer = new MRPlayer(main, player, team);
+			TextUtils util = main.getTextUtil();
+
+			player.sendMessage(util.formatLevel(MRMain.getPrefix()+" "+ConfigLang.PLAYERQUEUE.toString(), team.getMapOrigin()));
 			
 			mPlayer.setScoreboard(new WaitScoreboard(player, main));
-			team.addAllPlayer(player);
-			team.updateEntry("Players", team.getPlayers().size()+"", config.getMaximumPlayers()+"");
 			mPlayer.queue(lobby.getQueueLobbyLocation());
 			
+			team.addAllPlayer(player);
+			team.updateEntry("Players", team.getPlayers().size()+"", config.getMaximumPlayers()+"");
+			team.messageAllPlayers(util.formatPlayer(MRMain.getPrefix()+" "+ConfigLang.MAPNOTIFYQUEUE.toString(), player));
+
 			if(team.getPlayers().size() == config.getMinimumPlayers())
 				Server.getInstance().getPluginManager().callEvent(new GameStartEvent(GameAttribute.STARTING, team));
 		}
-		
+
 		@EventHandler
 		public void onLeave(PlayerQuitEvent event)
 		{
@@ -173,7 +179,7 @@ public class MRPlayer {
 			{
 				MRPlayer mPlayer = MRPlayer.getMRPlayer(player);
 				MRTeam team = mPlayer.getMapTeam();
-				
+
 				team.removePlayer(player);
 				mPlayer.removePlayer();
 			}

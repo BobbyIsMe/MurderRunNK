@@ -16,6 +16,7 @@ import com.joshuacc.mrnk.main.MRTeam.MapModes;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.form.element.ElementButton;
+import cn.nukkit.form.element.ElementButtonImageData;
 import cn.nukkit.form.element.ElementInput;
 import cn.nukkit.form.element.ElementLabel;
 import cn.nukkit.form.response.FormResponse;
@@ -37,6 +38,7 @@ public class FormUtils {
 	{
 		this.util = main.getTextUtil();
 		this.main = main;
+
 		if(main.getMaps() != null)
 			for(int i = 0; i < main.getMaps().length; i++)
 				maps.put(i+2, main.getMaps()[i]);
@@ -65,9 +67,9 @@ public class FormUtils {
 		configForm.addButton(new ElementButton(FormsLang.EDITVLOC.toString()));
 
 		if(main.getMapConfigs().get(level).isMapEnabled())
-			configForm.addButton(new ElementButton("§4§l"+FormsLang.EDITENABLE.toString()));
+			configForm.addButton(new ElementButton("§4§l"+FormsLang.EDITENABLE.toString(), new ElementButtonImageData("url", "https://icons.iconarchive.com/icons/paomedia/small-n-flat/128/sign-error-icon.png")));
 		else
-			configForm.addButton(new ElementButton("§2§l"+FormsLang.EDITENABLE.toString()));
+			configForm.addButton(new ElementButton("§2§l"+FormsLang.EDITENABLE.toString(), new ElementButtonImageData("url", "https://icons.iconarchive.com/icons/paomedia/small-n-flat/128/sign-check-icon.png")));
 		player.showFormWindow(configForm);
 	}
 
@@ -88,6 +90,9 @@ public class FormUtils {
 
 	public void addMapsSelector(Player player, MapModes type)
 	{
+		if(checkLobbySpawns(player))
+			return;
+
 		if(maps != null)
 		{
 			int formId = type.getID();
@@ -98,10 +103,11 @@ public class FormUtils {
 			for(String maps : main.getMaps())
 			{
 				MRArenasConfig config = main.getMapConfigs().get(maps);
-				int normal = config.getMultiples(type);
 
 				if(config.isMapEnabled())
 				{
+					int normal = config.getMultiples(type);
+
 					if(normal != 0)
 					{
 						int all = 0;
@@ -167,10 +173,32 @@ public class FormUtils {
 			lobby.setupLobbyLocation(player, false);
 			player.sendMessage(ConfigLang.SUCCESSWLOBBY.toString());
 		} else if(id >= 2) {
+
+			if(checkLobbySpawns(player))
+				return;
+
 			String level = maps.get(id);
 			editLevel.put(player.getUniqueId(), level);
 			addConfigMapForm(player, level);
 		}
+	}
+
+	public boolean checkLobbySpawns(Player player)
+	{
+		MRLobbyConfig lobby = main.getMRLobbyConfig();
+		if(lobby.getMainLobbyLocation().getLevel() == null)
+		{
+			player.sendMessage(ConfigLang.NOLOBBYSPAWN.toString());
+			return true;
+		}
+
+		if(lobby.getQueueLobbyLocation().getLevel() == null)
+		{
+			player.sendMessage(ConfigLang.NOLOBBYQUEUESPAWN.toString());
+			return true;
+		}
+
+		return false;
 	}
 
 	private void handleSettingsMapForm(Player player, FormResponseCustom response)
@@ -200,7 +228,12 @@ public class FormUtils {
 		MRArenasConfig mapConfig = main.getMapConfigs().get(level);
 
 		if(response.getClickedButtonId() == 6)
+		{
+			if(main.correctMapAreasConfig(mapConfig))
 			mapConfig.toggleMapEnabled();
+			else
+				player.sendMessage(ConfigLang.FAILCONFIG.toString());
+		}
 
 		else if(!mapConfig.isMapEnabled())
 		{
@@ -213,19 +246,19 @@ public class FormUtils {
 				addSettingsMapForm(player, level);
 				break;
 			case 2:
-				mapConfig.setSurvivorLocation();
+				mapConfig.setSurvivorLocation(player);
 				player.sendMessage(ConfigLang.SLOCATIONMESSAGE.toString());
 				break;
 			case 3:
-				mapConfig.setMurdererLocation();
+				mapConfig.setMurdererLocation(player);
 				player.sendMessage(ConfigLang.MLOCATIONMESSAGE.toString());
 				break;
 			case 4:
-				mapConfig.setGameEndLocation();
+				mapConfig.setGameEndLocation(player);
 				player.sendMessage(ConfigLang.GLOCATIONMESSAGE.toString());
 				break;
 			case 5:
-				mapConfig.addVehicleLocation();
+				mapConfig.addVehicleLocation(player);
 				player.sendMessage(ConfigLang.VLOCATIONMESSAGE.toString());
 				break;
 			}
@@ -249,8 +282,8 @@ public class FormUtils {
 				if(team.getState() == MapState.READY || team.getState() == MapState.STARTING)
 				{
 					PlayerJoinGameEvent join = new PlayerJoinGameEvent(player, team);
-					Server.getInstance().getPluginManager().callEvent(join);
 					player.sendMessage(util.formatLevel(MRMain.getPrefix()+" "+ConfigLang.SUCCESSJOIN.toString(), map));
+					Server.getInstance().getPluginManager().callEvent(join);
 					break;
 				}
 			}

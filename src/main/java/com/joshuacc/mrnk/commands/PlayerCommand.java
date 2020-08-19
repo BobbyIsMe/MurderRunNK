@@ -95,7 +95,7 @@ public class PlayerCommand extends Command {
 				.putString("Command", command)
 				.putString("NameTag", name)
 				.putBoolean("npc", true)
-				.putFloat("scale", 1);
+				.putFloat("scale", 1.5F);
 			CompoundTag skinTag = new CompoundTag()
 					.putByteArray("Data", p.getSkin().getSkinData().data)
 					.putInt("SkinImageWidth", p.getSkin().getSkinData().width)

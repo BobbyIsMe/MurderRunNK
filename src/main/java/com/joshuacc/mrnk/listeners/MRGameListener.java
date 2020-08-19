@@ -49,10 +49,10 @@ public class MRGameListener implements Listener {
 
 		if(event.getGameAttribute() == GameAttribute.STARTING)
 			team.startQueueLobby();
-		
+
 		else if(event.getGameAttribute() == GameAttribute.STARTED)
 		{
-			
+
 		}
 	}
 }

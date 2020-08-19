@@ -33,12 +33,12 @@ public class MRPlayerConfig extends AbstractFiles {
 			config.save();
 		}
 	}
-	
+
 	public int getPoints(Player player)
 	{
 		return getInt(player, "Points");
 	}
-	
+
 	public int getInt(Player player, String value)
 	{
 		return config.getInt(player.getName()+"."+value);

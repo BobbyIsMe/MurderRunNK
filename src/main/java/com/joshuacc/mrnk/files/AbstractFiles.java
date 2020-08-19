@@ -11,7 +11,11 @@ public abstract class AbstractFiles {
 	
 	public AbstractFiles(MRMain main, String name)
 	{
-		this.config = new Config(new File(main.getDataFolder(), name+".yml"), Config.YAML);
+		File file = new File(main.getDataFolder(), name+".yml");
+		if(!file.exists())
+			main.getLogger().info("File: "+name+" was not found, creating new one..");
+		
+		this.config = new Config(file, Config.YAML);
 	}
 	
 	public void setupConfig()
