@@ -147,13 +147,14 @@ public class FormUtils {
 		case 102:
 			handleSettingsMapForm(player, (FormResponseCustom) response);
 			return;
-		case 103:
-			handleMapsSelector(player, (FormResponseSimple) response, MapModes.NORMAL);
-			return;
-		case 104:
-			handleMapsSelector(player, (FormResponseSimple) response, MapModes.ESCAPE);
-			return;
 		}
+
+		for(MapModes mode : MapModes.values())
+			if(id == mode.getID())
+			{
+				handleMapsSelector(player, (FormResponseSimple) response, mode);
+				return;
+			}
 
 		if(editLevel.get(player.getUniqueId()) == null)
 			return;
@@ -230,7 +231,7 @@ public class FormUtils {
 		if(response.getClickedButtonId() == 6)
 		{
 			if(main.correctMapAreasConfig(mapConfig))
-			mapConfig.toggleMapEnabled();
+				mapConfig.toggleMapEnabled();
 			else
 				player.sendMessage(ConfigLang.FAILCONFIG.toString());
 		}

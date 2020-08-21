@@ -20,7 +20,7 @@ import cn.nukkit.nbt.tag.ListTag;
 public class PlayerCommand extends Command {
 
 	private MRLobbyConfig lobby;
-	
+
 	public PlayerCommand(MRMain main) {
 		super("npcadd", "Adds necessary NPCs for players to see the map selector!");
 		this.lobby = main.getMRLobbyConfig();
@@ -41,12 +41,12 @@ public class PlayerCommand extends Command {
 			sender.sendMessage(ConfigLang.NOTPLAYER.toString());
 			return false;
 		}
-		
+
 		Player player = (Player) sender;
-		
+
 		if(!player.hasPermission("mr.npcadd"))
 			return false;
-		
+
 		if(args.length == 0)
 			player.sendMessage(ConfigLang.SHORTARGUEMENTS.toString());
 		else if(args.length == 1)
@@ -66,7 +66,7 @@ public class PlayerCommand extends Command {
 		}
 		return true;
 	}
-	
+
 	private Entity createEntity(Player player, String command)
 	{
 		String name = ConfigLang.NPCJOINLIST.toString();
@@ -96,28 +96,28 @@ public class PlayerCommand extends Command {
 				.putString("NameTag", name)
 				.putBoolean("npc", true)
 				.putFloat("scale", 1.5F);
-			CompoundTag skinTag = new CompoundTag()
-					.putByteArray("Data", p.getSkin().getSkinData().data)
-					.putInt("SkinImageWidth", p.getSkin().getSkinData().width)
-					.putInt("SkinImageHeight", p.getSkin().getSkinData().height)
-					.putString("ModelId", p.getSkin().getSkinId())
-					.putString("CapeId", p.getSkin().getCapeId())
-					.putByteArray("CapeData", p.getSkin().getCapeData().data)
-					.putInt("CapeImageWidth", p.getSkin().getCapeData().width)
-					.putInt("CapeImageHeight", p.getSkin().getCapeData().height)
-					.putByteArray("SkinResourcePatch", p.getSkin().getSkinResourcePatch().getBytes(StandardCharsets.UTF_8))
-					.putByteArray("GeometryData", p.getSkin().getGeometryData().getBytes(StandardCharsets.UTF_8))
-					.putByteArray("AnimationData", p.getSkin().getAnimationData().getBytes(StandardCharsets.UTF_8))
-					.putBoolean("PremiumSkin", p.getSkin().isPremium())
-					.putBoolean("PersonaSkin", p.getSkin().isPersona())
-					.putBoolean("CapeOnClassicSkin", p.getSkin().isCapeOnClassic());
-			nbt.putCompound("Skin", skinTag);
-			nbt.putBoolean("ishuman", true);
-			nbt.putString("Item", p.getInventory().getItemInHand().getName());
-			nbt.putString("Helmet", p.getInventory().getHelmet().getName());
-			nbt.putString("Chestplate", p.getInventory().getChestplate().getName());
-			nbt.putString("Leggings", p.getInventory().getLeggings().getName());
-			nbt.putString("Boots", p.getInventory().getBoots().getName());
+		CompoundTag skinTag = new CompoundTag()
+				.putByteArray("Data", p.getSkin().getSkinData().data)
+				.putInt("SkinImageWidth", p.getSkin().getSkinData().width)
+				.putInt("SkinImageHeight", p.getSkin().getSkinData().height)
+				.putString("ModelId", p.getSkin().getSkinId())
+				.putString("CapeId", p.getSkin().getCapeId())
+				.putByteArray("CapeData", p.getSkin().getCapeData().data)
+				.putInt("CapeImageWidth", p.getSkin().getCapeData().width)
+				.putInt("CapeImageHeight", p.getSkin().getCapeData().height)
+				.putByteArray("SkinResourcePatch", p.getSkin().getSkinResourcePatch().getBytes(StandardCharsets.UTF_8))
+				.putByteArray("GeometryData", p.getSkin().getGeometryData().getBytes(StandardCharsets.UTF_8))
+				.putByteArray("AnimationData", p.getSkin().getAnimationData().getBytes(StandardCharsets.UTF_8))
+				.putBoolean("PremiumSkin", p.getSkin().isPremium())
+				.putBoolean("PersonaSkin", p.getSkin().isPersona())
+				.putBoolean("CapeOnClassicSkin", p.getSkin().isCapeOnClassic());
+		nbt.putCompound("Skin", skinTag);
+		nbt.putBoolean("ishuman", true);
+		nbt.putString("Item", p.getInventory().getItemInHand().getName());
+		nbt.putString("Helmet", p.getInventory().getHelmet().getName());
+		nbt.putString("Chestplate", p.getInventory().getChestplate().getName());
+		nbt.putString("Leggings", p.getInventory().getLeggings().getName());
+		nbt.putString("Boots", p.getInventory().getBoots().getName());
 		return nbt;
 	}
 }

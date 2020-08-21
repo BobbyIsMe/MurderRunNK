@@ -21,7 +21,6 @@ import cn.nukkit.event.player.PlayerFormRespondedEvent;
 import cn.nukkit.event.player.PlayerJoinEvent;
 import cn.nukkit.event.player.PlayerQuitEvent;
 import cn.nukkit.event.server.DataPacketReceiveEvent;
-import cn.nukkit.level.Location;
 import cn.nukkit.level.particle.FloatingTextParticle;
 import cn.nukkit.network.protocol.SetLocalPlayerAsInitializedPacket;
 
@@ -32,19 +31,25 @@ public class MRPlayer {
 	private Player player;
 	private MRTeam mapTeam;
 	private MRPlayerConfig playerData;
+	private MRLobbyConfig lobby;
 	private ScoreboardAbstract board;
 
 	private int time;
 	private int qPts;
+
+	private boolean hasRound;
 
 	private MRPlayer(MRMain main, Player player, MRTeam mapTeam)
 	{
 		addPlayer.put(player, this);
 		this.player = player;
 		this.playerData = main.getMRPlayerConfig();
+		this.lobby = main.getMRLobbyConfig();
 		this.mapTeam = mapTeam;
 		this.board = null;
 		this.time = 0;
+
+		this.hasRound = false;
 
 		int max = mapTeam.getMapConfig().getPointsLimit();
 		int i = playerData.getPoints(player);
@@ -59,9 +64,15 @@ public class MRPlayer {
 		addPlayer.remove(player);
 	}
 
-	public void queue(Location loc)
+	public void queue()
 	{
-		player.teleport(loc);
+		player.teleport(lobby.getQueueLobbyLocation());
+	}
+
+	public void unqueue()
+	{
+		player.teleport(lobby.getMainLobbyLocation());
+		removePlayer();
 	}
 
 	public void setScoreboard(ScoreboardAbstract board)
@@ -71,6 +82,11 @@ public class MRPlayer {
 
 		this.board = board;
 		board.openScoreboard();
+	}
+
+	public void setHasRound()
+	{
+		this.hasRound = true;
 	}
 
 	public static MRPlayer getMRPlayer(Player player)
@@ -101,6 +117,11 @@ public class MRPlayer {
 	public int getPlayerQueuedPoints()
 	{
 		return qPts;
+	}
+
+	public boolean hasRound()
+	{
+		return hasRound;
 	}
 
 	public static void registerListener(final MRMain main)
@@ -159,10 +180,10 @@ public class MRPlayer {
 			TextUtils util = main.getTextUtil();
 
 			player.sendMessage(util.formatLevel(MRMain.getPrefix()+" "+ConfigLang.PLAYERQUEUE.toString(), team.getMapOrigin()));
-			
+
 			mPlayer.setScoreboard(new WaitScoreboard(player, main));
-			mPlayer.queue(lobby.getQueueLobbyLocation());
-			
+			mPlayer.queue();
+
 			team.addAllPlayer(player);
 			team.updateEntry("Players", team.getPlayers().size()+"", config.getMaximumPlayers()+"");
 			team.messageAllPlayers(util.formatPlayer(MRMain.getPrefix()+" "+ConfigLang.MAPNOTIFYQUEUE.toString(), player));

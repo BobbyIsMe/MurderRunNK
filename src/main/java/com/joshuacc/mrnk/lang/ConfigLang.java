@@ -49,7 +49,14 @@ public enum ConfigLang {
 	PLAYERQUEUE("Player-Queue Message", "&eYou have been queued in %l!"),
 	PLAYERLEAVE("Player-Leave Message", "&e%p has left the arena!"),
 	QUEUEBAR("Queue-Bar Message", "&bYou are now being queued for &l%l"),
-	MAPNOTIFYQUEUE("Map-Queue Message", "&a%p &ehas joined the queue.");
+	MAPNOTIFYQUEUE("Map-Queue Message", "&a%p &ehas joined the queue."),
+	MAPSTARTED("Map-Start Message", "&eThe game has officially started! From now on, you can't leave the game until the end!"),
+	MAPTITLESTART("Start-Title", "&0&kIII&r &4&lMURDER RUN &r&0&kIII"),
+	MAPSUBTSTART("Start-Subtitle","&eSurvive long while you can!"),
+	MAPSELECT("Select-Killer Message", "&eSelecting random players in the arena to become the &4&lMURDERER!"),
+	MAPRANDOM("Killer-Random", "&c&l%p"),
+	MAPRANDFIN("Random-Finish", "&eis the murderer!"),
+	KILLERLEAVE("Killer-Leave Message", "&eThe killer has left! Restarting round..");
 	
 	private String key;
 	private String val;

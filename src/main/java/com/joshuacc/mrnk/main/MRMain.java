@@ -28,6 +28,7 @@ import cn.nukkit.command.CommandMap;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.level.generator.Generator;
 import cn.nukkit.plugin.PluginBase;
+import cn.nukkit.utils.TextFormat;
 
 public class MRMain extends PluginBase {
 
@@ -36,7 +37,10 @@ public class MRMain extends PluginBase {
 	private MRPlayerConfig players;
 	private FormUtils formUtil;
 	private TextUtils textUtil;
+
 	private HashMap<String,MRArenasConfig> mapConfigs = new HashMap<>();
+	private HashMap<MapModes,Integer> playerCount = new HashMap<>(); 
+
 	private static String prefix;
 
 	@Override
@@ -53,41 +57,54 @@ public class MRMain extends PluginBase {
 			return;
 		}
 
-		Generator.addGenerator(EmptyGenerator.class, "emptyworld", Generator.TYPE_INFINITE);
-		Entity.registerEntity(NPCHuman.class.getSimpleName(), NPCHuman.class);
-
-		textUtil = new TextUtils();
-
 		MRLanguagesConfig language = new MRLanguagesConfig(this);
+		MRFormsTextsConfig forms = new MRFormsTextsConfig(this);
+
 		language.setupConfig();
+		forms.setupConfig();
+
+		MRTeam.registerMapModes(forms, language);
 
 		prefix = ConfigLang.PREFIXMESSAGE.toString();
 
-		MRFormsTextsConfig forms = new MRFormsTextsConfig(this);
-		MRTeam.registerMapModes(forms);
-
+		textUtil = new TextUtils();
 		players = new MRPlayerConfig(this);
 		board = new MRScoreboardConfig(this);
 		lobby = new MRLobbyConfig(this);
+		formUtil = new FormUtils(this);
 
 		players.setupConfig();
 		board.setupConfig();
-		forms.setupConfig();
 		lobby.setupConfig();
 
-		formUtil = new FormUtils(this);
+		Generator.addGenerator(EmptyGenerator.class, "emptyworld", Generator.TYPE_INFINITE);
+		Entity.registerEntity(NPCHuman.class.getSimpleName(), NPCHuman.class);
+
 		ScoreboardAbstract.registerScoreboards(board);
 
 		registerCommands();
-		getServer().getPluginManager().registerEvents(new MRGameListener(this), this);
-		MRPlayer.registerListener(this);
+		registerListeners();
 
 		newFile("Maps");
 		newFile("Normal");
 		newFile("Escape");
 
+		for(MapModes mode : MapModes.values())
+			playerCount.put(mode, 0);
+
+		minigameMapLoader();
+	}
+
+	private void minigameMapLoader()
+	{
 		if(getMaps() != null)
 		{
+			int enable = 0;
+			int disable = 0;
+			getLogger().info("§b>>");
+			getLogger().info("Loading "+getMaps().length+" maps found, this might take a while...");
+			getLogger().info("[===== MINIGAME MAP LOADER =====]");
+			getLogger().info("");
 			for(String maps : getMaps())
 			{
 				MRArenasConfig config = new MRArenasConfig(this, maps);
@@ -95,10 +112,15 @@ public class MRMain extends PluginBase {
 				mapConfigs.put(maps, config);
 
 				if(config.isMapEnabled() && correctMapAreasConfig(config))
-					getLogger().info(maps+" is loading!");
+				{
+					getLogger().info(TextFormat.GREEN+maps+" is loading!");
+					loadNormalModeMaps(maps, config);
+					loadEscapeModeMaps(maps, config);
+					enable++;
+				}
 				else
 				{
-					getLogger().warning(maps+" is disabled, not loading!");
+					getLogger().warning(TextFormat.RED+maps+" is disabled, not loading!");
 
 					if(!config.isMapEnabled())
 						config.loadOriginMap();
@@ -107,14 +129,57 @@ public class MRMain extends PluginBase {
 
 					if(!correctMapAreasConfig(config))
 						checkMapAreas(config);
-					continue;
+					disable++;
 				}
 
-				loadNormalModeMaps(maps, config);
-				loadEscapeModeMaps(maps, config);
+				getLogger().info("");
 			}
+			getLogger().info("[===== MINIGAME MAP LOADER =====]");
+			getLogger().info("All maps have been loaded.");
+			getLogger().info("Enabled Maps Count: "+enable);
+			getLogger().info("Disabled Maps Count: "+disable);
+			getLogger().info("§b>>");
 		} else
 			getLogger().warning("No available maps were found!");
+	}
+
+	private void newFile(String file)
+	{
+		File f = new File(getDataFolder().getAbsolutePath(), file);
+		if(!f.exists())
+			f.mkdir();
+	}
+
+	private void registerCommands()
+	{
+		CommandMap map = getServer().getCommandMap();
+		map.register("mr", new MRCommand(this));
+		map.register("npcadd", new PlayerCommand(this));
+		map.register("openlist", new OpenListCommand(this));
+	}
+
+	private void registerListeners()
+	{
+		getServer().getPluginManager().registerEvents(new MRGameListener(this), this);
+		MRPlayer.registerListener(this);
+	}
+
+	private void checkMapAreas(MRArenasConfig config)
+	{
+		getLogger().info("Reason: ");
+		if(config.noLocationY("Survivor"))
+			getLogger().info("No survivor spawn found!");
+
+		if(config.noLocationY("Murderer"))
+			getLogger().info("No murderer spawn found!");
+
+		if(config.noLocationY("Game End"))
+			getLogger().info("No game end spawn found!");
+	}
+
+	public void updatePlayerCount(MapModes mode, int count)
+	{
+		playerCount.put(mode, (playerCount.get(mode)+count));
 	}
 
 	public void loadNormalModeMaps(String maps, MRArenasConfig config)
@@ -131,11 +196,6 @@ public class MRMain extends PluginBase {
 				new MRTeamEscape(this, maps, config, i);
 	}
 
-	public void initWorld(String levelName)
-	{
-		Server.getInstance().generateLevel(levelName, 0, Generator.getGenerator("emptyworld"));
-	}
-
 	public void removeMapTeam(String maps, int multiple, MapModes type)
 	{
 		for(int i = 1; i <= multiple; i++)
@@ -146,6 +206,11 @@ public class MRMain extends PluginBase {
 					team.getMapLevel().unload();
 				team.removeMapTeam();
 			}
+	}
+
+	public void initWorld(String levelName)
+	{
+		Server.getInstance().generateLevel(levelName, 0, Generator.getGenerator("emptyworld"));
 	}
 
 	public Map<String, MRArenasConfig> getMapConfigs()
@@ -179,23 +244,14 @@ public class MRMain extends PluginBase {
 		return null;
 	}
 
-	private void checkMapAreas(MRArenasConfig config)
-	{
-		getLogger().info("Reason: ");
-		if(config.noLocationY("Survivor"))
-			getLogger().info("No survivor spawn found!");
-
-		if(config.noLocationY("Murderer"))
-			getLogger().info("No murderer spawn found!");
-
-		if(config.noLocationY("Game End"))
-			getLogger().info("No game end spawn found!");
-		getLogger().info("");
-	}
-
 	public boolean correctMapAreasConfig(MRArenasConfig config)
 	{
 		return !config.noLocationY("Survivor") && !config.noLocationY("Murderer") && !config.noLocationY("Game End");
+	}
+
+	public int getPlayerCount(MapModes mode)
+	{
+		return playerCount.get(mode);
 	}
 
 	public MRLobbyConfig getMRLobbyConfig()
@@ -226,21 +282,5 @@ public class MRMain extends PluginBase {
 	public static String getPrefix()
 	{
 		return prefix;
-	}
-
-
-	private void newFile(String file)
-	{
-		File f = new File(getDataFolder().getAbsolutePath(), file);
-		if(!f.exists())
-			f.mkdir();
-	}
-
-	private void registerCommands()
-	{
-		CommandMap map = getServer().getCommandMap();
-		map.register("mr", new MRCommand(this));
-		map.register("npcadd", new PlayerCommand(this));
-		map.register("openlist", new OpenListCommand(this));
 	}
 }

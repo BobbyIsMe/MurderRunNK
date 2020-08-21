@@ -6,7 +6,6 @@ import java.util.HashMap;
 
 import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.main.MRMain;
-import com.joshuacc.mrnk.main.MRTeam;
 import com.joshuacc.mrnk.main.MRTeam.MapModes;
 import com.joshuacc.mrnk.utils.TextUtils;
 
@@ -20,22 +19,25 @@ import cn.nukkit.scheduler.Task;
 
 public class MRLobbyConfig extends AbstractFiles {
 
+	private MRMain main;
 	private TextUtils util;
 	private ArrayList<FloatingTextParticle> holograms = new ArrayList<>();
 	private HashMap<FloatingTextParticle,FloatingTextParticle> modes = new HashMap<>();
 
 	public MRLobbyConfig(MRMain main) {
 		super(main, "MRLobbyConfig");
+		this.main = main;
 		this.util = main.getTextUtil();
-		addNPCTexts(MapModes.NORMAL);
-		addNPCTexts(MapModes.ESCAPE);
+		
+		for(MapModes mode : MapModes.values())
+			addNPCTexts(mode);
 	}
 
 	@Override
 	public void addDefaults() 
 	{
-		addDefault("Normal-id", 0);
-		addDefault("Escape-id", 0);
+		for(MapModes mode : MapModes.values())
+			addDefault(mode.getMode()+"-id", 0);
 		config.save();
 	}
 
@@ -66,7 +68,7 @@ public class MRLobbyConfig extends AbstractFiles {
 		config.save();
 		ent.namedTag.putInt("npc-tag", config.getInt(type+"-id"));
 		ent.namedTag.putString("npc-type", type);
-		playerScheduler(getHologramLocation(type, id), type, id, MRTeam.getTeams(mode));
+		playerScheduler(getHologramLocation(type, id), id, mode);
 	}
 
 	public Location getMainLobbyLocation()
@@ -91,30 +93,29 @@ public class MRLobbyConfig extends AbstractFiles {
 				Server.getInstance().getLevelByName(config.getString("W-Lobby Level.Name")));
 	}
 
-	public void playerScheduler(Location vec, String type, int i, Collection<MRTeam> teams)
+	public void playerScheduler(Location vec, int i, MapModes m)
 	{
+		String type = m.getMode();
 		if(config.get("NPC."+type+"."+i) == null)
 			return;
-		
+
 		Level level = vec.getLevel();
 		FloatingTextParticle particle = new FloatingTextParticle(vec, "0");
 		FloatingTextParticle mode = new FloatingTextParticle(vec.add(0, 0.5, 0), "");
-		if(type == "Normal")
-			mode.setTitle(ConfigLang.NPCNORMAL.toString());
-		else if(type == "Escape")
-			mode.setTitle(ConfigLang.NPCESCAPE.toString());
-		modes.put(particle, mode);
+
+		mode.setTitle(m.getHologram());
 		level.addParticle(particle);
 		level.addParticle(mode);
+
 		holograms.add(particle);
+		modes.put(particle, mode);
+
 		Server.getInstance().getScheduler().scheduleRepeatingTask(new Task() {
 
 			@Override
 			public void onRun(int arg0) 
 			{	
-				int players = 0;
-				for(MRTeam normal : teams)
-					players = players + normal.getPlayers().size();
+				int players = main.getPlayerCount(m);
 
 				particle.setTitle(util.formatNumber(ConfigLang.NPCJOINPLAYERS.toString(), players));
 
@@ -136,7 +137,7 @@ public class MRLobbyConfig extends AbstractFiles {
 	{
 		return holograms;
 	}
-	
+
 	public Collection<FloatingTextParticle> getModesHologram()
 	{
 		return modes.values();
@@ -153,7 +154,7 @@ public class MRLobbyConfig extends AbstractFiles {
 	{
 		String type = mode.getMode();
 		for(int i = 1; i <= config.getDouble(type+"-id"); i++)
-			playerScheduler(getHologramLocation(type, i), type, i, MRTeam.getTeams(mode));
+			playerScheduler(getHologramLocation(type, i), i, mode);
 	}
 
 	private Location getHologramLocation(String type, int i)
