@@ -80,8 +80,10 @@ public class FormUtils {
 		MRArenasConfig config = main.getMapConfigs().get(editLevel.get(player.getUniqueId()));
 		FormWindowCustom editForm = new FormWindowCustom(util.formatLevel(FormsLang.SNGTITLE.toString(), level));
 		editForm.addElement(new ElementLabel(FormsLang.SNGDESC.toString()));
-		editForm.addElement(new ElementInput(FormsLang.SNGNORM.toString(), "normal", config.getInt("Normal Multiples")));
-		editForm.addElement(new ElementInput(FormsLang.SNGESC.toString(), "escape", config.getInt("Escape Multiples")));
+
+		for(MapModes modes : MapModes.values())
+			editForm.addElement(new ElementInput(modes.getMapMultiples(), modes.getMode().toLowerCase(), config.getInt(modes.getMode()+" Multiples")));
+
 		editForm.addElement(new ElementInput(FormsLang.SNGPREP.toString(), "prepare", config.getInt("Preparing Time")));
 		editForm.addElement(new ElementInput(FormsLang.SNGTIME.toString(), "time", config.getInt("Time Limit")));
 		editForm.addElement(new ElementInput(FormsLang.SNGPOINTS.toString(), "points", config.getInt("Points Limit")));
@@ -209,8 +211,14 @@ public class FormUtils {
 		String map = editLevel.get(player.getUniqueId());
 		MRArenasConfig config = main.getMapConfigs().get(map);
 		try {
-			config.setValue("Normal Multiples", response.getInputResponse(1));
-			config.setValue("Escape Multiples", response.getInputResponse(2));
+			int i = 1;
+
+			for(MapModes modes : MapModes.values())
+			{
+				config.setValue(modes.getMode()+" Multiples", response.getInputResponse(i));
+				i++;
+			}
+
 			config.setValue("Preparing Time", response.getInputResponse(3));
 			config.setValue("Time Limit", response.getInputResponse(4));
 			config.setValue("Points Limit", response.getInputResponse(5));

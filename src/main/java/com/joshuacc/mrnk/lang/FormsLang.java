@@ -34,8 +34,6 @@ public enum FormsLang {
 	//Settings Map Menu
 	SNGTITLE("Settings-Texts.Title", "Settings For - %l"),
 	SNGDESC("Settings-Texts.Description", "Here you can change settings for the arena it has to function properly!"),
-	SNGNORM("Settings-Texts.Normal Mode Maps", "&6» &a&lNormal Mode Maps"),
-	SNGESC("Settings-Texts.Escape Mode Maps", "&6» &a&lEscape Mode Maps"),
 	SNGPREP("Settings-Texts.Preparing Time", "&6» &a&lPreparing Time"),
 	SNGTIME("Settings-Texts.Time Limit", "&6» &a&lTime Limit"),
 	SNGPOINTS("Settings-Texts.Points Limit", "&6» &a&lPoints Limit"),

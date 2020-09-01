@@ -4,7 +4,7 @@ import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 
 public enum ConfigLang {
-	
+
 	//Placeholder
 	//%l - Map Name
 	//%p - Player Name
@@ -12,20 +12,20 @@ public enum ConfigLang {
 
 	//Prefix for some messages in-game to be shown
 	PREFIXMESSAGE("Prefix Message", "&4&lMurder Run &6»&r"),
-	
+
 	//Nametags for the player to be changed
 	LOBBYTAG("Player-Lobby-Tag", "&e%p"),
 	QUEUETAG("Player-Queue-Tag", "&b[%l] %p"),
 	SURVIVORTAG("Player-Survivor-Tag", "&a[SURVIVOR] %p"),
 	KILLERTAG("Player-Killer-Tag", "&c[MURDERER] %p"),
 	SPECTATORTAG("Player-Spectator-Tag", "&f[SPECTATOR] %p"),
-	
+
 	//NPC names
 	NPCJOINLIST("NPC-Join-List Name", "&eClick to Join a &6&lMap!"),
 	NPCJOINPLAYERS("Npc-Join-Players Tag", "&a&l%n PLAYERS"),
 	NPCNORMAL("Npc-Join-Normal", "&cNormal Mode"),
 	NPCESCAPE("Npc-Join-Escape", "&cEscape Mode"),
-	
+
 	//Messages when you execute the command or config something in the map
 	FAILCONFIG("Map-Config-Fail Message", "&cYou must set all locations for the map! (Vehicle is optional)"),
 	NOAVAILABLEMAPS("No-Available-Maps Message", "&cNo available maps in the list!"),
@@ -44,7 +44,7 @@ public enum ConfigLang {
 	MLOCATIONMESSAGE("Setup M-Location Message", "&aSuccessfully set murderer location!"),
 	GLOCATIONMESSAGE("Setup G-Location Message", "&aSuccessfully set game-end location!"),
 	VLOCATIONMESSAGE("Setup V-Location Message", "&aSuccessfully set vehicle location!"),
-	
+
 	//Messages shown while in a game
 	PLAYERQUEUE("Player-Queue Message", "&eYou have been queued in %l!"),
 	PLAYERLEAVE("Player-Leave Message", "&e%p has left the arena!"),
@@ -59,33 +59,33 @@ public enum ConfigLang {
 	KILLERLEAVE("Killer-Leave Message", "&eThe killer has left! Restarting round.."),
 	INTERMISSION("Intermission Messsage", "&eYou have &a%n seconds &eto buy items from the Traders!"),
 	INTERCOUNT("Inter-Count Message", "&eIntermission will end in &a%ns!");
-	
+
 	private String key;
 	private String val;
 	private static Config CONFIG;
-	
+
 	ConfigLang(String key, String val)
 	{
 		this.key = key;
 		this.val = val;
 	}
-	
+
 	public static void setLines(Config config)
 	{
 		CONFIG = config;
 	}
-	
+
 	@Override
 	public String toString()
 	{
 		return TextFormat.colorize('&', CONFIG.getString(this.key, this.val));
 	}
-	
+
 	public String getKey()
 	{
 		return this.key;
 	}
-	
+
 	public String getValue()
 	{
 		return this.val;

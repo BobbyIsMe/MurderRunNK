@@ -27,21 +27,23 @@ public class MRTeam {
 
 	public enum MapModes
 	{
-		NORMAL("Normal", "Kill all players before the time limit reaches to win your round!", 103),
-		ESCAPE("Escape", "Kill all players before they fix the vehicle for their escape to win your round!", 104);
+		NORMAL("Normal", "Kill all players before the time limit reaches to win your round!", "&6» &a&lNormal Mode Maps", 103),
+		ESCAPE("Escape", "Kill all players before they fix the vehicle for their escape to win your round!", "&6» &a&lEscape Mode Maps", 104);
 
 		private static MRFormsTextsConfig FORM;
 		private static MRLanguagesConfig LANG;
 
 		private String mode;
 		private String desc;
+		private String set;
 
 		private int id;
 
-		MapModes(String mode, String desc, int id)
+		MapModes(String mode, String desc, String set, int id)
 		{
 			this.mode = mode;
 			this.desc = desc;
+			this.set = set;
 			this.id = id;
 		}
 
@@ -61,6 +63,11 @@ public class MRTeam {
 			return desc;
 		}
 
+		public String getSetting()
+		{
+			return set;
+		}
+
 		public String getTitle()
 		{
 			return TextFormat.colorize(FORM.getConfig().getString("Map-Selector."+getMode()+".Title"));
@@ -69,6 +76,11 @@ public class MRTeam {
 		public String getDesc()
 		{
 			return TextFormat.colorize(FORM.getConfig().getString("Map-Selector."+getMode()+".Description"));
+		}
+
+		public String getMapMultiples()
+		{
+			return TextFormat.colorize(FORM.getConfig().getString("Settings-Texts."+getMode()));
 		}
 
 		public String getHologram()

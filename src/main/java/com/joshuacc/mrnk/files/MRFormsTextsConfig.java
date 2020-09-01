@@ -19,10 +19,12 @@ public class MRFormsTextsConfig extends AbstractFiles {
 			String mode = modes.getMode();
 			addDefault("Map-Selector."+mode+".Title", "&0"+mode+" Mode");
 			addDefault("Map-Selector."+mode+".Description", modes.getDescription());
+			addDefault("Settings-Texts."+mode, modes.getSetting());
 		}
-		
+
 		for(FormsLang lang: FormsLang.values())
 			addDefault(lang.getKey(), lang.getValue());
+
 		FormsLang.setLines(config);
 	}
 }
