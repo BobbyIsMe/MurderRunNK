@@ -12,7 +12,7 @@ import cn.nukkit.command.CommandSender;
 public class OpenListCommand extends Command {
 
 	private FormUtils forms;
-	
+
 	public OpenListCommand(MRMain main) {
 		super("openlist");
 		this.setPermission("mr.openlist");
@@ -24,16 +24,17 @@ public class OpenListCommand extends Command {
 	{
 		if(sender instanceof Player)
 			return false;
-		
+
 		switch(args.length)
 		{
 		case 0: 
 		case 1: break;
 		case 2:
+
 			Player target = Server.getInstance().getPlayer(args[0]);
 			if(target == null)
 				return false;
-			
+
 			switch(args[1])
 			{
 			case "normal":

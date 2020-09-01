@@ -70,7 +70,9 @@ public class FormUtils {
 			configForm.addButton(new ElementButton("§4§l"+FormsLang.EDITENABLE.toString(), new ElementButtonImageData("url", "https://icons.iconarchive.com/icons/paomedia/small-n-flat/128/sign-error-icon.png")));
 		else
 			configForm.addButton(new ElementButton("§2§l"+FormsLang.EDITENABLE.toString(), new ElementButtonImageData("url", "https://icons.iconarchive.com/icons/paomedia/small-n-flat/128/sign-check-icon.png")));
+
 		player.showFormWindow(configForm);
+		Server.getInstance().getScheduler().scheduleDelayedTask(main, () -> player.sendTitle(""), 20);
 	}
 
 	public void addSettingsMapForm(Player player, String level)

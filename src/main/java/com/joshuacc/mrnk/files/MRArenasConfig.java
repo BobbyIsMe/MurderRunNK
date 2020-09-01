@@ -14,8 +14,9 @@ public class MRArenasConfig extends AbstractFiles {
 
 	private String mapName;
 	private String levelName;
-	private Level level;
+
 	private MRMain main;
+	private Level level;
 
 	public MRArenasConfig(MRMain main, String mapName) {
 		super(main, "MRArenasConfig");
@@ -40,16 +41,19 @@ public class MRArenasConfig extends AbstractFiles {
 		addDefault(prefix+"Maximum Players", 4);
 		addDefault(prefix+"Normal Multiples", 1);
 		addDefault(prefix+"Escape Multiples", 0);
+		
 		addDefault(prefix+mLocation+"X", 0);
 		addDefault(prefix+mLocation+"Y", 0);
 		addDefault(prefix+mLocation+"Z", 0);
 		addDefault(prefix+mLocation+"Yaw", 0);
 		addDefault(prefix+mLocation+"Pitch", 0);
+		
 		addDefault(prefix+sLocation+"X", 0);
 		addDefault(prefix+sLocation+"Y", 0);
 		addDefault(prefix+sLocation+"Z", 0);
 		addDefault(prefix+sLocation+"Yaw", 0);
 		addDefault(prefix+sLocation+"Pitch", 0);
+		
 		addDefault(prefix+eLocation+"X", 0);
 		addDefault(prefix+eLocation+"Y", 0);
 		addDefault(prefix+eLocation+"Z", 0);
@@ -74,8 +78,7 @@ public class MRArenasConfig extends AbstractFiles {
 			loadOriginMap();
 		} else {
 			config.set(mapName+".Enabled", true);
-			main.loadNormalModeMaps(mapName, this);
-			main.loadEscapeModeMaps(mapName, this);
+			main.loadAllModeMaps(mapName, this);
 
 			if(level.getPlayers().values().size() != 0)
 				main.getLogger().warning("§eThere were players in arena "+mapName+" and it got enabled, they are now sent back to lobby level.");
@@ -148,7 +151,7 @@ public class MRArenasConfig extends AbstractFiles {
 		config.set(prefix+"Pitch", player.pitch);
 		config.save();
 	}
-	
+
 	public Location getSurvivorLocation(Level level)
 	{
 		String prefix = mapName+".Survivor Location.";
@@ -170,7 +173,7 @@ public class MRArenasConfig extends AbstractFiles {
 				config.getDouble(prefix+"Yaw"),
 				config.getDouble(prefix+"Pitch"), level);
 	}
-	
+
 	public Location getGameEndLocation(Level level)
 	{
 		String prefix = mapName+".Game End Location.";
@@ -201,6 +204,11 @@ public class MRArenasConfig extends AbstractFiles {
 	public int getMaximumPlayers()
 	{
 		return config.getInt(mapName+".Maximum Players");
+	}
+
+	public int getPreparingTime()
+	{
+		return config.getInt(mapName+".Preparing Time");
 	}
 
 	public int getPointsLimit()
@@ -235,6 +243,6 @@ public class MRArenasConfig extends AbstractFiles {
 
 	public boolean isMapEnabled()
 	{
-		return config.getBoolean(mapName+".Enabled") == true;
+		return config.getBoolean(mapName+".Enabled");
 	}
 }

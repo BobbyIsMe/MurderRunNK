@@ -27,17 +27,21 @@ public class MRTeam {
 
 	public enum MapModes
 	{
-		NORMAL("Normal", 103),
-		ESCAPE("Escape", 104);
+		NORMAL("Normal", "Kill all players before the time limit reaches to win your round!", 103),
+		ESCAPE("Escape", "Kill all players before they fix the vehicle for their escape to win your round!", 104);
 
-		private String mode;
 		private static MRFormsTextsConfig FORM;
 		private static MRLanguagesConfig LANG;
+
+		private String mode;
+		private String desc;
+
 		private int id;
 
-		MapModes(String mode, int id)
+		MapModes(String mode, String desc, int id)
 		{
 			this.mode = mode;
+			this.desc = desc;
 			this.id = id;
 		}
 
@@ -52,6 +56,11 @@ public class MRTeam {
 			return mode;
 		}
 
+		public String getDescription()
+		{
+			return desc;
+		}
+
 		public String getTitle()
 		{
 			return TextFormat.colorize(FORM.getConfig().getString("Map-Selector."+getMode()+".Title"));
@@ -61,7 +70,7 @@ public class MRTeam {
 		{
 			return TextFormat.colorize(FORM.getConfig().getString("Map-Selector."+getMode()+".Description"));
 		}
-		
+
 		public String getHologram()
 		{
 			return TextFormat.colorize(LANG.getConfig().getString("Npc-Join-"+getMode()));
@@ -173,12 +182,13 @@ public class MRTeam {
 
 			@Override
 			public void onRun(int arg0) {
-				playSoundForAll(Sound.AMBIENT_WEATHER_LIGHTNING_IMPACT);
-				playSoundForAll(Sound.MOB_WITHER_SPAWN);
-				playTitleAll(ConfigLang.MAPTITLESTART.toString(), ConfigLang.MAPSUBTSTART.toString(), 40);
 
 				for(Player players : allPlayers)
 				{
+					players.getLevel().addSound(players, Sound.AMBIENT_WEATHER_LIGHTNING_IMPACT, 1F, 1F, players);
+					players.getLevel().addSound(players, Sound.MOB_WITHER_SPAWN, 1F, 1F, players);
+					players.sendTitle(ConfigLang.MAPTITLESTART.toString(), ConfigLang.MAPSUBTSTART.toString(), 20, 40, 20);
+
 					players.removeEffect(Effect.BLINDNESS);
 					players.addEffect(Effect.getEffect(Effect.BLINDNESS).setDuration(40).setVisible(false));
 				}
@@ -188,11 +198,7 @@ public class MRTeam {
 					@Override
 					public void onRun(int arg0) 
 					{
-						for(Player players : allPlayers)
-						{
-							players.sendMessage(util.format(ConfigLang.MAPSELECT.toString()));
-							players.getLevel().addSound(players, Sound.NOTE_BASS, 1F, 1F, players);
-						}	
+						playSoundMessage(util.format(ConfigLang.MAPSELECT.toString()), Sound.NOTE_BASS);
 						selectMurderer();
 					}
 				}, 80);
@@ -262,22 +268,58 @@ public class MRTeam {
 			players.sendTitle("§4§l"+select.getName()+"§r", ConfigLang.MAPRANDFIN.toString(), 0, 60, 0);
 			players.getLevel().addSound(players, Sound.MOB_ENDERDRAGON_GROWL, 1F, 1F, players);
 		}
+
+		intermissionCount();
 	}
 
-	public void messagePlayersDelay(String message, int delay, Sound sound)
+	private void intermissionCount()
 	{
-		main.getServer().getScheduler().scheduleDelayedTask(new Task() {
+		main.getServer().getScheduler().scheduleDelayedRepeatingTask(new Task() {
+
+			int i = mapConfig.getPreparingTime();
+			int time = mapConfig.getPreparingTime();
 
 			@Override
 			public void onRun(int arg0) 
 			{
-				for(Player player : allPlayers)
+				if(killer == null)
 				{
-					player.sendMessage(message);
-					player.getLevel().addSound(player, sound, 1F, 1F, player);
+					messageAllPlayers(ConfigLang.KILLERLEAVE.toString());
+					selectMurderer();
+					this.cancel();
+					return;
 				}
+
+				if(i == 0)
+				{
+					this.cancel();
+					return;
+				}
+
+				if(i == time)
+					playSoundMessage(util.formatNumber(MRMain.getPrefix()+" "+ConfigLang.INTERMISSION.toString(), i), Sound.RANDOM_ANVIL_USE);
+
+				else if(i % 60 == 0 || i == 15 || i == 10 || i <= 5)
+					playSoundMessage(util.formatNumber(MRMain.getPrefix()+" "+ConfigLang.INTERCOUNT.toString(), i), Sound.RANDOM_CLICK);
+
+				i--;
 			}
-		}, delay * 20);
+
+		}, 40, 20);
+	}
+
+	public void messagePlayersDelay(String message, int delay, Sound sound)
+	{
+		main.getServer().getScheduler().scheduleDelayedTask(main, () -> playSoundMessage(message, sound), delay * 20);
+	}
+
+	public void playSoundMessage(String message, Sound sound)
+	{
+		for(Player player : allPlayers)
+		{
+			player.sendMessage(message);
+			player.getLevel().addSound(player, sound, 1F, 1F, player);
+		}
 	}
 
 	public void playSoundDelay(Sound sound, int delay)

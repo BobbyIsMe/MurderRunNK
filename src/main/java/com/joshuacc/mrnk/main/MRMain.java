@@ -57,6 +57,10 @@ public class MRMain extends PluginBase {
 			return;
 		}
 
+		//Always not to forget about new instances prior or it will mess me up
+		Generator.addGenerator(EmptyGenerator.class, "emptyworld", Generator.TYPE_INFINITE);
+		Entity.registerEntity(NPCHuman.class.getSimpleName(), NPCHuman.class);
+
 		MRLanguagesConfig language = new MRLanguagesConfig(this);
 		MRFormsTextsConfig forms = new MRFormsTextsConfig(this);
 
@@ -76,9 +80,6 @@ public class MRMain extends PluginBase {
 		players.setupConfig();
 		board.setupConfig();
 		lobby.setupConfig();
-
-		Generator.addGenerator(EmptyGenerator.class, "emptyworld", Generator.TYPE_INFINITE);
-		Entity.registerEntity(NPCHuman.class.getSimpleName(), NPCHuman.class);
 
 		ScoreboardAbstract.registerScoreboards(board);
 
@@ -114,8 +115,7 @@ public class MRMain extends PluginBase {
 				if(config.isMapEnabled() && correctMapAreasConfig(config))
 				{
 					getLogger().info(TextFormat.GREEN+maps+" is loading!");
-					loadNormalModeMaps(maps, config);
-					loadEscapeModeMaps(maps, config);
+					loadAllModeMaps(maps, config);
 					enable++;
 				}
 				else
@@ -179,21 +179,18 @@ public class MRMain extends PluginBase {
 
 	public void updatePlayerCount(MapModes mode, int count)
 	{
-		playerCount.put(mode, (playerCount.get(mode)+count));
+		playerCount.put(mode, playerCount.get(mode)+count);
 	}
 
-	public void loadNormalModeMaps(String maps, MRArenasConfig config)
+	public void loadAllModeMaps(String maps, MRArenasConfig config)
 	{
 		if(config.isMapEnabled())
+		{
 			for(int i = 1; i <= config.getConfig().getInt(maps+".Normal Multiples"); i++)
 				new MRTeamNormal(this, maps, config, i);
-	}
-
-	public void loadEscapeModeMaps(String maps, MRArenasConfig config)
-	{
-		if(config.isMapEnabled())
 			for(int i = 1; i <= config.getConfig().getInt(maps+".Escape Multiples"); i++)
 				new MRTeamEscape(this, maps, config, i);
+		}
 	}
 
 	public void removeMapTeam(String maps, int multiple, MapModes type)
@@ -234,7 +231,7 @@ public class MRMain extends PluginBase {
 			}
 		});
 
-		if ((files != null) && (files.length > 0))
+		if (files != null && files.length > 0)
 		{
 			String[] str = new String[files.length];
 			for(int x = 0; x < str.length; x++)

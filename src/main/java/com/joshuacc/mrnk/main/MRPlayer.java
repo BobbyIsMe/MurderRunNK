@@ -19,10 +19,9 @@ import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.player.PlayerFormRespondedEvent;
 import cn.nukkit.event.player.PlayerJoinEvent;
+import cn.nukkit.event.player.PlayerLocallyInitializedEvent;
 import cn.nukkit.event.player.PlayerQuitEvent;
-import cn.nukkit.event.server.DataPacketReceiveEvent;
 import cn.nukkit.level.particle.FloatingTextParticle;
-import cn.nukkit.network.protocol.SetLocalPlayerAsInitializedPacket;
 
 public class MRPlayer {
 
@@ -41,7 +40,6 @@ public class MRPlayer {
 
 	private MRPlayer(MRMain main, Player player, MRTeam mapTeam)
 	{
-		addPlayer.put(player, this);
 		this.player = player;
 		this.playerData = main.getMRPlayerConfig();
 		this.lobby = main.getMRLobbyConfig();
@@ -53,10 +51,10 @@ public class MRPlayer {
 
 		int max = mapTeam.getMapConfig().getPointsLimit();
 		int i = playerData.getPoints(player);
-		if(i >= max)
-			this.qPts = max;
-		else
-			this.qPts = i;
+
+		this.qPts = i >= max ? max : i;
+
+		addPlayer.put(player, this);
 	}
 
 	public void removePlayer()
@@ -149,19 +147,18 @@ public class MRPlayer {
 		}
 
 		@EventHandler
-		public void onDataPk(DataPacketReceiveEvent event) {
-			if (event.getPacket() instanceof SetLocalPlayerAsInitializedPacket) {
-				Player player = event.getPlayer();
+		public void onInitializePlayer(PlayerLocallyInitializedEvent event) 
+		{
+			Player player = event.getPlayer();
 
-				for(FloatingTextParticle particles : main.getMRLobbyConfig().getHolograms())
-					player.getLevel().addParticle(particles, player);
+			for(FloatingTextParticle particles : main.getMRLobbyConfig().getHolograms())
+				player.getLevel().addParticle(particles, player);
 
-				for(FloatingTextParticle particles : main.getMRLobbyConfig().getModesHologram())
-					player.getLevel().addParticle(particles, player);
+			for(FloatingTextParticle particles : main.getMRLobbyConfig().getModesHologram())
+				player.getLevel().addParticle(particles, player);
 
-				if(lobby.getMainLobbyLocation().getLevel() != null)
-					player.teleport(lobby.getMainLobbyLocation());
-			}
+			if(lobby.getMainLobbyLocation().getLevel() != null)
+				player.teleport(lobby.getMainLobbyLocation());
 		}
 
 		@EventHandler

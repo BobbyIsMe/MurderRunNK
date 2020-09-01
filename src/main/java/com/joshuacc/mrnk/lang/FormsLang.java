@@ -7,15 +7,11 @@ public enum FormsLang {
 
 	//Placeholder
 	//%l - Map Name
-	//%num - Number
+	//%n - Number
 
 	//Map Selector - Normal
-	SELTITLENORMAL("Map-Selector.Normal.Title", "&0Normal Mode"),
-	SELTITLEESCAPE("Map-Selector.Escape.Title", "&0Escape Mode"),
-	SELDESCNORMAL("Map-Selector.Normal.Description", "Kill all players before the time limit reaches to win your round!"),
-	SELDESCESCAPE("Map-Selector.Escape.Description", "Kill all players before they fix the vehicle for their escape to win your round!"),
 	SELMAPNAME("Map-Selector.Map Name", "&6» &2%l"),
-	SELMAPNUM("Map-Selector.Available Maps", "&8Available Maps: %num"),
+	SELMAPNUM("Map-Selector.Available Maps", "&8Available Maps: %n"),
 
 	//Config both maps and lobbies
 	CONTITLE("Config-Texts.Title", "Config Maps or Lobbies"),
@@ -26,8 +22,8 @@ public enum FormsLang {
 
 	//Editing Map Menu
 	EDITTITLE("Edit-Texts.Title", "Editing Map - %l"),
-	EDITDESC("Edit-Texts.Description", "Here you can sees the menu on what you can edit for the map!"),
-	EDITTEL("Edit-Texts.Teleport Map", "&6» &a Teleport to Map"),
+	EDITDESC("Edit-Texts.Description", "Here you can see the menu on what you can edit for the map!"),
+	EDITTEL("Edit-Texts.Teleport Map", "&6» &aTeleport to Map"),
 	EDITMAP("Edit-Texts.Config Map", "&6» &eConfig Map Settings"),
 	EDITSLOC("Edit-Texts.S Location", "&6» &fSet Survivor Location"),
 	EDITMLOC("Edit-Texts.M Location", "&6» &fSet Murderer Location"),

@@ -14,7 +14,7 @@ public class TextUtils {
 	
 	public String formatNumber(String line, int number)
 	{
-		return TextFormat.colorize('&', line.replace("%num", Integer.toString(number)));
+		return TextFormat.colorize('&', line.replace("%n", Integer.toString(number)));
 	}
 	
 	public String formatLevel(String line, String level)

@@ -20,22 +20,25 @@ import de.theamychan.scoreboard.network.SortOrder;
 public abstract class ScoreboardAbstract {
 
 	protected static ArrayList<Integer> queueInt = new ArrayList<>();
-	
+
 	protected Player player;
-	protected Scoreboard board;
-	protected ScoreboardDisplay display;
+
+	private Scoreboard board;
+	private ScoreboardDisplay display;
 
 	protected HashMap<Integer,DisplayEntry> entry;
 
 	private MRScoreboardConfig config;
+	private ArrayList<Integer> score;
 	private String key;
 	private int line;
 
-	public ScoreboardAbstract(Player player, String objName, String key, MRMain main)
+	public ScoreboardAbstract(Player player, String objName, String key, ArrayList<Integer> score, MRMain main)
 	{
 		this.entry = new HashMap<>();
 		this.player = player;
 		this.key = key+".";
+		this.score = score;
 		this.board = ScoreboardAPI.createScoreboard();
 		this.config = main.getMRScoreboardConfig();
 		this.display = board.addDisplay(DisplaySlot.SIDEBAR, objName, TextFormat.colorize(config.getScoreboardTitle()), SortOrder.DESCENDING);
@@ -62,6 +65,12 @@ public abstract class ScoreboardAbstract {
 
 	public void openScoreboard()
 	{
+		for(int i = 0; i < getStringList().size(); i++)
+			if(!score.contains(i))
+				addLine(i);
+			else
+				entry.put(i, addLine(i));
+
 		scoreboardStuff();
 		ScoreboardAPI.setScoreboard(player, board);
 	}
@@ -69,6 +78,12 @@ public abstract class ScoreboardAbstract {
 	public void removeScoreboard()
 	{
 		ScoreboardAPI.removeScorebaord(player, board);
+	}
+
+	public void updateEntryTemporary(String key, String p)
+	{
+		updateEntry(key, p);
+		entry.remove(getInt(key));
 	}
 
 	public void updateEntry(String key, String p)

@@ -48,17 +48,17 @@ public class MRScoreboardConfig extends AbstractFiles {
 		addDefault(queue+"Mode", 12);
 		addDefault(queue+"Time Limit", 13);
 	}
-	
+
 	public String getString(String s)
 	{
 		return config.getString("Scoreboard-"+s);
 	}
-	
+
 	public String getScoreboardTitle()
 	{
 		return config.getString("Scoreboard-Title");
 	}
-	
+
 	public List<String> getQueueBoardLines()
 	{
 		return config.getStringList("Scoreboard-Queue.Lines");

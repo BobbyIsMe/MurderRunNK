@@ -15,7 +15,7 @@ import cn.nukkit.Player;
 public class WaitScoreboard extends ScoreboardAbstract {
 
 	public WaitScoreboard(Player player, MRMain main) {
-		super(player, "uwo", "Scoreboard-Queue", main);
+		super(player, "uwo", "Scoreboard-Queue", queueInt, main);
 	}
 
 	@Override
@@ -30,20 +30,15 @@ public class WaitScoreboard extends ScoreboardAbstract {
 
 		format.setTimeZone(TimeZone.getTimeZone("GMT+8"));
 
-		for(int i = 0; i < getStringList().size(); i++)
-			if(!queueInt.contains(i))
-				addLine(i);
-			else
-				entry.put(i, addLine(i));
-
-		updateEntry("Real Time", dtf.format(now));
-		updateEntry("ID", team.getMapId());
-		updateEntry("Map", team.getMapOrigin());
-		updateEntry("Points", mPlayer.getPlayerConfig().getPoints(player)+"");
-		updateEntry("Points Limit", config.getPointsLimit()+"");
 		updateEntry("QPts", mPlayer.getPlayerQueuedPoints()+"");
 		updateEntry("Message", getString("Message-1"));
-		updateEntry("Mode", team.getMode());
-		updateEntry("Time Limit", format.format(1000 * config.getTimeLimit()));
+
+		updateEntryTemporary("Real Time", dtf.format(now));
+		updateEntryTemporary("ID", team.getMapId());
+		updateEntryTemporary("Map", team.getMapOrigin());
+		updateEntryTemporary("Points", mPlayer.getPlayerConfig().getPoints(player)+"");
+		updateEntryTemporary("Points Limit", config.getPointsLimit()+"");
+		updateEntryTemporary("Mode", team.getMode());
+		updateEntryTemporary("Time Limit", format.format(1000 * config.getTimeLimit()));
 	}
 }
