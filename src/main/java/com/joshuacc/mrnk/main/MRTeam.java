@@ -47,6 +47,17 @@ public class MRTeam {
 			this.id = id;
 		}
 
+		public static void loadAllModeMaps(MRMain main, String maps, MRArenasConfig config)
+		{
+			if(config.isMapEnabled())
+			{
+				for(int i = 1; i <= config.getConfig().getInt(maps+".Normal Multiples"); i++)
+					new MRTeamNormal(main, maps, config, i);
+				for(int i = 1; i <= config.getConfig().getInt(maps+".Escape Multiples"); i++)
+					new MRTeamEscape(main, maps, config, i);
+			}
+		}
+
 		public static void registerModes(MRFormsTextsConfig form, MRLanguagesConfig lang)
 		{
 			FORM = form;
@@ -281,10 +292,24 @@ public class MRTeam {
 			players.getLevel().addSound(players, Sound.MOB_ENDERDRAGON_GROWL, 1F, 1F, players);
 		}
 
-		intermissionCount();
+		intermissionCount(() -> releaseMurderer(), ConfigLang.INTERMISSION.toString(), ConfigLang.INTERCOUNT.toString());
 	}
 
-	private void intermissionCount()
+	private void releaseMurderer()
+	{
+		for(Player player : allPlayers)
+		{
+			player.teleport(mapConfig.getSurvivorLocation(getMapLevel()));
+		}
+
+		intermissionCount(() -> {
+
+			killer.teleport(mapConfig.getMurdererLocation(getMapLevel()));
+
+		}, ConfigLang.MURDERANNOUNCE.toString(), ConfigLang.MURDCOUNT.toString());
+	}
+
+	private void intermissionCount(FinishTask task, String announce, String countdown)
 	{
 		main.getServer().getScheduler().scheduleDelayedRepeatingTask(new Task() {
 
@@ -304,15 +329,16 @@ public class MRTeam {
 
 				if(i == 0)
 				{
+					task.finish();
 					this.cancel();
 					return;
 				}
 
 				if(i == time)
-					playSoundMessage(util.formatNumber(MRMain.getPrefix()+" "+ConfigLang.INTERMISSION.toString(), i), Sound.RANDOM_ANVIL_USE);
+					playSoundMessage(util.formatNumber(MRMain.getPrefix()+" "+announce, i), Sound.RANDOM_ANVIL_USE);
 
 				else if(i % 60 == 0 || i == 15 || i == 10 || i <= 5)
-					playSoundMessage(util.formatNumber(MRMain.getPrefix()+" "+ConfigLang.INTERCOUNT.toString(), i), Sound.RANDOM_CLICK);
+					playSoundMessage(util.formatNumber(MRMain.getPrefix()+" "+countdown, i), Sound.RANDOM_CLICK);
 
 				i--;
 			}
@@ -496,5 +522,10 @@ public class MRTeam {
 	public ArrayList<Player> getSpectators()
 	{
 		return allSpectators;
+	}
+
+	private interface FinishTask {
+
+		void finish();
 	}
 }

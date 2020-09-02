@@ -58,7 +58,9 @@ public enum ConfigLang {
 	MAPRANDFIN("Random-Finish", "&eis the murderer!"),
 	KILLERLEAVE("Killer-Leave Message", "&eThe killer has left! Restarting round.."),
 	INTERMISSION("Intermission Messsage", "&eYou have &a%n seconds &eto buy items from the Traders!"),
-	INTERCOUNT("Inter-Count Message", "&eIntermission will end in &a%ns!");
+	INTERCOUNT("Inter-Count Message", "&eIntermission will end in &a%ns!"),
+	MURDERANNOUNCE("Rel-Murderer Message", "&eYou have &a%n seconds &eto prepare until the &c&lMURDERER &r&ewill be released!"),
+	MURDCOUNT("Murd-Count Message", "&eThe &c&lMURDERER &r&ewill be released in &a%ns!");
 
 	private String key;
 	private String val;

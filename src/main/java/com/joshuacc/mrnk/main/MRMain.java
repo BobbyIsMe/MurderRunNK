@@ -115,7 +115,7 @@ public class MRMain extends PluginBase {
 				if(config.isMapEnabled() && correctMapAreasConfig(config))
 				{
 					getLogger().info(TextFormat.GREEN+maps+" is loading!");
-					loadAllModeMaps(maps, config);
+					MapModes.loadAllModeMaps(this, maps, config);
 					enable++;
 				}
 				else
@@ -180,17 +180,6 @@ public class MRMain extends PluginBase {
 	public void updatePlayerCount(MapModes mode, int count)
 	{
 		playerCount.put(mode, playerCount.get(mode)+count);
-	}
-
-	public void loadAllModeMaps(String maps, MRArenasConfig config)
-	{
-		if(config.isMapEnabled())
-		{
-			for(int i = 1; i <= config.getConfig().getInt(maps+".Normal Multiples"); i++)
-				new MRTeamNormal(this, maps, config, i);
-			for(int i = 1; i <= config.getConfig().getInt(maps+".Escape Multiples"); i++)
-				new MRTeamEscape(this, maps, config, i);
-		}
 	}
 
 	public void removeMapTeam(String maps, int multiple, MapModes type)

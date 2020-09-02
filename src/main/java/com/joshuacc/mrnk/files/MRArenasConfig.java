@@ -41,19 +41,19 @@ public class MRArenasConfig extends AbstractFiles {
 		addDefault(prefix+"Maximum Players", 4);
 		addDefault(prefix+"Normal Multiples", 1);
 		addDefault(prefix+"Escape Multiples", 0);
-		
+
 		addDefault(prefix+mLocation+"X", 0);
 		addDefault(prefix+mLocation+"Y", 0);
 		addDefault(prefix+mLocation+"Z", 0);
 		addDefault(prefix+mLocation+"Yaw", 0);
 		addDefault(prefix+mLocation+"Pitch", 0);
-		
+
 		addDefault(prefix+sLocation+"X", 0);
 		addDefault(prefix+sLocation+"Y", 0);
 		addDefault(prefix+sLocation+"Z", 0);
 		addDefault(prefix+sLocation+"Yaw", 0);
 		addDefault(prefix+sLocation+"Pitch", 0);
-		
+
 		addDefault(prefix+eLocation+"X", 0);
 		addDefault(prefix+eLocation+"Y", 0);
 		addDefault(prefix+eLocation+"Z", 0);
@@ -78,7 +78,7 @@ public class MRArenasConfig extends AbstractFiles {
 			loadOriginMap();
 		} else {
 			config.set(mapName+".Enabled", true);
-			main.loadAllModeMaps(mapName, this);
+			MapModes.loadAllModeMaps(main, mapName, this);
 
 			if(level.getPlayers().values().size() != 0)
 				main.getLogger().warning("§eThere were players in arena "+mapName+" and it got enabled, they are now sent back to lobby level.");
