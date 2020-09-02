@@ -1,11 +1,21 @@
 package com.joshuacc.mrnk.utils;
 
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
+
 import com.joshuacc.mrnk.main.MRMain;
 
 import cn.nukkit.Player;
 import cn.nukkit.utils.TextFormat;
 
 public class TextUtils {
+	
+	private static SimpleDateFormat format = new SimpleDateFormat("m:ss");
+	
+	public TextUtils()
+	{
+		format.setTimeZone(TimeZone.getTimeZone("GMT+8"));
+	}
 	
 	public String format(String line)
 	{
@@ -30,5 +40,10 @@ public class TextUtils {
 	public String formatPlayer(String line, Player player)
 	{
 		return TextFormat.colorize('&', line.replace("%p", player.getName()));
+	}
+	
+	public static String getTimeFormat(int time)
+	{
+		return format.format(time * 1000);
 	}
 }

@@ -73,10 +73,15 @@ public class MRPlayer {
 		removePlayer();
 	}
 
+	public void updateTime()
+	{
+		time++;
+	}
+
 	public void setScoreboard(ScoreboardAbstract board)
 	{
-		if(board != null)
-			board.removeScoreboard();
+		if(this.board != null)
+			this.board.removeScoreboard();
 
 		this.board = board;
 		board.openScoreboard();

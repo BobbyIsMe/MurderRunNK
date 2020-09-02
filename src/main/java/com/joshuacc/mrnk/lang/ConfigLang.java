@@ -60,7 +60,13 @@ public enum ConfigLang {
 	INTERMISSION("Intermission Messsage", "&eYou have &a%n seconds &eto buy items from the Traders!"),
 	INTERCOUNT("Inter-Count Message", "&eIntermission will end in &a%ns!"),
 	MURDERANNOUNCE("Rel-Murderer Message", "&eYou have &a%n seconds &eto prepare until the &c&lMURDERER &r&ewill be released!"),
-	MURDCOUNT("Murd-Count Message", "&eThe &c&lMURDERER &r&ewill be released in &a%ns!");
+	MURDCOUNT("Murd-Count Message", "&eThe &c&lMURDERER &r&ewill be released in &a%ns!"),
+	RELEASEMURD("Release-Mur Message", "&eThe &c&lMURDERER &r&ehas been &areleased.."),
+	SURVIVORWIN("Survivor-Win", "&a&lSURVIVORS WIN!"),
+	MURDERERWIN("Murderer-Win", "&c&lMURDERER WINS!"),
+	REASON1("Reason-1", "&eThe murderer ran out of time!"),
+	REASON2("Reason-2", "&eAll survivors have died!"),
+	WIN1("Win-1 Message", "&eThe &cmurderer &eran out of time to kill everyone, the &asurvivors &ewin!");
 
 	private String key;
 	private String val;

@@ -20,6 +20,7 @@ import de.theamychan.scoreboard.network.SortOrder;
 public abstract class ScoreboardAbstract {
 
 	protected static ArrayList<Integer> queueInt = new ArrayList<>();
+	protected static ArrayList<Integer> playInt = new ArrayList<>();
 
 	protected Player player;
 
@@ -50,7 +51,9 @@ public abstract class ScoreboardAbstract {
 	public static void registerScoreboards(MRScoreboardConfig config)
 	{
 		String queue = "Scoreboard-Queue.";
+		String play = "Scoreboard-Play.";
 		Config c = config.getConfig();
+		
 		queueInt.add(c.getInt(queue+"Real Time"));
 		queueInt.add(c.getInt(queue+"ID"));
 		queueInt.add(c.getInt(queue+"Map"));
@@ -61,6 +64,14 @@ public abstract class ScoreboardAbstract {
 		queueInt.add(c.getInt(queue+"Message"));
 		queueInt.add(c.getInt(queue+"Mode"));
 		queueInt.add(c.getInt(queue+"Time Limit"));
+		
+		playInt.add(c.getInt(play+"Killer"));
+		playInt.add(c.getInt(play+"Time"));
+		playInt.add(c.getInt(play+"Map"));
+		playInt.add(c.getInt(play+"Players"));
+		playInt.add(c.getInt(play+"1"));
+		playInt.add(c.getInt(play+"2"));
+		playInt.add(c.getInt(play+"3"));
 	}
 
 	public void openScoreboard()

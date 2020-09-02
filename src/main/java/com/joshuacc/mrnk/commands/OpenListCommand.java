@@ -46,7 +46,7 @@ public class OpenListCommand extends Command {
 			}
 			break;
 		}
-		return false;
+		return true;
 	}
 
 }
