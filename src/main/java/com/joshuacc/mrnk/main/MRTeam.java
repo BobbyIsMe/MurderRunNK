@@ -24,6 +24,7 @@ import cn.nukkit.level.Level;
 import cn.nukkit.level.Sound;
 import cn.nukkit.potion.Effect;
 import cn.nukkit.scheduler.Task;
+import cn.nukkit.scheduler.TaskHandler;
 import cn.nukkit.utils.TextFormat;
 
 public class MRTeam {
@@ -111,6 +112,7 @@ public class MRTeam {
 	private static final HashMap<MapModes, HashMap<String, MRTeam>> mapMode = new HashMap<>();
 
 	private MapModes mode;
+	private TaskHandler task;
 	private MRMain main;
 
 	private String map;
@@ -130,6 +132,7 @@ public class MRTeam {
 	public MRTeam(MRMain main, String map, MapModes mode, MRArenasConfig mapConfig, int multiple)
 	{
 		killer = null;
+		task = null;
 		this.main = main;
 		this.started = false;
 		this.map = map;
@@ -161,6 +164,12 @@ public class MRTeam {
 	public void removeMapTeam()
 	{
 		mapMode.get(mode).remove(getMapId());
+	}
+
+	public void cancelTimer()
+	{
+		task.cancel();
+		task = null;
 	}
 
 	public void startQueueLobby()
@@ -315,7 +324,7 @@ public class MRTeam {
 
 	private void startMurdererTimer()
 	{
-		Server.getInstance().getScheduler().scheduleDelayedRepeatingTask(new Task() {
+		task = Server.getInstance().getScheduler().scheduleDelayedRepeatingTask(new Task() {
 
 			MRPlayer k = MRPlayer.getMRPlayer(killer);
 			int time = mapConfig.getTimeLimit();
@@ -323,6 +332,9 @@ public class MRTeam {
 			@Override
 			public void onRun(int arg0) 
 			{
+				if(task == null)
+					return;
+
 				if(killer == null)
 				{
 					for(Player player : allPlayers)
@@ -332,7 +344,7 @@ public class MRTeam {
 					}
 
 					selectMurderer();
-					this.cancel();
+					cancelTimer();
 					return;
 				}
 
@@ -345,7 +357,7 @@ public class MRTeam {
 				if(i == time)
 				{	
 					Server.getInstance().getPluginManager().callEvent(new GameEndEvent(k.getMapTeam(), WinType.OUT_OF_TIME));
-					this.cancel();
+					cancelTimer();
 					return;
 				}
 			}
@@ -547,9 +559,22 @@ public class MRTeam {
 	{
 		allPlayers.remove(player);
 		allSurvivors.remove(player);
-		if(player == killer)
-			killer = null;
 		allSpectators.remove(player);
+		if(player == killer)
+		{
+			killer = null;
+
+			if(task != null)
+			{
+				Server.getInstance().getPluginManager().callEvent(new GameEndEvent(this, WinType.KILLER_LEAVE));
+
+				for(Player players : allPlayers)
+					addSpectator(players);
+
+				cancelTimer();
+			}
+		}
+
 		main.updatePlayerCount(mode, -1);
 	}
 

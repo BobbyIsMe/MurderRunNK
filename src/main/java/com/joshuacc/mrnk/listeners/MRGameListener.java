@@ -4,14 +4,18 @@ import com.joshuacc.mrnk.events.GameEndEvent;
 import com.joshuacc.mrnk.events.GameEndEvent.WinType;
 import com.joshuacc.mrnk.events.GameStartEvent;
 import com.joshuacc.mrnk.events.GameStartEvent.GameAttribute;
+import com.joshuacc.mrnk.events.PlayerKilledEvent.DeathCause;
+import com.joshuacc.mrnk.events.PlayerKilledEvent;
 import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.main.MRMain;
+import com.joshuacc.mrnk.main.MRPlayer;
 import com.joshuacc.mrnk.main.MRTeam;
 import com.joshuacc.mrnk.utils.NPCHuman;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.event.EventHandler;
+import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.item.Item;
@@ -23,6 +27,20 @@ public class MRGameListener implements Listener {
 	public MRGameListener(MRMain main)
 	{
 		this.main = main;
+	}
+
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+	public void onDeath(EntityDamageByEntityEvent event)
+	{
+		if(event.getEntity() instanceof Player)
+		{
+			Player target = (Player) event.getEntity();
+			if(target.getHealth() - event.getFinalDamage() < 1f) 
+			{
+				Server.getInstance().getPluginManager().callEvent(new PlayerKilledEvent(MRPlayer.getMRPlayer(target).getMapTeam(), target, event.getDamager() instanceof Player ? DeathCause.KILLER : DeathCause.OTHER));
+				event.setCancelled(true);
+			}
+		}
 	}
 
 	@EventHandler
@@ -60,6 +78,22 @@ public class MRGameListener implements Listener {
 	}
 
 	@EventHandler
+	public void onKill(PlayerKilledEvent event)
+	{
+		MRTeam team = event.getTeam();
+		Player player = event.getKilled();
+		String reason = event.getCause() == DeathCause.KILLER ? ConfigLang.SURVIVORKILLED.toString() : ConfigLang.SURVIVORDIE.toString();
+
+		team.addSpectator(player);
+
+		for(Player players : team.getPlayers())
+			players.sendMessage(reason);
+
+		if(team.getPlayers().size() == 1)
+			Server.getInstance().getPluginManager().callEvent(new GameEndEvent(team, WinType.KILL_ALL));
+	}
+
+	@EventHandler
 	public void onEndRound(GameEndEvent event)
 	{
 		MRTeam team = event.getTeam();
@@ -73,6 +107,7 @@ public class MRGameListener implements Listener {
 		case SURVIVORS_LEAVE:
 		case KILL_ALL:
 			title = ConfigLang.MURDERERWIN.toString();
+			team.cancelTimer();
 			break;
 		case KILLER_LEAVE:
 		case OUT_OF_TIME:
@@ -91,6 +126,7 @@ public class MRGameListener implements Listener {
 				player.sendMessage(type.getMessage(killer));
 		}
 
-		team.addSpectator(killer);
+		if(killer != null)
+			team.addSpectator(killer);
 	}
 }

@@ -62,6 +62,8 @@ public enum ConfigLang {
 	MURDERANNOUNCE("Rel-Murderer Message", "&eYou have &a%n seconds &eto prepare until the &c&lMURDERER &r&ewill be released!"),
 	MURDCOUNT("Murd-Count Message", "&eThe &c&lMURDERER &r&ewill be released in &a%ns!"),
 	RELEASEMURD("Release-Mur Message", "&eThe &c&lMURDERER &r&ehas been &areleased.."),
+	SURVIVORKILLED("Surv-Killed Message", "&a%p &ehas been killed by the &c&lMURDERER!"),
+	SURVIVORDIE("Surv-Die Message", "&a%p &ehas died!"),
 	SURVIVORWIN("Survivor-Win", "&a&lSURVIVORS WIN!"),
 	MURDERERWIN("Murderer-Win", "&c&lMURDERER WINS!"),
 	REASON1("Reason-1", "&eThe murderer ran out of time!"),
