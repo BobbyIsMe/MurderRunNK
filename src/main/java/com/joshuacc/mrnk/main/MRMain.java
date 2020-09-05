@@ -21,7 +21,6 @@ import com.joshuacc.mrnk.scoreboards.ScoreboardAbstract;
 import com.joshuacc.mrnk.utils.EmptyGenerator;
 import com.joshuacc.mrnk.utils.FormUtils;
 import com.joshuacc.mrnk.utils.NPCHuman;
-import com.joshuacc.mrnk.utils.TextUtils;
 
 import cn.nukkit.Server;
 import cn.nukkit.command.CommandMap;
@@ -36,7 +35,6 @@ public class MRMain extends PluginBase {
 	private MRScoreboardConfig board;
 	private MRPlayerConfig players;
 	private FormUtils formUtil;
-	private TextUtils textUtil;
 
 	private HashMap<String,MRArenasConfig> mapConfigs = new HashMap<>();
 	private HashMap<MapModes,Integer> playerCount = new HashMap<>(); 
@@ -71,7 +69,6 @@ public class MRMain extends PluginBase {
 
 		prefix = ConfigLang.PREFIXMESSAGE.toString();
 
-		textUtil = new TextUtils();
 		players = new MRPlayerConfig(this);
 		board = new MRScoreboardConfig(this);
 		lobby = new MRLobbyConfig(this);
@@ -258,11 +255,6 @@ public class MRMain extends PluginBase {
 	public FormUtils getFormUtil()
 	{
 		return formUtil;
-	}
-
-	public TextUtils getTextUtil()
-	{
-		return textUtil;
 	}
 
 	public static String getPrefix()

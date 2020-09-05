@@ -1,5 +1,6 @@
 package com.joshuacc.mrnk.files;
 
+import com.joshuacc.mrnk.events.GameEndEvent.WinType;
 import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.main.MRMain;
 
@@ -15,5 +16,6 @@ public class MRLanguagesConfig extends AbstractFiles {
 		for(ConfigLang lang: ConfigLang.values())
 			addDefault(lang.getKey(), lang.getValue());
 		ConfigLang.setLines(config);
+		WinType.setLines(config);
 	}
 }

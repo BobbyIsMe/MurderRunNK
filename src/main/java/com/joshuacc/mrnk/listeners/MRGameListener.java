@@ -1,7 +1,10 @@
 package com.joshuacc.mrnk.listeners;
 
+import com.joshuacc.mrnk.events.GameEndEvent;
+import com.joshuacc.mrnk.events.GameEndEvent.WinType;
 import com.joshuacc.mrnk.events.GameStartEvent;
 import com.joshuacc.mrnk.events.GameStartEvent.GameAttribute;
+import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.main.MRMain;
 import com.joshuacc.mrnk.main.MRTeam;
 import com.joshuacc.mrnk.utils.NPCHuman;
@@ -54,5 +57,40 @@ public class MRGameListener implements Listener {
 		{
 
 		}
+	}
+
+	@EventHandler
+	public void onEndRound(GameEndEvent event)
+	{
+		MRTeam team = event.getTeam();
+		Player killer = team.getKiller();
+		WinType type = event.getWinType();
+		String title = "";
+
+		switch(type)
+		{
+		default:
+		case SURVIVORS_LEAVE:
+		case KILL_ALL:
+			title = ConfigLang.MURDERERWIN.toString();
+			break;
+		case KILLER_LEAVE:
+		case OUT_OF_TIME:
+		case VEHICLE_SUCCESS:
+			title = ConfigLang.SURVIVORWIN.toString();
+			break;
+		}
+
+		for(Player player : team.getPlayers())
+		{
+			player.sendTitle(title, type.getSubtitle());
+
+			if(type != WinType.KILL_ALL)
+				player.sendMessage(type.getMessage());
+			else
+				player.sendMessage(type.getMessage(killer));
+		}
+
+		team.addSpectator(killer);
 	}
 }

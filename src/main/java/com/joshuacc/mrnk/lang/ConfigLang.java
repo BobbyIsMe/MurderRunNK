@@ -66,7 +66,8 @@ public enum ConfigLang {
 	MURDERERWIN("Murderer-Win", "&c&lMURDERER WINS!"),
 	REASON1("Reason-1", "&eThe murderer ran out of time!"),
 	REASON2("Reason-2", "&eAll survivors have died!"),
-	WIN1("Win-1 Message", "&eThe &cmurderer &eran out of time to kill everyone, the &asurvivors &ewin!");
+	WIN1("Win-1 Message", "&eThe &cmurderer &eran out of time to kill everyone, the &asurvivors &ewin!"),
+	WIN2("Win-2 Message", "&c&l%p &r&ehas killed all the survivors, they have won the round!");
 
 	private String key;
 	private String val;

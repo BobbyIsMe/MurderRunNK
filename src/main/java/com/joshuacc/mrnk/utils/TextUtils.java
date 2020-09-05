@@ -9,39 +9,37 @@ import cn.nukkit.Player;
 import cn.nukkit.utils.TextFormat;
 
 public class TextUtils {
-	
+
 	private static SimpleDateFormat format = new SimpleDateFormat("m:ss");
-	
-	public TextUtils()
-	{
+	static {
 		format.setTimeZone(TimeZone.getTimeZone("GMT+8"));
 	}
-	
-	public String format(String line)
+
+	public static String format(String line)
 	{
 		return TextFormat.colorize('&', MRMain.getPrefix()+" "+line);
 	}
-	
-	public String formatNumber(String line, int number)
+
+	public static String formatNumber(String line, int number)
 	{
 		return TextFormat.colorize('&', line.replace("%n", Integer.toString(number)));
 	}
-	
-	public String formatLevel(String line, String level)
+
+	public static String formatLevel(String line, String level)
 	{
 		return TextFormat.colorize('&', line.replace("%l", level));
 	}
-	
-	public String formatPlayerMap(String line, Player player, String level)
+
+	public static String formatPlayerMap(String line, Player player, String level)
 	{
 		return TextFormat.colorize('&', formatPlayer(line, player).replace("%l", level));
 	}
-	
-	public String formatPlayer(String line, Player player)
+
+	public static String formatPlayer(String line, Player player)
 	{
 		return TextFormat.colorize('&', line.replace("%p", player.getName()));
 	}
-	
+
 	public static String getTimeFormat(int time)
 	{
 		return format.format(time * 1000);

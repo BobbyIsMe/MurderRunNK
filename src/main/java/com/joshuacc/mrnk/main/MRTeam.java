@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Random;
 
+import com.joshuacc.mrnk.events.GameEndEvent;
+import com.joshuacc.mrnk.events.GameEndEvent.WinType;
 import com.joshuacc.mrnk.files.MRArenasConfig;
 import com.joshuacc.mrnk.files.MRFormsTextsConfig;
 import com.joshuacc.mrnk.files.MRLanguagesConfig;
@@ -122,7 +124,6 @@ public class MRTeam {
 	private Player killer;
 	private MRArenasConfig mapConfig;
 	private MRScoreboardConfig board;
-	private TextUtils util;
 
 	private boolean started;
 
@@ -140,7 +141,6 @@ public class MRTeam {
 		allPlayers = new ArrayList<>();
 		allSurvivors = new ArrayList<>();
 		allSpectators = new ArrayList<>();
-		util = main.getTextUtil();
 		mapMode.get(mode).put(mapId, this);
 		new BackupWorlds(main, getMode()).copyOverWorld(map, mapId);
 		main.initWorld(directory);
@@ -200,7 +200,7 @@ public class MRTeam {
 			addSurvivor(players);
 
 		updateEntry("Message", board.getString("Message-3"));
-		messagePlayersDelay(util.format(ConfigLang.MAPSTARTED.toString()), 1, Sound.MOB_VILLAGER_IDLE);
+		messagePlayersDelay(TextUtils.format(ConfigLang.MAPSTARTED.toString()), 1, Sound.MOB_VILLAGER_IDLE);
 
 		main.getServer().getScheduler().scheduleDelayedTask(new Task() {
 
@@ -222,7 +222,7 @@ public class MRTeam {
 					@Override
 					public void onRun(int arg0) 
 					{
-						playSoundMessage(util.format(ConfigLang.MAPSELECT.toString()), Sound.NOTE_BASS);
+						playSoundMessage(TextUtils.format(ConfigLang.MAPSELECT.toString()), Sound.NOTE_BASS);
 						selectMurderer();
 					}
 				}, 80);
@@ -252,7 +252,7 @@ public class MRTeam {
 					Player select = randomPlayers.get(rand.nextInt(randomPlayers.size()));
 					for(Player players : allPlayers)
 					{
-						players.sendTitle(util.formatPlayer(ConfigLang.MAPRANDOM.toString(), select), "", 0, 20, 0);
+						players.sendTitle(TextUtils.formatPlayer(ConfigLang.MAPRANDOM.toString(), select), "", 0, 20, 0);
 						playSoundPlayer(players, Sound.RANDOM_CLICK);
 					}
 
@@ -307,7 +307,7 @@ public class MRTeam {
 		intermissionCount(20, () -> {
 
 			killer.teleport(mapConfig.getMurdererLocation(getMapLevel()));
-			playSoundMessage(format(ConfigLang.RELEASEMURD.toString()), Sound.BLOCK_END_PORTAL_SPAWN);
+			playSoundMessage(TextUtils.format(ConfigLang.RELEASEMURD.toString()), Sound.BLOCK_END_PORTAL_SPAWN);
 			startMurdererTimer();
 
 		}, allSurvivors, ConfigLang.MURDERANNOUNCE.toString(), ConfigLang.MURDCOUNT.toString());
@@ -327,7 +327,7 @@ public class MRTeam {
 				{
 					for(Player player : allPlayers)
 					{
-						player.sendMessage(format(ConfigLang.KILLERLEAVE.toString()));
+						player.sendMessage(TextUtils.format(ConfigLang.KILLERLEAVE.toString()));
 						player.teleport(main.getMRLobbyConfig().getQueueLobbyLocation());
 					}
 
@@ -343,15 +343,8 @@ public class MRTeam {
 				updateEntry("Time", TextUtils.getTimeFormat(i));
 
 				if(i == time)
-				{
-					for(Player player : allPlayers)
-					{
-						player.sendTitle(ConfigLang.SURVIVORWIN.toString(), ConfigLang.REASON1.toString());
-						player.sendMessage(format(ConfigLang.WIN1.toString()));
-						playSoundPlayer(player, Sound.RANDOM_LEVELUP);
-					}
-
-					addSpectator(killer);
+				{	
+					Server.getInstance().getPluginManager().callEvent(new GameEndEvent(k.getMapTeam(), WinType.OUT_OF_TIME));
 					this.cancel();
 					return;
 				}
@@ -372,7 +365,7 @@ public class MRTeam {
 			{
 				if(killer == null)
 				{
-					messageAllPlayers(format(ConfigLang.KILLERLEAVE.toString()));
+					messageAllPlayers(TextUtils.format(ConfigLang.KILLERLEAVE.toString()));
 					selectMurderer();
 					this.cancel();
 					return;
@@ -386,10 +379,10 @@ public class MRTeam {
 				}
 
 				if(i == time)
-					playSoundMessage(player, util.formatNumber(MRMain.getPrefix()+" "+announce, i), Sound.RANDOM_ANVIL_USE);
+					playSoundMessage(player, TextUtils.format(TextUtils.formatNumber(announce, i)), Sound.RANDOM_ANVIL_USE);
 
 				else if(i % 60 == 0 || i == 15 || i == 10 || i <= 5)
-					playSoundMessage(util.formatNumber(MRMain.getPrefix()+" "+countdown, i), Sound.RANDOM_CLICK);
+					playSoundMessage(TextUtils.format(TextUtils.formatNumber(countdown, i)), Sound.RANDOM_CLICK);
 
 				i--;
 			}
@@ -419,11 +412,6 @@ public class MRTeam {
 	public void playSoundPlayer(Player player, Sound sound)
 	{
 		player.getLevel().addSound(player, sound, 1F, 1F, player);
-	}
-
-	private String format(String message)
-	{
-		return TextFormat.colorize(MRMain.getPrefix()+" "+message);
 	}
 
 	public void playSoundDelay(Sound sound, int delay)
@@ -526,30 +514,25 @@ public class MRTeam {
 		return mode.getMode();
 	}
 
-	public TextUtils getTextUtil()
-	{
-		return util;
-	}
-
 	public void addAllPlayer(Player player)
 	{
 		allPlayers.add(player);
 		player.addEffect(Effect.getEffect(Effect.BLINDNESS).setDuration(Integer.MAX_VALUE).setVisible(false));
-		player.setNameTag(util.formatPlayerMap(ConfigLang.QUEUETAG.toString(), player, map));
+		player.setNameTag(TextUtils.formatPlayerMap(ConfigLang.QUEUETAG.toString(), player, map));
 		main.updatePlayerCount(mode, 1);
 	}
 
 	public void addSurvivor(Player player)
 	{
 		allSurvivors.add(player);
-		player.setNameTag(util.formatPlayer(ConfigLang.SURVIVORTAG.toString(), player));
+		player.setNameTag(TextUtils.formatPlayer(ConfigLang.SURVIVORTAG.toString(), player));
 	}
 
 	public void addKiller(Player player)
 	{
 		killer = player;
 		allSurvivors.remove(player);
-		player.setNameTag(util.formatPlayer(ConfigLang.KILLERTAG.toString(), player));
+		player.setNameTag(TextUtils.formatPlayer(ConfigLang.KILLERTAG.toString(), player));
 		MRPlayer.getMRPlayer(player).setHasRound();
 	}
 
@@ -557,7 +540,7 @@ public class MRTeam {
 	{
 		allSurvivors.remove(player);
 		allSpectators.add(player);
-		player.setNameTag(util.formatPlayer(ConfigLang.SPECTATORTAG.toString(), player));
+		player.setNameTag(TextUtils.formatPlayer(ConfigLang.SPECTATORTAG.toString(), player));
 	}
 
 	public void removePlayer(Player player)

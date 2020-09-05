@@ -20,15 +20,13 @@ import cn.nukkit.scheduler.Task;
 public class MRLobbyConfig extends AbstractFiles {
 
 	private MRMain main;
-	private TextUtils util;
 	private ArrayList<FloatingTextParticle> holograms = new ArrayList<>();
 	private HashMap<FloatingTextParticle,FloatingTextParticle> modes = new HashMap<>();
 
 	public MRLobbyConfig(MRMain main) {
 		super(main, "MRLobbyConfig");
 		this.main = main;
-		this.util = main.getTextUtil();
-		
+
 		for(MapModes mode : MapModes.values())
 			addNPCTexts(mode);
 	}
@@ -117,7 +115,7 @@ public class MRLobbyConfig extends AbstractFiles {
 			{	
 				int players = main.getPlayerCount(m);
 
-				particle.setTitle(util.formatNumber(ConfigLang.NPCJOINPLAYERS.toString(), players));
+				particle.setTitle(TextUtils.formatNumber(ConfigLang.NPCJOINPLAYERS.toString(), players));
 
 				if(config.get("NPC."+type+"."+i) == null)
 				{

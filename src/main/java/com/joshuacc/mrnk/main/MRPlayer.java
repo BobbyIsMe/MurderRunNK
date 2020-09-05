@@ -147,7 +147,7 @@ public class MRPlayer {
 		public void onJoin(PlayerJoinEvent event)
 		{
 			Player player = event.getPlayer();
-			player.setNameTag(main.getTextUtil().formatPlayer(ConfigLang.LOBBYTAG.toString(), player));
+			player.setNameTag(TextUtils.formatPlayer(ConfigLang.LOBBYTAG.toString(), player));
 			main.getMRPlayerConfig().addPlayerData(player);
 		}
 
@@ -179,16 +179,15 @@ public class MRPlayer {
 			MRTeam team = event.getMapTeam();
 			MRArenasConfig config = team.getMapConfig();
 			MRPlayer mPlayer = new MRPlayer(main, player, team);
-			TextUtils util = main.getTextUtil();
 
-			player.sendMessage(util.formatLevel(MRMain.getPrefix()+" "+ConfigLang.PLAYERQUEUE.toString(), team.getMapOrigin()));
+			player.sendMessage(TextUtils.format(TextUtils.formatLevel(ConfigLang.PLAYERQUEUE.toString(), team.getMapOrigin())));
 
 			mPlayer.setScoreboard(new WaitScoreboard(player, main));
 			mPlayer.queue();
 
 			team.addAllPlayer(player);
 			team.updateEntry("Players", team.getPlayers().size()+"", config.getMaximumPlayers()+"");
-			team.messageAllPlayers(util.formatPlayer(MRMain.getPrefix()+" "+ConfigLang.MAPNOTIFYQUEUE.toString(), player));
+			team.messageAllPlayers(TextUtils.format(TextUtils.formatPlayer(ConfigLang.MAPNOTIFYQUEUE.toString(), player)));
 
 			if(team.getPlayers().size() == config.getMinimumPlayers())
 				Server.getInstance().getPluginManager().callEvent(new GameStartEvent(GameAttribute.STARTING, team));

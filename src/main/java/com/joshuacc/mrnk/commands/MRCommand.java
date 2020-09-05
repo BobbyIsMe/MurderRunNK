@@ -13,7 +13,6 @@ import cn.nukkit.command.data.CommandParameter;
 public class MRCommand extends Command {
 
 	private FormUtils formUtil;
-	private TextUtils util;
 
 	public MRCommand(MRMain main) {
 		super("mr", "Sets up the entire minigame!");
@@ -26,7 +25,6 @@ public class MRCommand extends Command {
 		});
 		
 		this.formUtil = main.getFormUtil();
-		this.util = main.getTextUtil();
 	}
 
 	@Override
@@ -34,7 +32,7 @@ public class MRCommand extends Command {
 	{
 		if(!(sender instanceof Player))
 		{
-			sender.sendMessage(util.format(ConfigLang.NOTPLAYER.toString()));
+			sender.sendMessage(TextUtils.format(ConfigLang.NOTPLAYER.toString()));
 			return false;
 		}
 
@@ -45,7 +43,7 @@ public class MRCommand extends Command {
 
 		switch(args.length)
 		{
-		case 0: player.sendMessage(util.format(ConfigLang.SHORTARGUEMENTS.toString())); break;
+		case 0: player.sendMessage(TextUtils.format(ConfigLang.SHORTARGUEMENTS.toString())); break;
 		case 1: 
 			String type = args[0];
 			switch(type)

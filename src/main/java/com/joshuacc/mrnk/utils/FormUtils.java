@@ -28,7 +28,6 @@ import cn.nukkit.form.window.FormWindowSimple;
 
 public class FormUtils {
 
-	private TextUtils util;
 	private MRMain main;
 	private HashMap<UUID,String> editLevel = new HashMap<>();
 	private HashMap<Integer,String> maps = new HashMap<>();
@@ -36,7 +35,6 @@ public class FormUtils {
 
 	public FormUtils(MRMain main)
 	{
-		this.util = main.getTextUtil();
 		this.main = main;
 
 		if(main.getMaps() != null)
@@ -52,13 +50,13 @@ public class FormUtils {
 		configMenu.addButton(new ElementButton(FormsLang.CONLOBBY.toString()));
 		configMenu.addButton(new ElementButton(FormsLang.CONWLOBBY.toString()));
 		for(String maps : maps.values())
-			configMenu.addButton(new ElementButton(util.formatLevel(FormsLang.CONTYPE.toString(), maps)));
+			configMenu.addButton(new ElementButton(TextUtils.formatLevel(FormsLang.CONTYPE.toString(), maps)));
 		player.showFormWindow(configMenu, 100);
 	}
 
 	public void addConfigMapForm(Player player, String level)
 	{
-		FormWindowSimple configForm = new FormWindowSimple(util.formatLevel(FormsLang.EDITTITLE.toString(), level), FormsLang.EDITDESC.toString());
+		FormWindowSimple configForm = new FormWindowSimple(TextUtils.formatLevel(FormsLang.EDITTITLE.toString(), level), FormsLang.EDITDESC.toString());
 		configForm.addButton(new ElementButton(FormsLang.EDITTEL.toString()));
 		configForm.addButton(new ElementButton(FormsLang.EDITMAP.toString()));
 		configForm.addButton(new ElementButton(FormsLang.EDITSLOC.toString()));
@@ -78,7 +76,7 @@ public class FormUtils {
 	public void addSettingsMapForm(Player player, String level)
 	{
 		MRArenasConfig config = main.getMapConfigs().get(editLevel.get(player.getUniqueId()));
-		FormWindowCustom editForm = new FormWindowCustom(util.formatLevel(FormsLang.SNGTITLE.toString(), level));
+		FormWindowCustom editForm = new FormWindowCustom(TextUtils.formatLevel(FormsLang.SNGTITLE.toString(), level));
 		editForm.addElement(new ElementLabel(FormsLang.SNGDESC.toString()));
 
 		for(MapModes modes : MapModes.values())
@@ -124,7 +122,7 @@ public class FormUtils {
 						}
 
 						idMap.get(player).put(id, maps);
-						mapSelector.addButton(new ElementButton(util.formatLevel(FormsLang.SELMAPNAME.toString(), maps)+"\n"+util.formatNumber(FormsLang.SELMAPNUM.toString(), all)));
+						mapSelector.addButton(new ElementButton(TextUtils.formatLevel(FormsLang.SELMAPNAME.toString(), maps)+"\n"+TextUtils.formatNumber(FormsLang.SELMAPNUM.toString(), all)));
 						id++;
 					}
 				}
@@ -225,7 +223,7 @@ public class FormUtils {
 			config.setValue("Minimum Players", response.getInputResponse(6));
 			config.setValue("Maximum Players", response.getInputResponse(7));
 			config.getConfig().save();
-			player.sendMessage(util.formatLevel(ConfigLang.CHANGESETTINGS.toString(), map));
+			player.sendMessage(TextUtils.formatLevel(ConfigLang.CHANGESETTINGS.toString(), map));
 		} catch(Exception e) {
 			player.sendMessage(ConfigLang.NOTNUMBER.toString());
 		}
@@ -293,14 +291,14 @@ public class FormUtils {
 				if(team.getState() == MapState.READY || team.getState() == MapState.STARTING)
 				{
 					PlayerJoinGameEvent join = new PlayerJoinGameEvent(player, team);
-					player.sendMessage(util.formatLevel(MRMain.getPrefix()+" "+ConfigLang.SUCCESSJOIN.toString(), map));
+					player.sendMessage(TextUtils.format(TextUtils.formatLevel(ConfigLang.SUCCESSJOIN.toString(), map)));
 					Server.getInstance().getPluginManager().callEvent(join);
 					break;
 				}
 			}
 
 		if(MRPlayer.getMRPlayer(player) == null)
-			player.sendMessage(util.format(ConfigLang.NOTAVAILABLEMAP.toString()));
+			player.sendMessage(TextUtils.format(ConfigLang.NOTAVAILABLEMAP.toString()));
 
 		idMap.remove(player);
 	}
