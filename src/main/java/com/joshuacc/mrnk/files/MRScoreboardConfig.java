@@ -19,7 +19,7 @@ public class MRScoreboardConfig extends AbstractFiles {
 		String play = "Scoreboard-Play.";
 		ArrayList<String> queueBoard = new ArrayList<String>();
 		ArrayList<String> playBoard = new ArrayList<String>();
-		
+
 		queueBoard.add(" &7%m &2GMT+8");
 		queueBoard.add(" &8»%m");
 		queueBoard.add("");
@@ -34,7 +34,7 @@ public class MRScoreboardConfig extends AbstractFiles {
 		queueBoard.add("   ");
 		queueBoard.add(" Mode&6» &a&l%m");
 		queueBoard.add(" Time Limit&6» &a%mm");
-		
+
 		playBoard.add("  &e|| &7[&fKiller&7] &e||");
 		playBoard.add(" &6»&c&l%m");
 		playBoard.add("");
@@ -47,13 +47,13 @@ public class MRScoreboardConfig extends AbstractFiles {
 		playBoard.add(" &7[&f1&7] &e|| &8%m - %n");
 		playBoard.add(" &7[&f2&7] &e|| &8%m - %n");
 		playBoard.add(" &7[&f3&7] &e|| &8%m - %n");
-		
+
 		addDefault("Scoreboard-Title", "&0&kIII&r &4&lMurder Run &r&0&kIII");
 		addDefault("Scoreboard-Seconds", 15);
 		addDefault("Scoreboard-Message-1", "&6»&fWaiting for &bplayers...");
 		addDefault("Scoreboard-Message-2", "&6»&fStarting in &b%ns");
 		addDefault("Scoreboard-Message-3", "&6»&eGame Intermission...");
-		
+
 		addDefault(queue+"Lines", queueBoard);
 		addDefault(queue+"Real Time", 0);
 		addDefault(queue+"ID", 1);
@@ -65,7 +65,7 @@ public class MRScoreboardConfig extends AbstractFiles {
 		addDefault(queue+"Message", 10);
 		addDefault(queue+"Mode", 12);
 		addDefault(queue+"Time Limit", 13);
-		
+
 		addDefault(play+"Lines", playBoard);
 		addDefault(play+"Killer", 1);
 		addDefault(play+"Time", 3);

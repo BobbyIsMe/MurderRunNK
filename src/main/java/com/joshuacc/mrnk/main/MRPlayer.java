@@ -1,5 +1,6 @@
 package com.joshuacc.mrnk.main;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.joshuacc.mrnk.events.GameStartEvent;
@@ -7,14 +8,15 @@ import com.joshuacc.mrnk.events.GameStartEvent.GameAttribute;
 import com.joshuacc.mrnk.events.PlayerJoinGameEvent;
 import com.joshuacc.mrnk.files.MRArenasConfig;
 import com.joshuacc.mrnk.files.MRLobbyConfig;
-import com.joshuacc.mrnk.files.MRPlayerConfig;
 import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.scoreboards.ScoreboardAbstract;
 import com.joshuacc.mrnk.scoreboards.WaitScoreboard;
+import com.joshuacc.mrnk.utils.MapState;
 import com.joshuacc.mrnk.utils.TextUtils;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
+import cn.nukkit.entity.item.EntityItem;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.player.PlayerFormRespondedEvent;
@@ -29,9 +31,10 @@ public class MRPlayer {
 
 	private Player player;
 	private MRTeam mapTeam;
-	private MRPlayerConfig playerData;
 	private MRLobbyConfig lobby;
 	private ScoreboardAbstract board;
+
+	private ArrayList<EntityItem> itemDrops = new ArrayList<EntityItem>();
 
 	private int time;
 	private int qPts;
@@ -41,16 +44,17 @@ public class MRPlayer {
 	private MRPlayer(MRMain main, Player player, MRTeam mapTeam)
 	{
 		this.player = player;
-		this.playerData = main.getMRPlayerConfig();
 		this.lobby = main.getMRLobbyConfig();
 		this.mapTeam = mapTeam;
 		this.board = null;
 		this.time = 0;
 
+		this.itemDrops = new ArrayList<>();
+
 		this.hasRound = false;
 
 		int max = mapTeam.getMapConfig().getPointsLimit();
-		int i = playerData.getPoints(player);
+		int i = main.getMRPlayerConfig().getPoints(player);
 
 		this.qPts = i >= max ? max : i;
 
@@ -62,8 +66,16 @@ public class MRPlayer {
 		addPlayer.remove(player);
 	}
 
-	public void queue()
+	public void queue(boolean restart)
 	{
+		if(!restart)
+		{
+			player.removeAllEffects();
+			player.getInventory().clearAll();
+
+			removeAllDrops();
+		}
+
 		player.teleport(lobby.getQueueLobbyLocation());
 	}
 
@@ -92,6 +104,22 @@ public class MRPlayer {
 		this.hasRound = true;
 	}
 
+	public void addDropItem(EntityItem item)
+	{
+		itemDrops.add(item);
+	}
+
+	public void removeDropItem(EntityItem item)
+	{
+		itemDrops.remove(item);
+	}
+
+	public void removeAllDrops()
+	{
+		itemDrops.forEach((e) -> e.close());
+		itemDrops.clear();
+	}
+
 	public static MRPlayer getMRPlayer(Player player)
 	{
 		return addPlayer.get(player);
@@ -100,11 +128,6 @@ public class MRPlayer {
 	public MRTeam getMapTeam()
 	{
 		return mapTeam;
-	}
-
-	public MRPlayerConfig getPlayerConfig()
-	{
-		return playerData;
 	}
 
 	public ScoreboardAbstract getScoreboard()
@@ -183,7 +206,7 @@ public class MRPlayer {
 			player.sendMessage(TextUtils.format(TextUtils.formatLevel(ConfigLang.PLAYERQUEUE.toString(), team.getMapOrigin())));
 
 			mPlayer.setScoreboard(new WaitScoreboard(player, main));
-			mPlayer.queue();
+			mPlayer.queue(false);
 
 			team.addAllPlayer(player);
 			team.updateEntry("Players", team.getPlayers().size()+"", config.getMaximumPlayers()+"");
@@ -201,8 +224,24 @@ public class MRPlayer {
 			{
 				MRPlayer mPlayer = MRPlayer.getMRPlayer(player);
 				MRTeam team = mPlayer.getMapTeam();
+				MRArenasConfig config = team.getMapConfig();
+
+				if(team.onIntermission())
+					team.updateEntry("Players", team.getPlayers().size()+"", config.getMaximumPlayers()+"");
+				else
+				{
+					mPlayer.removeAllDrops();
+					team.updateEntry("Players", team.getSurvivors().size()+"");
+				}
 
 				team.removePlayer(player);
+
+				for(Player players : team.getPlayers())
+					if(team.getState() == MapState.STARTED)
+						players.sendMessage(TextUtils.formatPlayer(TextUtils.format(ConfigLang.PlAYERLEAVESTART.toString()), player));
+					else
+						players.sendMessage(TextUtils.formatPlayer(TextUtils.format(ConfigLang.PLAYERLEAVE.toString()), player));
+
 				mPlayer.removePlayer();
 			}
 		}

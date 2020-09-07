@@ -11,19 +11,13 @@ public class PlayerKilledEvent extends Event {
 	private static final HandlerList list = new HandlerList();
 	private MRTeam team;
 	private Player target;
-	private DeathCause cause;
-	
-	public enum DeathCause
-	{
-		KILLER,
-		OTHER
-	}
+	private Player killer;
 
-	public PlayerKilledEvent(MRTeam team, Player target, DeathCause cause)
+	public PlayerKilledEvent(MRTeam team, Player target, Player killer)
 	{
 		this.team = team;
 		this.target = target;
-		this.cause = cause;
+		this.killer = killer;
 	}
 
 	public MRTeam getTeam()
@@ -35,10 +29,10 @@ public class PlayerKilledEvent extends Event {
 	{
 		return target;
 	}
-	
-	public DeathCause getCause()
+
+	public Player getKiller()
 	{
-		return cause;
+		return killer;
 	}
 
 	public static HandlerList getHandlers()

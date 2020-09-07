@@ -4,13 +4,14 @@ import com.joshuacc.mrnk.events.GameEndEvent;
 import com.joshuacc.mrnk.events.GameEndEvent.WinType;
 import com.joshuacc.mrnk.events.GameStartEvent;
 import com.joshuacc.mrnk.events.GameStartEvent.GameAttribute;
-import com.joshuacc.mrnk.events.PlayerKilledEvent.DeathCause;
 import com.joshuacc.mrnk.events.PlayerKilledEvent;
+import com.joshuacc.mrnk.files.MRGameConfig;
 import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.main.MRMain;
 import com.joshuacc.mrnk.main.MRPlayer;
 import com.joshuacc.mrnk.main.MRTeam;
 import com.joshuacc.mrnk.utils.NPCHuman;
+import com.joshuacc.mrnk.utils.TextUtils;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
@@ -23,10 +24,12 @@ import cn.nukkit.item.Item;
 public class MRGameListener implements Listener {
 
 	private MRMain main;
+	private MRGameConfig game;
 
 	public MRGameListener(MRMain main)
 	{
 		this.main = main;
+		this.game = main.getMRGameConfig();
 	}
 
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -37,7 +40,7 @@ public class MRGameListener implements Listener {
 			Player target = (Player) event.getEntity();
 			if(target.getHealth() - event.getFinalDamage() < 1f) 
 			{
-				Server.getInstance().getPluginManager().callEvent(new PlayerKilledEvent(MRPlayer.getMRPlayer(target).getMapTeam(), target, event.getDamager() instanceof Player ? DeathCause.KILLER : DeathCause.OTHER));
+				Server.getInstance().getPluginManager().callEvent(new PlayerKilledEvent(MRPlayer.getMRPlayer(target).getMapTeam(), target, event.getDamager() instanceof Player ? (Player) event.getDamager() : null));
 				event.setCancelled(true);
 			}
 		}
@@ -82,9 +85,16 @@ public class MRGameListener implements Listener {
 	{
 		MRTeam team = event.getTeam();
 		Player player = event.getKilled();
-		String reason = event.getCause() == DeathCause.KILLER ? ConfigLang.SURVIVORKILLED.toString() : ConfigLang.SURVIVORDIE.toString();
+		Player killer = event.getKiller();
+		String reason = TextUtils.formatPlayer(killer != null ? ConfigLang.SURVIVORKILLED.toString().replace("%k", killer.getName()) : ConfigLang.SURVIVORDIE.toString(), player);
 
 		team.addSpectator(player);
+		team.updateEntry("Players", team.getSurvivors().size()+"");
+
+		if(killer != null)
+		{
+			main.getMRPlayerConfig().incrementPoints(killer, game.getKillPoints());
+		}
 
 		for(Player players : team.getPlayers())
 			players.sendMessage(reason);
@@ -107,12 +117,16 @@ public class MRGameListener implements Listener {
 		case SURVIVORS_LEAVE:
 		case KILL_ALL:
 			title = ConfigLang.MURDERERWIN.toString();
+			main.getMRPlayerConfig().incrementPoints(killer, game.getKillPoints());
 			team.cancelTimer();
 			break;
 		case KILLER_LEAVE:
 		case OUT_OF_TIME:
 		case VEHICLE_SUCCESS:
 			title = ConfigLang.SURVIVORWIN.toString();
+
+			for(Player players : team.getSurvivors())
+				main.getMRPlayerConfig().incrementPoints(players, game.getKillPoints());
 			break;
 		}
 

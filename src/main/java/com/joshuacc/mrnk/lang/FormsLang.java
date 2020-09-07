@@ -9,7 +9,7 @@ public enum FormsLang {
 	//%l - Map Name
 	//%n - Number
 
-	//Map Selector - Normal
+	//Map Selector
 	SELMAPNAME("Map-Selector.Map Name", "&6» &2%l"),
 	SELMAPNUM("Map-Selector.Available Maps", "&8Available Maps: %n"),
 

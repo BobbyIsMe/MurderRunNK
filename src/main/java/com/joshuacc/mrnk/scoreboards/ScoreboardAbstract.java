@@ -22,6 +22,7 @@ public abstract class ScoreboardAbstract {
 	protected static ArrayList<Integer> queueInt = new ArrayList<>();
 	protected static ArrayList<Integer> playInt = new ArrayList<>();
 
+	protected MRMain main;
 	protected Player player;
 
 	private Scoreboard board;
@@ -37,6 +38,7 @@ public abstract class ScoreboardAbstract {
 	public ScoreboardAbstract(Player player, String objName, String key, ArrayList<Integer> score, MRMain main)
 	{
 		this.entry = new HashMap<>();
+		this.main = main;
 		this.player = player;
 		this.key = key+".";
 		this.score = score;

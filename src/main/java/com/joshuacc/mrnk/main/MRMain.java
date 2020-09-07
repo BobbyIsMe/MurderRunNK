@@ -10,6 +10,7 @@ import com.joshuacc.mrnk.commands.OpenListCommand;
 import com.joshuacc.mrnk.commands.PlayerCommand;
 import com.joshuacc.mrnk.files.MRArenasConfig;
 import com.joshuacc.mrnk.files.MRFormsTextsConfig;
+import com.joshuacc.mrnk.files.MRGameConfig;
 import com.joshuacc.mrnk.files.MRLanguagesConfig;
 import com.joshuacc.mrnk.files.MRLobbyConfig;
 import com.joshuacc.mrnk.files.MRPlayerConfig;
@@ -34,6 +35,7 @@ public class MRMain extends PluginBase {
 	private MRLobbyConfig lobby;
 	private MRScoreboardConfig board;
 	private MRPlayerConfig players;
+	private MRGameConfig game;
 	private FormUtils formUtil;
 
 	private HashMap<String,MRArenasConfig> mapConfigs = new HashMap<>();
@@ -72,11 +74,13 @@ public class MRMain extends PluginBase {
 		players = new MRPlayerConfig(this);
 		board = new MRScoreboardConfig(this);
 		lobby = new MRLobbyConfig(this);
+		game = new MRGameConfig(this);
 		formUtil = new FormUtils(this);
 
 		players.setupConfig();
 		board.setupConfig();
 		lobby.setupConfig();
+		game.setupConfig();
 
 		ScoreboardAbstract.registerScoreboards(board);
 
@@ -250,6 +254,11 @@ public class MRMain extends PluginBase {
 	public MRPlayerConfig getMRPlayerConfig()
 	{
 		return players;
+	}
+
+	public MRGameConfig getMRGameConfig()
+	{
+		return game;
 	}
 
 	public FormUtils getFormUtil()

@@ -8,6 +8,7 @@ public enum ConfigLang {
 	//Placeholder
 	//%l - Map Name
 	//%p - Player Name
+	//%k - Killer Name
 	//%n - Number
 
 	//Prefix for some messages in-game to be shown
@@ -48,6 +49,7 @@ public enum ConfigLang {
 	//Messages shown while in a game
 	PLAYERQUEUE("Player-Queue Message", "&eYou have been queued in %l!"),
 	PLAYERLEAVE("Player-Leave Message", "&e%p has left the arena!"),
+	PlAYERLEAVESTART("Leave-Play Message", "&e%p left while the game is playing."),
 	QUEUEBAR("Queue-Bar Message", "&bYou are now being queued for &l%l"),
 	MAPNOTIFYQUEUE("Map-Queue Message", "&a%p &ehas joined the queue."),
 	MAPSTARTED("Map-Start Message", "&eThe game has officially started! From now on, you can't leave the game until the end!"),
@@ -62,14 +64,18 @@ public enum ConfigLang {
 	MURDERANNOUNCE("Rel-Murderer Message", "&eYou have &a%n seconds &eto prepare until the &c&lMURDERER &r&ewill be released!"),
 	MURDCOUNT("Murd-Count Message", "&eThe &c&lMURDERER &r&ewill be released in &a%ns!"),
 	RELEASEMURD("Release-Mur Message", "&eThe &c&lMURDERER &r&ehas been &areleased.."),
-	SURVIVORKILLED("Surv-Killed Message", "&a%p &ehas been killed by the &c&lMURDERER!"),
+	SURVIVORKILLED("Surv-Killed Message", "&a%p &ehas been killed by &c&l%k!"),
 	SURVIVORDIE("Surv-Die Message", "&a%p &ehas died!"),
 	SURVIVORWIN("Survivor-Win", "&a&lSURVIVORS WIN!"),
 	MURDERERWIN("Murderer-Win", "&c&lMURDERER WINS!"),
 	REASON1("Reason-1", "&eThe murderer ran out of time!"),
 	REASON2("Reason-2", "&eAll survivors have died!"),
+	REASON3("Reason-3", "&eSurvivors have left the arena!"),
+	REASON4("Reason-4", "&eMurderer has left the arena!"),
 	WIN1("Win-1 Message", "&eThe &cmurderer &eran out of time to kill everyone, the &asurvivors &ewin!"),
-	WIN2("Win-2 Message", "&c&l%p &r&ehas killed all the survivors, they have won the round!");
+	WIN2("Win-2 Message", "&c&l%p &r&ehas killed all the survivors, they have won the round!"),
+	WIN3("Win-3 Message", "&eThe &asurvivors &ehave left the arena and none are left, the &cmurderer &ewins the round!"),
+	WIN4("Win-4 Message", "&eThe &cmurderer &eleft the game, the &asurvivors &ewin!");
 
 	private String key;
 	private String val;

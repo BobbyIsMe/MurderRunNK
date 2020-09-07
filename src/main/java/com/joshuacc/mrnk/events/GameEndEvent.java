@@ -19,9 +19,9 @@ public class GameEndEvent extends Event {
 	{
 		OUT_OF_TIME("Reason-1", "Win-1 Message"),
 		KILL_ALL("Reason-2", "Win-2 Message"),
-		VEHICLE_SUCCESS("", ""),
-		KILLER_LEAVE("", ""),
-		SURVIVORS_LEAVE("", "");
+		SURVIVORS_LEAVE("Reason-3", "Win-3 Message"),
+		KILLER_LEAVE("Reason-4", "Win-4 Message"),
+		VEHICLE_SUCCESS("", "");
 
 		private String subtitle;
 		private String message;

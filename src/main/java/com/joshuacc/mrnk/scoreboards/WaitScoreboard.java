@@ -36,7 +36,7 @@ public class WaitScoreboard extends ScoreboardAbstract {
 		updateEntryTemporary("Real Time", dtf.format(now));
 		updateEntryTemporary("ID", team.getMapId());
 		updateEntryTemporary("Map", team.getMapOrigin());
-		updateEntryTemporary("Points", mPlayer.getPlayerConfig().getPoints(player)+"");
+		updateEntryTemporary("Points", main.getMRPlayerConfig().getPoints(player)+"");
 		updateEntryTemporary("Points Limit", config.getPointsLimit()+"");
 		updateEntryTemporary("Mode", team.getMode());
 		updateEntryTemporary("Time Limit", format.format(1000 * config.getTimeLimit()));
