@@ -118,7 +118,9 @@ public class MRGameListener implements Listener {
 		case SURVIVORS_LEAVE:
 		case KILL_ALL:
 			title = ConfigLang.MURDERERWIN.toString();
+			if(killer != null)
 			main.getMRPlayerConfig().incrementPoints(killer, game.getKillPoints());
+			team.addPlayerRankingByTime(killer);
 			break;
 		case KILLER_LEAVE:
 		case OUT_OF_TIME:
@@ -128,7 +130,9 @@ public class MRGameListener implements Listener {
 			for(Player players : team.getSurvivors())
 				main.getMRPlayerConfig().incrementPoints(players, game.getKillPoints());
 			
+			if(killer != null)
 			MRPlayer.getMRPlayer(killer).setTime(team.getMapConfig().getTimeLimit());
+			team.addPlayerRankingByTime(killer); //TODO: Remove this after testing
 			break;
 		}
 		

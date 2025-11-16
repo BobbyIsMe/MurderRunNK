@@ -20,7 +20,7 @@ public class NPCHuman extends EntityHuman {
 	        if (!this.hasSpawned.containsKey(player.getLoaderId())) {
 	            this.hasSpawned.put(player.getLoaderId(), player);
 
-	            this.server.updatePlayerListData(this.getUniqueId(), this.getId(), this.getName(), this.skin, new Player[]{player});
+	            this.server.updatePlayerListData(this.getUniqueId(), this.getId(), this.getName(), player.getSkin(), new Player[]{player});
 
 	            AddPlayerPacket pk = new AddPlayerPacket();
 	            pk.uuid = this.getUniqueId();

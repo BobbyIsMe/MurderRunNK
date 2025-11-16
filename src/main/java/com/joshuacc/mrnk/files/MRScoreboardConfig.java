@@ -1,7 +1,5 @@
 package com.joshuacc.mrnk.files;
 
-import java.util.List;
-
 import com.joshuacc.mrnk.main.MRMain;
 
 public class MRScoreboardConfig extends AbstractFiles {
@@ -19,6 +17,7 @@ public class MRScoreboardConfig extends AbstractFiles {
 
 		addDefault("Max Length", 24);
 		addDefault("Scoreboard-Time-Translation", "minutes");
+		addDefault("Scoreboard-NA-Translation", "N/A");
 		addDefault("Scoreboard-Title", "&0&kIII&r &4&lMurder Run &r&0&kIII");
 		addDefault("Scoreboard-Seconds", 15);
 		addDefault("Scoreboard-Message-1", "&6»&fWaiting for &bplayers...");
@@ -31,6 +30,9 @@ public class MRScoreboardConfig extends AbstractFiles {
 		addDefault(queue+"Time Limit", 3);
 		addDefault(queue+"Round", 4);
 		addDefault(queue+"Points", 5);
+		addDefault(queue+"Rank-1", 6);
+		addDefault(queue+"Rank-2", 7);
+		addDefault(queue+"Rank-3", 8);
 
 		addDefault(play+"Map", 0);
 		addDefault(play+"Timer", 1);
@@ -71,15 +73,5 @@ public class MRScoreboardConfig extends AbstractFiles {
 	public String getTip(String prefix, int value)
 	{
 		return getTip(prefix, Integer.toString(value));
-	}
-
-	public String getScoreboardTitle()
-	{
-		return config.getString("Scoreboard-Title");
-	}
-
-	public List<String> getQueueBoardLines()
-	{
-		return config.getStringList("Scoreboard-Queue.Lines");
 	}
 }

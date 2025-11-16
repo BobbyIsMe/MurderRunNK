@@ -8,7 +8,7 @@ public class PlayScoreboard extends ScoreboardAbstract {
 
 	public PlayScoreboard(MRTeam team, MRMain main) 
 	{
-		super(team, "Play", new TipBuilder[5], main);
+		super(team, "Play", new TipBuilder[playSize], main);
 	}
 
 	@Override

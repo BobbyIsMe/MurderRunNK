@@ -24,6 +24,11 @@ public class TextUtils {
 	{
 		return TextFormat.colorize('&', line.replace("%n", Integer.toString(number)));
 	}
+	
+	public static String formatNumber(String line, int number, int number2)
+	{
+		return TextFormat.colorize('&', line.replace("%n", Integer.toString(number)).replace("%m", Integer.toString(number2)));
+	}
 
 	public static String formatLevel(String line, String level)
 	{

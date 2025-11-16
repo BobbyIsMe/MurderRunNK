@@ -10,6 +10,7 @@ public enum ConfigLang {
 	//%p - Player Name
 	//%k - Killer Name
 	//%n - Number
+	//%m - Second number
 
 	//Prefix for some messages in-game to be shown
 	PREFIXMESSAGE("Prefix Message", "&4&lMurder Run &6»&r"),
@@ -71,12 +72,20 @@ public enum ConfigLang {
 	MURDERERWIN("Murderer-Win", "&c&lMURDERER WINS!"),
 	REASON1("Reason-1", "&eThe murderer ran out of time!"),
 	REASON2("Reason-2", "&eAll survivors have died!"),
-	REASON3("Reason-3", "&eSurvivors have left the arena!"),
+	REASON3("Reason-3", "&eThe last survivor has left the arena!"),
 	REASON4("Reason-4", "&eMurderer has left the arena!"),
 	WIN1("Win-1 Message", "&eThe &cmurderer &eran out of time to kill everyone, the &asurvivors &ewin!"),
 	WIN2("Win-2 Message", "&c&l%p &r&ehas killed all the survivors, they have won the round!"),
 	WIN3("Win-3 Message", "&eThe &asurvivors &ehave left the arena and none are left, the &cmurderer &ewins the round!"),
-	WIN4("Win-4 Message", "&eThe &cmurderer &eleft the game, the &asurvivors &ewin!");
+	WIN4("Win-4 Message", "&eThe &cmurderer &eleft the game, the &asurvivors &ewin!"),
+	
+	//Messages shown at the end of the game
+	WINNERDRUMROLL("Winner-DrumRoll Message", "&eAnd the winner is..."),
+	WINNERANNOUNCENONE("Winner-None-Announce Message", "&a&lNo one!"),
+	WINNERANNOUNCENAME("Winner-Name-Announce Message", "&a&l%p!"),
+	WINNERANNOUNCETIME("Winner-Time-Announce Message", "&ewith a time of &a%n"),
+	LEADERBOARDTITLE("Leaderboard Title", "&a&lLeaderboards"),
+	LEADERBOARDRANK("Leaderboard Rank", "&e%n. &f%p - %m");
 
 	private String key;
 	private String val;

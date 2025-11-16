@@ -10,8 +10,10 @@ import cn.nukkit.Player;
 
 public abstract class ScoreboardAbstract {
 
-	protected static final String[] queuePrefix = new String[6];
-	protected static final String[] playPrefix = new String[5];
+	protected static final int queueSize = 9;
+	protected static final int playSize = 5;
+	protected static final String[] queuePrefix = new String[queueSize];
+	protected static final String[] playPrefix = new String[playSize];
 	
 	protected MRMain main;
 	protected TipBuilder[] tips;
@@ -48,12 +50,18 @@ public abstract class ScoreboardAbstract {
 		int qTimeLimit = b.getInt(queue+"Time Limit");
 		int qRound = b.getInt(queue+"Round");
 		int qPoints = b.getInt(queue+"Points");
+		int qRank1 = b.getInt(queue+"Rank-1");
+		int qRank2 = b.getInt(queue+"Rank-2");
+		int qRank3 = b.getInt(queue+"Rank-3");
 		queuePrefix[qMap] = "q_"+qMap;
 		queuePrefix[qMode] = "q_"+qMode;
 		queuePrefix[qPlayers] = "q_"+qPlayers;
 		queuePrefix[qTimeLimit] = "q_"+qTimeLimit;
 		queuePrefix[qRound] = "q_"+qRound;
 		queuePrefix[qPoints] = "q_"+qPoints;
+		queuePrefix[qRank1] = "q_"+qRank1;
+		queuePrefix[qRank2] = "q_"+qRank2;
+		queuePrefix[qRank3] = "q_"+qRank3;
 		
 		String play = "Play.";
 		int pMap = b.getInt(play+"Map");

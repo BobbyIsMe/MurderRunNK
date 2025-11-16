@@ -87,6 +87,8 @@ public class MRPlayer {
 	public void unqueue()
 	{
 		player.teleport(lobby.getMainLobbyLocation());
+		player.sendTip("!stop1!stop2");
+		player.sendActionBar("!bar");
 		removePlayer();
 	}
 
@@ -241,17 +243,17 @@ public class MRPlayer {
 				MRTeam team = mPlayer.getMapTeam();
 
 				team.removePlayer(player);
-
-				if(team.onIntermission())
-					team.updateScoreboardPlayerCount();
-				else
+				
+				if(team.getPlayBoard() != null)
 				{
 					mPlayer.removeAllDrops();
-					team.updateEntry(4, team.getSurvivors().size());
+					team.updateEntry(team.getPlayBoard().getInt("Survivors Left"), team.getSurvivors().size());
 //					team.updateEntry("Players", team.getSurvivors().size()+"");
 
 					if(team.timerGoing() && team.getSurvivors().size() == 0)
 						Server.getInstance().getPluginManager().callEvent(new GameEndEvent(team, WinType.SURVIVORS_LEAVE));
+				} else {
+					team.updateScoreboardPlayerCount();
 				}
 
 				String reason = team.getState() == MapState.STARTED ? TextUtils.formatPlayer(TextUtils.format(ConfigLang.PlAYERLEAVESTART.toString()), player) : TextUtils.formatPlayer(TextUtils.format(ConfigLang.PLAYERLEAVE.toString()), player);
