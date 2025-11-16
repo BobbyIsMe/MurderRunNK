@@ -1,32 +1,35 @@
 package com.joshuacc.mrnk.scoreboards;
 
 import com.joshuacc.mrnk.main.MRMain;
-import com.joshuacc.mrnk.main.MRPlayer;
 import com.joshuacc.mrnk.main.MRTeam;
 import com.joshuacc.mrnk.utils.TextUtils;
 
-import cn.nukkit.Player;
-
 public class PlayScoreboard extends ScoreboardAbstract {
 
-	public PlayScoreboard(Player player, MRMain main) 
+	public PlayScoreboard(MRTeam team, MRMain main) 
 	{
-		super(player, "uwu", "Scoreboard-Play", playInt, main);
+		super(team, "Play", new TipBuilder[5], main);
 	}
 
 	@Override
 	protected void scoreboardStuff() 
 	{
-		MRTeam team = MRPlayer.getMRPlayer(player).getMapTeam();
-		String q = "???";
-
-		updateEntry("Time", TextUtils.getTimeFormat(MRPlayer.getMRPlayer(team.getKiller()).getPlayerTime()));
-		updateEntry("Players", team.getSurvivors().size()+"");
-		updateEntry("1", q, q);
-		updateEntry("2", q, q);
-		updateEntry("3", q, q);
-
-		updateEntryTemporary("Killer", team.getKiller().getName());
-		updateEntryTemporary("Map", team.getMapOrigin());
+		int map = getInt("Map");
+		int timer = getInt("Timer");
+		int mode = getInt("Mode");
+		int killer = getInt("Killer");
+		int sL = getInt("Survivors Left");
+		
+		String mapPrefix = playPrefix[map];
+		String timerPrefix = playPrefix[timer];
+		String modePrefix = playPrefix[mode];
+		String killerPrefix = playPrefix[killer];
+		String sLPrefix = playPrefix[sL];
+		
+		this.tips[map] = new TipBuilder(mapPrefix, board.getTip(mapPrefix, team.getMapOrigin()));
+		this.tips[timer] = new TipBuilder(timerPrefix, board.getTip(timerPrefix, TextUtils.getTimeFormat(0)));
+		this.tips[mode] = new TipBuilder(modePrefix, board.getTip(modePrefix, team.getMode().toString()));
+		this.tips[killer] = new TipBuilder(killerPrefix, board.getTip(killerPrefix, team.getKiller().getName()));
+		this.tips[sL] = new TipBuilder(sLPrefix, board.getTip(sLPrefix, team.getSurvivors().size()));
 	}
 }

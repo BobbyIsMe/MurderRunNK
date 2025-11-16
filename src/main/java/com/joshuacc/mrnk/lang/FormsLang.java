@@ -14,8 +14,11 @@ public enum FormsLang {
 	SELMAPNUM("Map-Selector.Available Maps", "&8Available Maps: %n"),
 
 	//Config both maps and lobbies
+	CONNOMAPS("Config-Texts.NoMaps", "&4No maps to configure."),
+	CONRELOADMAPS("Config-Texts.ReloadMaps", "&aSuccessfully reloaded maps!"),
 	CONTITLE("Config-Texts.Title", "Config Maps or Lobbies"),
 	CONDESC("Config-Texts.Description", "Here you can select what to configure!"),
+	CONTPLOBBY("Config-Texts.Tp-Lobby", "&6» &aTeleport to Lobby Location"),
 	CONLOBBY("Config-Texts.Lobby", "&6» &5Set Lobby Location"),
 	CONWLOBBY("Config-Texts.W-Lobby", "&6» &3Set Queue Lobby Location"),
 	CONTYPE("Config-Texts.Type", "&6» &2Edit - &l%l"),
@@ -23,6 +26,7 @@ public enum FormsLang {
 	//Editing Map Menu
 	EDITTITLE("Edit-Texts.Title", "Editing Map - %l"),
 	EDITDESC("Edit-Texts.Description", "Here you can see the menu on what you can edit for the map!"),
+	EDITEXIT("Edit-Texts.Exit", "&6» &4Exit Config"),
 	EDITTEL("Edit-Texts.Teleport Map", "&6» &aTeleport to Map"),
 	EDITMAP("Edit-Texts.Config Map", "&6» &eConfig Map Settings"),
 	EDITSLOC("Edit-Texts.S Location", "&6» &fSet Survivor Location"),

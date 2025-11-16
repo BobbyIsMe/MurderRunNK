@@ -104,8 +104,11 @@ public class MRArenasConfig extends AbstractFiles {
 
 	public void loadOriginMap()
 	{
-		main.initWorld(levelName);
-		level = Server.getInstance().getLevelByName(levelName);
+		if(level == null)
+		{
+			main.initWorld(levelName);
+			level = Server.getInstance().getLevelByName(levelName);
+		}
 	}
 
 	public void setSurvivorLocation(Player player)

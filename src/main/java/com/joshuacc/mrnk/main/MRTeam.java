@@ -1,10 +1,14 @@
 package com.joshuacc.mrnk.main;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.TimeZone;
 
 import com.joshuacc.mrnk.events.GameEndEvent;
 import com.joshuacc.mrnk.events.GameEndEvent.WinType;
@@ -16,7 +20,6 @@ import com.joshuacc.mrnk.files.MRLanguagesConfig;
 import com.joshuacc.mrnk.files.MRScoreboardConfig;
 import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.scoreboards.PlayScoreboard;
-import com.joshuacc.mrnk.scoreboards.WaitScoreboard;
 import com.joshuacc.mrnk.utils.BackupWorlds;
 import com.joshuacc.mrnk.utils.MapState;
 import com.joshuacc.mrnk.utils.TextUtils;
@@ -129,27 +132,35 @@ public class MRTeam {
 	private Player killer;
 	private MRArenasConfig mapConfig;
 	private MRScoreboardConfig board;
+	private PlayScoreboard playBoard;
 
 	private boolean started;
 	private boolean interm;
-
+	
+	private int round = 0;
+	
 	public MRTeam(MRMain main, String map, MapModes mode, MRArenasConfig mapConfig, int multiple)
 	{
 		killer = null;
 		task = null;
+		this.playBoard = null;
 		this.main = main;
 		this.started = false;
 		this.interm = false;
 		this.map = map;
 		this.mapId = map+"-"+multiple;
 		this.mode = mode;
+		this.round = 1;
 		this.mapConfig = mapConfig;
 		this.board = main.getMRScoreboardConfig();
 		this.directory = new File(main.getFileDirectory(getMode()), mapId)+File.separator;
+		
 		allPlayers = new ArrayList<>();
 		allSurvivors = new ArrayList<>();
 		allSpectators = new ArrayList<>();
 		mapMode.get(mode).put(mapId, this);
+
+
 		new BackupWorlds(main, getMode()).copyOverWorld(map, mapId);
 		main.initWorld(directory);
 	}
@@ -175,20 +186,20 @@ public class MRTeam {
 	{
 		task.cancel();
 		task = null;
+		this.playBoard = null;
 		Server.getInstance().getScheduler().scheduleDelayedTask(main, () -> {
 
 			allSpectators.clear();
 
 			for(Player player : allPlayers)
 			{
-				MRPlayer mPlayer = MRPlayer.getMRPlayer(player);
-				mPlayer.setScoreboard(new WaitScoreboard(player, main));
 				addSurvivor(player);
-				mPlayer.queue(true);
+				MRPlayer.getMRPlayer(player).queue(true);
 			}
 
-			updateEntry("Message", board.getString("Message-3"));
-			updateEntry("Players", getPlayers().size()+"", mapConfig.getMaximumPlayers()+"");
+			//updateEntry("Message", board.getString("Message-3"));
+			sendActionBar(TextFormat.colorize('&', board.getString("Message-3")));
+			updateScoreboardPlayerCount();
 			selectMurderer();
 
 			interm = true;
@@ -199,14 +210,15 @@ public class MRTeam {
 	{
 		Server.getInstance().getScheduler().scheduleRepeatingTask(new Task() {
 
-			int i = Integer.parseInt(board.getString("Seconds"));
+			int i = board.getInt("Seconds");
 
 			@Override
 			public void onRun(int arg0) 
 			{
 				if(allPlayers.size() >= mapConfig.getMinimumPlayers())
 				{
-					updateEntry("Message", board.getString("Message-2"), i+"");
+//					updateEntry("Message", board.getString("Message-2"), i+"");
+					sendActionBar(TextFormat.colorize('&', board.getString("Message-2").replace("%n", i+"")));
 					if(i == 0)
 					{
 						officialStart();
@@ -215,7 +227,8 @@ public class MRTeam {
 				}
 				else
 				{
-					updateEntry("Message", board.getString("Message-1"));
+//					updateEntry("Message", board.getString("Message-1"));
+					sendActionBar(TextFormat.colorize('&', board.getString("Message-1")));
 					this.cancel();
 				}
 				i--;
@@ -232,7 +245,8 @@ public class MRTeam {
 		for(Player players : allPlayers)
 			addSurvivor(players);
 
-		updateEntry("Message", board.getString("Message-3"));
+//		updateEntry("Message", board.getString("Message-3"));
+		sendActionBar(TextFormat.colorize('&', board.getString("Message-3")));
 		messagePlayersDelay(TextUtils.format(ConfigLang.MAPSTARTED.toString()), 1, Sound.MOB_VILLAGER_IDLE);
 
 		main.getServer().getScheduler().scheduleDelayedTask(new Task() {
@@ -263,7 +277,7 @@ public class MRTeam {
 		}, 60);
 	}
 
-	public void selectMurderer()
+	private void selectMurderer()
 	{
 		ArrayList<Player> randomPlayers = new ArrayList<Player>();
 
@@ -307,6 +321,7 @@ public class MRTeam {
 		else if(size == 0)
 		{
 			//TODO: end game
+			
 		}
 	}
 
@@ -320,6 +335,7 @@ public class MRTeam {
 		}
 
 		addKiller(select);
+
 		for(Player players : allPlayers)
 		{
 			players.sendTitle("§4§l"+select.getName()+"§r", ConfigLang.MAPRANDFIN.toString(), 0, 60, 0);
@@ -335,10 +351,13 @@ public class MRTeam {
 	private void releaseMurderer(boolean restart)
 	{
 		interm = false;
+		this.playBoard = new PlayScoreboard(this, main);
+		playBoard.openScoreboard();
 
 		for(Player player: allPlayers)
-			MRPlayer.getMRPlayer(player).setScoreboard(new PlayScoreboard(player, main));
-
+			MRPlayer.getMRPlayer(player).setScoreboard(playBoard);
+		removeActionBar();
+		sendScoreboardTip();
 		if(!restart)
 		{
 			for(Player survivor : allSurvivors)
@@ -347,7 +366,10 @@ public class MRTeam {
 			Server.getInstance().getPluginManager().callEvent(new GameStartEvent(GameAttribute.STARTED, this));
 		}
 		else
-			MRPlayer.getMRPlayer(killer).queue(true);
+		{
+			MRPlayer.getMRPlayer(killer).queue(true); //TODO: What?
+			sendScoreboardTip();
+		}
 
 		intermissionCount(20, () -> {
 
@@ -371,32 +393,21 @@ public class MRTeam {
 			@Override
 			public void onRun(int arg0) 
 			{
-				if(task == null)
+				if(task == null || killer == null)
 					return;
-
-				if(killer == null)
-				{
-					for(Player player : allPlayers)
-					{
-						player.sendMessage(TextUtils.format(ConfigLang.KILLERLEAVE.toString()));
-						player.teleport(main.getMRLobbyConfig().getQueueLobbyLocation());
-					}
-
-					selectMurderer();
-					cancelTimer();
-					return;
-				}
 
 				k.updateTime();
 
 				int i = k.getPlayerTime();
 
-				updateEntry("Time", TextUtils.getTimeFormat(i));
+//				updateEntry("Time", TextUtils.getTimeFormat(i));
+				updateEntry(playBoard.getInt("Timer"), TextUtils.getTimeFormat(i));
+				sendScoreboardTip();
 
 				if(i == time)
 				{	
 					Server.getInstance().getPluginManager().callEvent(new GameEndEvent(k.getMapTeam(), WinType.OUT_OF_TIME));
-					cancelTimer();
+					this.cancel();
 					return;
 				}
 			}
@@ -404,7 +415,7 @@ public class MRTeam {
 		}, 20, 20);
 	}
 
-	private void intermissionCount(int delay, FinishTask task, ArrayList<Player> player,String announce, String countdown)
+	private void intermissionCount(int delay, FinishTask task, ArrayList<Player> player, String announce, String countdown)
 	{
 		main.getServer().getScheduler().scheduleDelayedRepeatingTask(new Task() {
 
@@ -425,6 +436,26 @@ public class MRTeam {
 				if(i == 0)
 				{
 					task.finish();
+					this.cancel();
+					return;
+				}
+
+				if(!interm & allPlayers.size() <= 1)
+				{
+					playBoard = null;
+					for(Player players : allPlayers)
+					{
+						players.sendMessage(ConfigLang.NOTENOUGHPLAYERS.toString());
+						playSoundPlayer(players, Sound.MOB_VILLAGER_NO);
+						players.addEffect(Effect.getEffect(Effect.BLINDNESS).setDuration(Integer.MAX_VALUE).setVisible(false));
+						sendActionBar(TextFormat.colorize('&', board.getString("Message-1")));
+						MRPlayer.getMRPlayer(players).queue(true);
+					}
+					
+					updateScoreboardPlayerCount();
+					if(started)
+						started = false;
+					
 					this.cancel();
 					return;
 				}
@@ -507,16 +538,50 @@ public class MRTeam {
 		for(Player player : players)
 			player.sendTitle(title, sub, i, l, i);
 	}
-
-	public void updateEntry(String key, String p)
+	
+	public void updateScoreboardPlayerCount()
 	{
-		updateEntry(key, p, "");
+//		updateEntry("Players", getPlayers().size()+"", mapConfig.getMaximumPlayers()+"");
+		updateEntry(board.getInt("Queue.Players"), getPlayers().size()+"/"+mapConfig.getMaximumPlayers());
+		updateEntry(board.getInt("Queue.Round"), round+"/"+mapConfig.getMaximumPlayers());
+		sendScoreboardTip();
 	}
 
-	public void updateEntry(String key, String p, String p2)
+	public void updateEntry(int index, String p)
+	{
+		if(playBoard == null)
+		for(Player players : allPlayers)
+		{
+			MRPlayer.getMRPlayer(players).getScoreboard().updateEntry(index, p);
+		} else {
+			playBoard.updateEntry(index, p);
+		}
+	}
+	
+	public void updateEntry(int index, int p)
+	{
+		updateEntry(index, Integer.toString(p));
+	}
+
+	public void sendActionBar(String message)
+	{
+		if(message.length() != 0)
+		for(Player players : allPlayers)
+			players.sendActionBar(message);
+	}
+	
+	public void removeActionBar()
 	{
 		for(Player players : allPlayers)
-			MRPlayer.getMRPlayer(players).getScoreboard().updateEntry(key, p, p2);
+			players.sendActionBar("!bar");
+	}
+	
+	public void sendScoreboardTip() 
+	{
+		for(Player players : allPlayers)
+		{
+			MRPlayer.getMRPlayer(players).getScoreboard().sendScoreboardTip(players, (playBoard == null) ? "!stop2" : "!stop1");
+		}
 	}
 
 	public Level getMapLevel()
@@ -542,6 +607,11 @@ public class MRTeam {
 	public static Collection<MRTeam> getTeams(MapModes mode)
 	{
 		return mapMode.get(mode).values();
+	}
+	
+	public int getRound()
+	{
+		return round;
 	}
 
 	public MapState getState()
@@ -605,12 +675,13 @@ public class MRTeam {
 
 			if(task != null)
 			{
-				Server.getInstance().getPluginManager().callEvent(new GameEndEvent(this, WinType.KILLER_LEAVE));
-
 				for(Player players : allPlayers)
+				{
+					player.sendMessage(TextUtils.format(ConfigLang.KILLERLEAVE.toString()));
 					addSpectator(players);
+				}
 
-				cancelTimer();
+				Server.getInstance().getPluginManager().callEvent(new GameEndEvent(this, WinType.KILLER_LEAVE));
 			}
 		}
 
@@ -622,6 +693,11 @@ public class MRTeam {
 		return interm;
 	}
 
+	public boolean timerGoing()
+	{
+		return task != null;
+	}
+	
 	public ArrayList<Player> getPlayers()
 	{
 		return allPlayers;

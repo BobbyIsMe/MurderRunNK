@@ -8,6 +8,7 @@ import java.util.Map;
 import com.joshuacc.mrnk.commands.MRCommand;
 import com.joshuacc.mrnk.commands.OpenListCommand;
 import com.joshuacc.mrnk.commands.PlayerCommand;
+import com.joshuacc.mrnk.commands.TipCommand;
 import com.joshuacc.mrnk.files.MRArenasConfig;
 import com.joshuacc.mrnk.files.MRFormsTextsConfig;
 import com.joshuacc.mrnk.files.MRGameConfig;
@@ -18,7 +19,7 @@ import com.joshuacc.mrnk.files.MRScoreboardConfig;
 import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.listeners.MRGameListener;
 import com.joshuacc.mrnk.main.MRTeam.MapModes;
-import com.joshuacc.mrnk.scoreboards.ScoreboardAbstract;
+import com.joshuacc.mrnk.scoreboards.PlayScoreboard;
 import com.joshuacc.mrnk.utils.EmptyGenerator;
 import com.joshuacc.mrnk.utils.FormUtils;
 import com.joshuacc.mrnk.utils.NPCHuman;
@@ -40,6 +41,7 @@ public class MRMain extends PluginBase {
 
 	private HashMap<String,MRArenasConfig> mapConfigs = new HashMap<>();
 	private HashMap<MapModes,Integer> playerCount = new HashMap<>(); 
+	private String empty;
 
 	private static String prefix;
 
@@ -47,7 +49,7 @@ public class MRMain extends PluginBase {
 	public void onEnable()
 	{
 		try {
-			Class.forName("de.theamychan.scoreboard.api.ScoreboardAPI");
+			Class.forName("de.lucgameshd.scoreboard.api.ScoreboardAPI");
 		} catch (ClassNotFoundException e) {
 			getLogger().critical("§cMissing dependency: ScoreboardAPI-1.0 by LucGamesHD");
 			getLogger().info("");
@@ -76,13 +78,13 @@ public class MRMain extends PluginBase {
 		lobby = new MRLobbyConfig(this);
 		game = new MRGameConfig(this);
 		formUtil = new FormUtils(this);
+		
+		this.empty = "@".repeat(board.getMaxLength());
 
 		players.setupConfig();
 		board.setupConfig();
 		lobby.setupConfig();
 		game.setupConfig();
-
-		ScoreboardAbstract.registerScoreboards(board);
 
 		registerCommands();
 		registerListeners();
@@ -94,6 +96,8 @@ public class MRMain extends PluginBase {
 		for(MapModes mode : MapModes.values())
 			playerCount.put(mode, 0);
 
+		PlayScoreboard.registerScoreboard(board);
+		
 		minigameMapLoader();
 	}
 
@@ -157,6 +161,7 @@ public class MRMain extends PluginBase {
 		map.register("mr", new MRCommand(this));
 		map.register("npcadd", new PlayerCommand(this));
 		map.register("openlist", new OpenListCommand(this));
+		map.register("tip", new TipCommand());
 	}
 
 	private void registerListeners()
@@ -168,14 +173,19 @@ public class MRMain extends PluginBase {
 	private void checkMapAreas(MRArenasConfig config)
 	{
 		getLogger().info("Reason: ");
-		if(config.noLocationY("Survivor"))
-			getLogger().info("No survivor spawn found!");
+		if(config.noLocationY("Survivor") && config.noLocationY("Murderer") && config.noLocationY("Game End"))
+			getLogger().info("There are no spawns found for the map!");
+		else
+		{
+			if(config.noLocationY("Survivor"))
+				getLogger().info("No survivor spawn found!");
 
-		if(config.noLocationY("Murderer"))
-			getLogger().info("No murderer spawn found!");
+			if(config.noLocationY("Murderer"))
+				getLogger().info("No murderer spawn found!");
 
-		if(config.noLocationY("Game End"))
-			getLogger().info("No game end spawn found!");
+			if(config.noLocationY("Game End"))
+				getLogger().info("No game end spawn found!");
+		}
 	}
 
 	public void updatePlayerCount(MapModes mode, int count)
@@ -198,6 +208,7 @@ public class MRMain extends PluginBase {
 	public void initWorld(String levelName)
 	{
 		Server.getInstance().generateLevel(levelName, 0, Generator.getGenerator("emptyworld"));
+		Server.getInstance().loadLevel(levelName);
 	}
 
 	public Map<String, MRArenasConfig> getMapConfigs()
@@ -208,6 +219,11 @@ public class MRMain extends PluginBase {
 	public String getFileDirectory(String path)
 	{
 		return new File(getDataFolder(), path).getAbsolutePath();
+	}
+	
+	public String getEmpty()
+	{
+		return empty;
 	}
 
 	public String[] getMaps()

@@ -25,38 +25,58 @@ import cn.nukkit.form.response.FormResponseSimple;
 import cn.nukkit.form.window.FormWindow;
 import cn.nukkit.form.window.FormWindowCustom;
 import cn.nukkit.form.window.FormWindowSimple;
+import cn.nukkit.level.Position;
 
 public class FormUtils {
 
 	private MRMain main;
 	private HashMap<UUID,String> editLevel = new HashMap<>();
-	private HashMap<Integer,String> maps = new HashMap<>();
+	private HashMap<Integer,String> maps;
 	private HashMap<Player, HashMap<Integer,String>> idMap = new HashMap<>();
+	private static final int CONFIG_OFFSET = 3;
 
 	public FormUtils(MRMain main)
 	{
 		this.main = main;
-
+		initializeMaps();
+	}
+	
+	public void initializeMaps()
+	{
+		maps = new HashMap<>();
 		if(main.getMaps() != null)
 			for(int i = 0; i < main.getMaps().length; i++)
-				maps.put(i+2, main.getMaps()[i]);
+				maps.put(i+CONFIG_OFFSET, main.getMaps()[i]);
 		else
 			maps = null;
 	}
 
 	public void addConfigMenu(Player player)
 	{
+		if(editLevel.containsKey(player.getUniqueId()))
+		{
+			addConfigMapForm(player, editLevel.get(player.getUniqueId()));
+			return;
+		}
 		FormWindowSimple configMenu = new FormWindowSimple(FormsLang.CONTITLE.toString(), FormsLang.CONDESC.toString());
+		configMenu.addButton(new ElementButton(FormsLang.CONTPLOBBY.toString()));
 		configMenu.addButton(new ElementButton(FormsLang.CONLOBBY.toString()));
 		configMenu.addButton(new ElementButton(FormsLang.CONWLOBBY.toString()));
-		for(String maps : maps.values())
-			configMenu.addButton(new ElementButton(TextUtils.formatLevel(FormsLang.CONTYPE.toString(), maps)));
+		if(maps != null)
+		{
+			for (String maps : maps.values()) {
+				configMenu.addButton(new ElementButton(TextUtils.formatLevel(FormsLang.CONTYPE.toString(), maps)));
+			}
 		player.showFormWindow(configMenu, 100);
+		}
+		else
+			player.sendMessage(FormsLang.CONNOMAPS.toString());
 	}
 
 	public void addConfigMapForm(Player player, String level)
 	{
 		FormWindowSimple configForm = new FormWindowSimple(TextUtils.formatLevel(FormsLang.EDITTITLE.toString(), level), FormsLang.EDITDESC.toString());
+		configForm.addButton(new ElementButton(FormsLang.EDITEXIT.toString()));
 		configForm.addButton(new ElementButton(FormsLang.EDITTEL.toString()));
 		configForm.addButton(new ElementButton(FormsLang.EDITMAP.toString()));
 		configForm.addButton(new ElementButton(FormsLang.EDITSLOC.toString()));
@@ -137,7 +157,6 @@ public class FormUtils {
 	{
 		if(window.wasClosed())
 		{
-			editLevel.remove(player.getUniqueId());
 			idMap.remove(player);
 			return;
 		}
@@ -158,24 +177,28 @@ public class FormUtils {
 				return;
 			}
 
-		if(editLevel.get(player.getUniqueId()) == null)
-			return;
-
-		handleConfigMapForm(player, (FormResponseSimple) response);
+		if(editLevel.get(player.getUniqueId()) != null)
+			handleConfigMapForm(player, (FormResponseSimple) response);
 	}
 
 	private void handleConfigMenuForm(Player player, FormResponseSimple response)
 	{
 		int id = response.getClickedButtonId();
 		MRLobbyConfig lobby = main.getMRLobbyConfig();
-		if(id == 0)
+		switch(id)
 		{
+		case 0:
+			player.teleport(main.getMRLobbyConfig().getMainLobbyLocation());
+			break;
+		case 1:
 			lobby.setupLobbyLocation(player, true);
 			player.sendMessage(ConfigLang.SUCCESSLOBBY.toString());
-		} else if(id == 1) {
+			break;
+		case 2:
 			lobby.setupLobbyLocation(player, false);
 			player.sendMessage(ConfigLang.SUCCESSWLOBBY.toString());
-		} else if(id >= 2) {
+			break;
+		default:
 
 			if(checkLobbySpawns(player))
 				return;
@@ -183,6 +206,7 @@ public class FormUtils {
 			String level = maps.get(id);
 			editLevel.put(player.getUniqueId(), level);
 			addConfigMapForm(player, level);
+			break;
 		}
 	}
 
@@ -236,7 +260,7 @@ public class FormUtils {
 		String level = editLevel.get(player.getUniqueId());
 		MRArenasConfig mapConfig = main.getMapConfigs().get(level);
 
-		if(response.getClickedButtonId() == 6)
+		if(response.getClickedButtonId() == 7)
 		{
 			if(main.correctMapAreasConfig(mapConfig))
 				mapConfig.toggleMapEnabled();
@@ -249,24 +273,33 @@ public class FormUtils {
 			switch(response.getClickedButtonId())
 			{
 			case 0:
-				player.switchLevel(mapConfig.getOriginalMapLevel());
+				editLevel.remove(player.getUniqueId());
+				if(player.getLevel().getFolderName().equals(mapConfig.getOriginalMapLevel().getFolderName()))
+				player.teleport(main.getMRLobbyConfig().getMainLobbyLocation());
+				addConfigMenu(player);
 				break;
 			case 1:
-				addSettingsMapForm(player, level);
+				Position pos = mapConfig.getOriginalMapLevel().getSpawnLocation();
+				Position l = new Position(pos.x, pos.y, pos.z, mapConfig.getOriginalMapLevel());
+				player.setLevel(mapConfig.getOriginalMapLevel());
+				player.teleport(l);
 				break;
 			case 2:
+				addSettingsMapForm(player, level);
+				break;
+			case 3:
 				mapConfig.setSurvivorLocation(player);
 				player.sendMessage(ConfigLang.SLOCATIONMESSAGE.toString());
 				break;
-			case 3:
+			case 4:
 				mapConfig.setMurdererLocation(player);
 				player.sendMessage(ConfigLang.MLOCATIONMESSAGE.toString());
 				break;
-			case 4:
+			case 5:
 				mapConfig.setGameEndLocation(player);
 				player.sendMessage(ConfigLang.GLOCATIONMESSAGE.toString());
 				break;
-			case 5:
+			case 6:
 				mapConfig.addVehicleLocation(player);
 				player.sendMessage(ConfigLang.VLOCATIONMESSAGE.toString());
 				break;

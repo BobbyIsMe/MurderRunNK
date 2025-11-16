@@ -52,6 +52,7 @@ public enum ConfigLang {
 	PlAYERLEAVESTART("Leave-Play Message", "&e%p left while the game is playing."),
 	QUEUEBAR("Queue-Bar Message", "&bYou are now being queued for &l%l"),
 	MAPNOTIFYQUEUE("Map-Queue Message", "&a%p &ehas joined the queue."),
+	NOTENOUGHPLAYERS("Less-Players Message", "&eThere are not enough players to start, can't proceed to intermission!"),
 	MAPSTARTED("Map-Start Message", "&eThe game has officially started! From now on, you can't leave the game until the end!"),
 	MAPTITLESTART("Start-Title", "&0&kIII&r &4&lMURDER RUN &r&0&kIII"),
 	MAPSUBTSTART("Start-Subtitle","&eSurvive long while you can!"),

@@ -89,7 +89,8 @@ public class MRGameListener implements Listener {
 		String reason = TextUtils.formatPlayer(killer != null ? ConfigLang.SURVIVORKILLED.toString().replace("%k", killer.getName()) : ConfigLang.SURVIVORDIE.toString(), player);
 
 		team.addSpectator(player);
-		team.updateEntry("Players", team.getSurvivors().size()+"");
+//		team.updateEntry("Players", team.getSurvivors().size()+"");
+		team.updateEntry(4, team.getSurvivors().size());
 
 		if(killer != null)
 		{
@@ -99,7 +100,7 @@ public class MRGameListener implements Listener {
 		for(Player players : team.getPlayers())
 			players.sendMessage(reason);
 
-		if(team.getPlayers().size() == 1)
+		if(team.getSurvivors().size() == 0)
 			Server.getInstance().getPluginManager().callEvent(new GameEndEvent(team, WinType.KILL_ALL));
 	}
 
@@ -118,7 +119,6 @@ public class MRGameListener implements Listener {
 		case KILL_ALL:
 			title = ConfigLang.MURDERERWIN.toString();
 			main.getMRPlayerConfig().incrementPoints(killer, game.getKillPoints());
-			team.cancelTimer();
 			break;
 		case KILLER_LEAVE:
 		case OUT_OF_TIME:
@@ -127,8 +127,12 @@ public class MRGameListener implements Listener {
 
 			for(Player players : team.getSurvivors())
 				main.getMRPlayerConfig().incrementPoints(players, game.getKillPoints());
+			
+			MRPlayer.getMRPlayer(killer).setTime(team.getMapConfig().getTimeLimit());
 			break;
 		}
+		
+		team.cancelTimer();
 
 		for(Player player : team.getPlayers())
 		{

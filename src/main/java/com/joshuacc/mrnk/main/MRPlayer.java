@@ -2,10 +2,11 @@ package com.joshuacc.mrnk.main;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
+import com.joshuacc.mrnk.events.GameEndEvent;
 import com.joshuacc.mrnk.events.GameStartEvent;
 import com.joshuacc.mrnk.events.GameStartEvent.GameAttribute;
 import com.joshuacc.mrnk.events.PlayerJoinGameEvent;
+import com.joshuacc.mrnk.events.GameEndEvent.WinType;
 import com.joshuacc.mrnk.files.MRArenasConfig;
 import com.joshuacc.mrnk.files.MRLobbyConfig;
 import com.joshuacc.mrnk.lang.ConfigLang;
@@ -30,6 +31,7 @@ public class MRPlayer {
 	private static final HashMap<Player,MRPlayer> addPlayer = new HashMap<>();
 
 	private Player player;
+	private MRMain main;
 	private MRTeam mapTeam;
 	private MRLobbyConfig lobby;
 	private ScoreboardAbstract board;
@@ -44,6 +46,7 @@ public class MRPlayer {
 	private MRPlayer(MRMain main, Player player, MRTeam mapTeam)
 	{
 		this.player = player;
+		this.main = main;
 		this.lobby = main.getMRLobbyConfig();
 		this.mapTeam = mapTeam;
 		this.board = null;
@@ -76,6 +79,8 @@ public class MRPlayer {
 			removeAllDrops();
 		}
 
+		setScoreboard(new WaitScoreboard(player, main));
+
 		player.teleport(lobby.getQueueLobbyLocation());
 	}
 
@@ -89,16 +94,18 @@ public class MRPlayer {
 	{
 		time++;
 	}
+	
+	public void setTime(int time)
+	{
+		this.time = time;
+	}
 
 	public void setScoreboard(ScoreboardAbstract board)
 	{
-		if(this.board != null)
-			this.board.removeScoreboard();
-
 		this.board = board;
 		board.openScoreboard();
 	}
-
+	
 	public void setHasRound()
 	{
 		this.hasRound = true;
@@ -144,7 +151,14 @@ public class MRPlayer {
 	{
 		return qPts;
 	}
-
+	
+	public void addPoints(int qPts)
+	{
+		this.qPts += qPts;
+		if(qPts != 0 && this.qPts != 0)
+			board.updateEntry(board.getInt("Points"), qPts);
+	}
+	
 	public boolean hasRound()
 	{
 		return hasRound;
@@ -187,6 +201,8 @@ public class MRPlayer {
 
 			if(lobby.getMainLobbyLocation().getLevel() != null)
 				player.teleport(lobby.getMainLobbyLocation());
+			
+			player.removeAllEffects();
 		}
 
 		@EventHandler
@@ -205,11 +221,10 @@ public class MRPlayer {
 
 			player.sendMessage(TextUtils.format(TextUtils.formatLevel(ConfigLang.PLAYERQUEUE.toString(), team.getMapOrigin())));
 
-			mPlayer.setScoreboard(new WaitScoreboard(player, main));
 			mPlayer.queue(false);
 
 			team.addAllPlayer(player);
-			team.updateEntry("Players", team.getPlayers().size()+"", config.getMaximumPlayers()+"");
+			team.updateScoreboardPlayerCount();
 			team.messageAllPlayers(TextUtils.format(TextUtils.formatPlayer(ConfigLang.MAPNOTIFYQUEUE.toString(), player)));
 
 			if(team.getPlayers().size() == config.getMinimumPlayers())
@@ -224,26 +239,29 @@ public class MRPlayer {
 			{
 				MRPlayer mPlayer = MRPlayer.getMRPlayer(player);
 				MRTeam team = mPlayer.getMapTeam();
-				MRArenasConfig config = team.getMapConfig();
-
-				if(team.onIntermission())
-					team.updateEntry("Players", team.getPlayers().size()+"", config.getMaximumPlayers()+"");
-				else
-				{
-					mPlayer.removeAllDrops();
-					team.updateEntry("Players", team.getSurvivors().size()+"");
-				}
 
 				team.removePlayer(player);
 
+				if(team.onIntermission())
+					team.updateScoreboardPlayerCount();
+				else
+				{
+					mPlayer.removeAllDrops();
+					team.updateEntry(4, team.getSurvivors().size());
+//					team.updateEntry("Players", team.getSurvivors().size()+"");
+
+					if(team.timerGoing() && team.getSurvivors().size() == 0)
+						Server.getInstance().getPluginManager().callEvent(new GameEndEvent(team, WinType.SURVIVORS_LEAVE));
+				}
+
+				String reason = team.getState() == MapState.STARTED ? TextUtils.formatPlayer(TextUtils.format(ConfigLang.PlAYERLEAVESTART.toString()), player) : TextUtils.formatPlayer(TextUtils.format(ConfigLang.PLAYERLEAVE.toString()), player);
+
 				for(Player players : team.getPlayers())
-					if(team.getState() == MapState.STARTED)
-						players.sendMessage(TextUtils.formatPlayer(TextUtils.format(ConfigLang.PlAYERLEAVESTART.toString()), player));
-					else
-						players.sendMessage(TextUtils.formatPlayer(TextUtils.format(ConfigLang.PLAYERLEAVE.toString()), player));
+					players.sendMessage(reason);
 
 				mPlayer.removePlayer();
 			}
 		}
 	}
 }
+

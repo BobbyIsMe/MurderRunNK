@@ -1,6 +1,7 @@
 package com.joshuacc.mrnk.commands;
 
 import com.joshuacc.mrnk.lang.ConfigLang;
+import com.joshuacc.mrnk.lang.FormsLang;
 import com.joshuacc.mrnk.main.MRMain;
 import com.joshuacc.mrnk.utils.FormUtils;
 import com.joshuacc.mrnk.utils.TextUtils;
@@ -53,6 +54,10 @@ public class MRCommand extends Command {
 				break;
 			case "traps":
 				
+				break;
+			case "reload":
+				formUtil.initializeMaps();
+				player.sendMessage(FormsLang.CONRELOADMAPS.toString());
 				break;
 			}
 			break;

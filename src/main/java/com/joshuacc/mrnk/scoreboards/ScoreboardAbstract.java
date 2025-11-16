@@ -1,141 +1,163 @@
 package com.joshuacc.mrnk.scoreboards;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import com.joshuacc.mrnk.files.MRScoreboardConfig;
 import com.joshuacc.mrnk.main.MRMain;
+import com.joshuacc.mrnk.main.MRTeam;
 
 import cn.nukkit.Player;
-import cn.nukkit.utils.Config;
-import cn.nukkit.utils.TextFormat;
-import de.theamychan.scoreboard.api.ScoreboardAPI;
-import de.theamychan.scoreboard.network.DisplayEntry;
-import de.theamychan.scoreboard.network.DisplaySlot;
-import de.theamychan.scoreboard.network.Scoreboard;
-import de.theamychan.scoreboard.network.ScoreboardDisplay;
-import de.theamychan.scoreboard.network.SortOrder;
 
 public abstract class ScoreboardAbstract {
 
-	protected static ArrayList<Integer> queueInt = new ArrayList<>();
-	protected static ArrayList<Integer> playInt = new ArrayList<>();
-
+	protected static final String[] queuePrefix = new String[6];
+	protected static final String[] playPrefix = new String[5];
+	
 	protected MRMain main;
+	protected TipBuilder[] tips;
+	protected MRScoreboardConfig board;
 	protected Player player;
+	protected MRTeam team;
 
-	private Scoreboard board;
-	private ScoreboardDisplay display;
-
-	protected HashMap<Integer,DisplayEntry> entry;
-
-	private MRScoreboardConfig config;
-	private ArrayList<Integer> score;
 	private String key;
-	private int line;
 
-	public ScoreboardAbstract(Player player, String objName, String key, ArrayList<Integer> score, MRMain main)
+	public ScoreboardAbstract(Player player, String key, TipBuilder[] tips, MRMain main)
 	{
-		this.entry = new HashMap<>();
 		this.main = main;
 		this.player = player;
 		this.key = key+".";
-		this.score = score;
-		this.board = ScoreboardAPI.createScoreboard();
-		this.config = main.getMRScoreboardConfig();
-		this.display = board.addDisplay(DisplaySlot.SIDEBAR, objName, TextFormat.colorize(config.getScoreboardTitle()), SortOrder.DESCENDING);
-		this.line = getStringList().size()-1;
+		this.board = main.getMRScoreboardConfig();
+		this.tips = tips;
+	}
+	
+	public ScoreboardAbstract(MRTeam team, String key, TipBuilder[] tips, MRMain main)
+	{
+		this.main = main;
+		this.team = team;
+		this.key = key+".";
+		this.board = main.getMRScoreboardConfig();
+		this.tips = tips;
+	}
+	
+	public static void registerScoreboard(MRScoreboardConfig b)
+	{
+		String queue = "Queue.";
+		int qMap = b.getInt(queue+"Map");
+		int qMode = b.getInt(queue+"Mode");
+		int qPlayers = b.getInt(queue+"Players");
+		int qTimeLimit = b.getInt(queue+"Time Limit");
+		int qRound = b.getInt(queue+"Round");
+		int qPoints = b.getInt(queue+"Points");
+		queuePrefix[qMap] = "q_"+qMap;
+		queuePrefix[qMode] = "q_"+qMode;
+		queuePrefix[qPlayers] = "q_"+qPlayers;
+		queuePrefix[qTimeLimit] = "q_"+qTimeLimit;
+		queuePrefix[qRound] = "q_"+qRound;
+		queuePrefix[qPoints] = "q_"+qPoints;
+		
+		String play = "Play.";
+		int pMap = b.getInt(play+"Map");
+		int pTimer = b.getInt(play+"Timer");
+		int pMode = b.getInt(play+"Mode");
+		int pKiller = b.getInt(play+"Killer");
+		int pSL = b.getInt(play+"Survivors Left");
+		
+		playPrefix[pMap] = "p_"+pMap;
+		playPrefix[pTimer] = "p_"+pTimer;
+		playPrefix[pMode] = "p_"+pMode;
+		playPrefix[pKiller] = "p_"+pKiller;
+		playPrefix[pSL] = "p_"+pSL;
 	}
 
 	protected abstract void scoreboardStuff();
 
-	public static void registerScoreboards(MRScoreboardConfig config)
-	{
-		String queue = "Scoreboard-Queue.";
-		String play = "Scoreboard-Play.";
-		Config c = config.getConfig();
-		
-		queueInt.add(c.getInt(queue+"Real Time"));
-		queueInt.add(c.getInt(queue+"ID"));
-		queueInt.add(c.getInt(queue+"Map"));
-		queueInt.add(c.getInt(queue+"Players"));
-		queueInt.add(c.getInt(queue+"Points"));
-		queueInt.add(c.getInt(queue+"Points Limit"));
-		queueInt.add(c.getInt(queue+"QPts"));
-		queueInt.add(c.getInt(queue+"Message"));
-		queueInt.add(c.getInt(queue+"Mode"));
-		queueInt.add(c.getInt(queue+"Time Limit"));
-		
-		playInt.add(c.getInt(play+"Killer"));
-		playInt.add(c.getInt(play+"Time"));
-		playInt.add(c.getInt(play+"Map"));
-		playInt.add(c.getInt(play+"Players"));
-		playInt.add(c.getInt(play+"1"));
-		playInt.add(c.getInt(play+"2"));
-		playInt.add(c.getInt(play+"3"));
-	}
-
 	public void openScoreboard()
 	{
-		for(int i = 0; i < getStringList().size(); i++)
-			if(!score.contains(i))
-				addLine(i);
-			else
-				entry.put(i, addLine(i));
-
 		scoreboardStuff();
-		ScoreboardAPI.setScoreboard(player, board);
 	}
 
-	public void removeScoreboard()
+	public void updateEntry(int index, String p)
 	{
-		ScoreboardAPI.removeScorebaord(player, board);
+		TipBuilder tip = tips[index];
+		tip.setCurrentTip(board.getTip(tip.getPrefix(), p));
+	}
+	
+	public void updateEntry(int index, int p)
+	{
+		updateEntry(index, Integer.toString(p));
 	}
 
-	public void updateEntryTemporary(String key, String p)
+	public String getString(String s)
 	{
-		updateEntry(key, p);
-		entry.remove(getInt(key));
+		StringBuilder str = new StringBuilder(key);
+		return board.getString(str.append(s).toString());
 	}
 
-	public void updateEntry(String key, String p)
+	public int getInt(String s)
 	{
-		updateEntry(key, p, "");
-	}
-
-	public void updateEntry(String key, String p, String p2)
-	{
-		int i = getInt(key);
-		if(i == -1)
-			return;
-
-		display.removeEntry(entry.get(i));
-		entry.put(i, addLinePl(i, p, p2));
-	}
-
-	protected String getString(String s)
-	{
-		return config.getString(s);
-	}
-
-	protected int getInt(String i)
-	{
-		return config.getConfig().getInt(key+i);
+		StringBuilder str = new StringBuilder(key);
+		return board.getInt(str.append(s).toString());
 	}
 
 	protected List<String> getStringList()
 	{
-		return config.getConfig().getStringList(key+"Lines");
+		return board.getConfig().getStringList(key+"Lines");
+	}
+	
+	public void sendScoreboardTip(Player player, String stop) 
+	{
+		StringBuilder string = new StringBuilder();
+		for (int i = 0; i < tips.length; i++) 
+		{
+			TipBuilder tip = tips[i];
+			if(!tip.getCurrentTip().equals(tip.getPreviousTip())) 
+			{
+				string.append(tip.getCurrentTip());
+				tips[i].setPreviousTip(tip.getCurrentTip());
+			} else {
+				string.append(main.getEmpty());
+			}
+		}
+
+		player.sendTip(string.append(stop).toString());
+	}
+}
+
+class TipBuilder
+{
+	private String prefix;
+	private String currentTip;
+	private String previousTip;
+	
+	public TipBuilder(String prefix, String currentTip)
+	{
+		this.prefix = prefix;
+		this.currentTip = currentTip;
+		this.previousTip = "";
+	}
+	
+	public String getPrefix() 
+	{
+		return prefix;
 	}
 
-	protected DisplayEntry addLine(int i)
+	public void setCurrentTip(String currentTip)
 	{
-		return display.addLine(TextFormat.colorize('&', getStringList().get(i)), line-i);
+		this.currentTip = currentTip;
 	}
-
-	private DisplayEntry addLinePl(int i, String p, String p2)
+	
+	public void setPreviousTip(String previousTip)
 	{
-		return display.addLine(TextFormat.colorize('&', getStringList().get(i).replace("%m", p).replace("%n", p2)), line-i);
+		this.previousTip = previousTip;
+	}
+	
+	public String getCurrentTip()
+	{
+		return this.currentTip;
+	}
+	
+	public String getPreviousTip()
+	{
+		return this.previousTip;
 	}
 }
