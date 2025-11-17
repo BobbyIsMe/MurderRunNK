@@ -19,6 +19,8 @@ import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.scoreboards.PlayScoreboard;
 import com.joshuacc.mrnk.utils.BackupWorlds;
 import com.joshuacc.mrnk.utils.MapState;
+import com.joshuacc.mrnk.utils.TaskDelay;
+import com.joshuacc.mrnk.utils.TaskQueue;
 import com.joshuacc.mrnk.utils.TextUtils;
 
 import cn.nukkit.Player;
@@ -126,7 +128,6 @@ public class MRTeam {
 	private ArrayList<Player> allSurvivors;
 	private ArrayList<Player> allSpectators;
 	private ArrayList<Player> rankings;
-
 
 	private Player killer;
 	private MRArenasConfig mapConfig;
@@ -253,13 +254,20 @@ public class MRTeam {
 
 //		updateEntry("Message", board.getString("Message-3"));
 		sendActionBar(TextFormat.colorize('&', board.getString("Message-3")));
-		messagePlayersDelay(TextUtils.format(ConfigLang.MAPSTARTED.toString()), 1, Sound.MOB_VILLAGER_IDLE);
-
-		main.getServer().getScheduler().scheduleDelayedTask(new Task() {
+		TaskDelay task = new TaskDelay(main);
+		task.addTask(new TaskQueue(1) {
 
 			@Override
-			public void onRun(int arg0) {
+			public void doTask() 
+			{
+				playSoundMessage(TextUtils.format(ConfigLang.MAPSTARTED.toString()), Sound.MOB_VILLAGER_IDLE);
+			}
+		});
+		task.addTask(new TaskQueue(1) {
 
+			@Override
+			public void doTask() 
+			{
 				for(Player players : allPlayers)
 				{
 					playSoundPlayer(players, Sound.AMBIENT_WEATHER_LIGHTNING_IMPACT);
@@ -267,20 +275,20 @@ public class MRTeam {
 					players.sendTitle(ConfigLang.MAPTITLESTART.toString(), ConfigLang.MAPSUBTSTART.toString(), 20, 40, 20);
 
 					players.removeEffect(Effect.BLINDNESS);
-					players.addEffect(Effect.getEffect(Effect.BLINDNESS).setDuration(40).setVisible(false));
+					players.addEffect(Effect.getEffect(Effect.BLINDNESS).setDuration(20).setVisible(false));
 				}
+			}
+		});
+		task.addTask(new TaskQueue(3) {
 
-				main.getServer().getScheduler().scheduleDelayedTask(new Task() {
-
-					@Override
-					public void onRun(int arg0) 
-					{
-						playSoundMessage(TextUtils.format(ConfigLang.MAPSELECT.toString()), Sound.NOTE_BASS);
-						selectMurderer();
-					}
-				}, 80);
-			}	
-		}, 60);
+			@Override
+			public void doTask() 
+			{
+				playSoundMessage(TextUtils.format(ConfigLang.MAPSELECT.toString()), Sound.NOTE_BASS);
+				selectMurderer();
+			}
+		});
+		task.startTasks();
 	}
 
 	private void selectMurderer()
@@ -327,35 +335,64 @@ public class MRTeam {
 		else if(size == 0)
 		{
 			//TODO: end game
-			int delay = 6;
+			int delay = 2;
+			TaskDelay task = new TaskDelay(main);
 			playSoundMessage(TextUtils.format(ConfigLang.WINNERDRUMROLL.toString()), Sound.MOB_VILLAGER_IDLE);
 			if(rankings.size() > 0 && rankings.get(0) != null)
 			{
-				delay = 10;
+				delay = 4;
 				Player winner = rankings.get(0);
-				playTitleDelay(TextUtils.formatPlayer(ConfigLang.WINNERANNOUNCENAME.toString(), winner), ConfigLang.WINNERANNOUNCETIME.toString().replace("%n", TextUtils.getTimeFormat(MRPlayer.getMRPlayer(winner).getPlayerTime())), Sound.RANDOM_LEVELUP, 2);
-				main.getServer().getScheduler().scheduleDelayedTask(main, () -> {
-					playSoundMessage(TextUtils.format(ConfigLang.LEADERBOARDTITLE.toString()), Sound.RANDOM_CLICK);
-					
-					for(int i = 0; i < rankings.size(); i++)
+				task.addTask(new TaskQueue(2) {
+
+					@Override
+					public void doTask() 
 					{
-						Player players = rankings.get(i);
-						messageAllPlayers(TextUtils.format(TextUtils.formatPlayer(ConfigLang.LEADERBOARDRANK.toString().replace("%n", Integer.toString(i+1)).replace("%m", TextUtils.getTimeFormat(MRPlayer.getMRPlayer(players).getPlayerTime())), players)));
+						playTitleAll(TextUtils.formatPlayer(ConfigLang.WINNERANNOUNCENAME.toString(), winner), ConfigLang.WINNERANNOUNCETIME.toString().replace("%n", TextUtils.getTimeFormat(MRPlayer.getMRPlayer(winner).getPlayerTime())), Sound.RANDOM_LEVELUP, 20);
 					}
-				},  80);
+					
+				});
+				task.addTask(new TaskQueue(2) {
+
+					@Override
+					public void doTask() {
+						playSoundMessage(TextUtils.format(ConfigLang.LEADERBOARDTITLE.toString()), Sound.RANDOM_CLICK);
+						
+						for(int i = 0; i < rankings.size(); i++)
+						{
+							Player players = rankings.get(i);
+							messageAllPlayers(TextUtils.format(TextUtils.formatPlayer(ConfigLang.LEADERBOARDRANK.toString().replace("%n", Integer.toString(i+1)).replace("%m", TextUtils.getTimeFormat(MRPlayer.getMRPlayer(players).getPlayerTime())), players)));
+						}
+					}
+					
+				});
 			}
 			else
 			{
-				playTitleDelay(TextFormat.colorize('&', ConfigLang.WINNERANNOUNCENONE.toString()), "", Sound.RANDOM_LEVELUP, 2);
+				task.addTask(new TaskQueue(1) {
+
+					@Override
+					public void doTask() 
+					{
+						playTitleAll(TextFormat.colorize('&', ConfigLang.WINNERANNOUNCENONE.toString()), "", Sound.RANDOM_LEVELUP, 20);
+					}
+					
+				});
 			}
-			main.getServer().getScheduler().scheduleDelayedTask(main, () -> {
-				for(Player players : allPlayers)
+			task.addTask(new TaskQueue(delay) {
+
+				@Override
+				public void doTask() 
 				{
-					MRPlayer.getMRPlayer(players).unqueue();
+					for(Player players : allPlayers)
+					{
+						MRPlayer.getMRPlayer(players).unqueue();
+					}
+					main.updatePlayerCount(mode, -allPlayers.size());
+					initialize();
 				}
-				main.updatePlayerCount(mode, -allPlayers.size());
-				initialize();
-			},  delay * 20);
+				
+			});
+			task.startTasks();
 		}
 	}
 
