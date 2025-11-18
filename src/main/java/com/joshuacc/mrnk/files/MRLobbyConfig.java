@@ -68,6 +68,20 @@ public class MRLobbyConfig extends AbstractFiles {
 		ent.namedTag.putString("npc-type", type);
 		playerScheduler(getHologramLocation(type, id), id, mode);
 	}
+	
+	public void addJoinNPCDetails(String type, Entity ent)
+	{
+		int id = config.getInt(type+"-id")+1;
+		String prefix = "NPC."+type+".";
+		config.set(prefix+id+".X", ent.getX());
+		config.set(prefix+id+".Y", ent.getY()+(ent.getHeight()+ent.getScale())+1.05);
+		config.set(prefix+id+".Z", ent.getZ());
+		config.set(prefix+id+".Level", ent.getLevel().getName());
+		config.set(type+"-id", id);
+		config.save();
+		ent.namedTag.putInt("npc-tag", config.getInt(type+"-id"));
+		ent.namedTag.putString("npc-type", type);
+	}
 
 	public Location getMainLobbyLocation()
 	{

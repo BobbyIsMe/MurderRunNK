@@ -20,6 +20,17 @@ public class TextUtils {
 		return TextFormat.colorize('&', MRMain.getPrefix()+" "+line);
 	}
 
+	public static String formatLine(String line, String first)
+	{
+		return TextFormat.colorize('&', line.replace("%m", first));
+	}
+	
+	public static String formatLine(String line, String first, String second)
+	{
+		return TextFormat.colorize('&', line.replace("%m", first).replace("%n", second));
+	}
+	
+	
 	public static String formatNumber(String line, int number)
 	{
 		return TextFormat.colorize('&', line.replace("%n", Integer.toString(number)));

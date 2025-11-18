@@ -7,6 +7,8 @@ import com.joshuacc.mrnk.files.MRArenasConfig;
 import com.joshuacc.mrnk.main.MRMain;
 import com.joshuacc.mrnk.main.MRPlayer;
 import com.joshuacc.mrnk.main.MRTeam;
+import com.joshuacc.mrnk.utils.TextUtils;
+
 import cn.nukkit.Player;
 
 public class WaitScoreboard extends ScoreboardAbstract {
@@ -46,14 +48,14 @@ public class WaitScoreboard extends ScoreboardAbstract {
 		String rank3Prefix = queuePrefix[rank3];
 		
 		String na = board.getString("NA-Translation");
-		this.tips[map] = new TipBuilder(mapPrefix, board.getTip(mapPrefix, team.getMapOrigin()));
-		this.tips[mode] = new TipBuilder(modePrefix, board.getTip(modePrefix, team.getMode()));
-		this.tips[players] = new TipBuilder(playersPrefix, board.getTip(playersPrefix, team.getPlayers().size() + "/" + config.getMaximumPlayers()));
-		this.tips[timeLimit] = new TipBuilder(timeLimitPrefix, board.getTip(timeLimitPrefix, format.format(1000 * config.getTimeLimit()).concat(" ").concat(board.getString("Time-Translation"))));
-		this.tips[round] = new TipBuilder(roundPrefix, board.getTip(roundPrefix, team.getRound() + "/" + team.getPlayers().size()));
-		this.tips[points] = new TipBuilder(pointsPrefix, board.getTip(pointsPrefix, mPlayer.getPlayerQueuedPoints()));
-		this.tips[rank1] = new TipBuilder(rank1Prefix, board.getTip(rank1Prefix, na));
-		this.tips[rank2] = new TipBuilder(rank2Prefix, board.getTip(rank2Prefix, na));
-		this.tips[rank3] = new TipBuilder(rank3Prefix, board.getTip(rank3Prefix, na));
+		addTip(map, new TipBuilder(mapPrefix, board.getTip(mapPrefix, TextUtils.formatLine(getString("Map-Line"),  team.getMapOrigin()))));
+		addTip(mode,  new TipBuilder(modePrefix, board.getTip(modePrefix, TextUtils.formatLine(getString("Mode-Line"), team.getMode()))));
+		addTip(players, new TipBuilder(playersPrefix, board.getTip(playersPrefix, TextUtils.formatLine(getString("Players-Line"), Integer.toString(team.getPlayers().size()), Integer.toString(config.getMaximumPlayers())))));
+		addTip(timeLimit,  new TipBuilder(timeLimitPrefix, board.getTip(timeLimitPrefix, TextUtils.formatLine(getString("Time Limit-Line"), format.format(1000 * config.getTimeLimit())))));
+		addTip(round, new TipBuilder(roundPrefix, board.getTip(roundPrefix, TextUtils.formatLine(getString("Round-Line"), Integer.toString(team.getRound()), Integer.toString(team.getPlayers().size())))));
+		addTip(points, new TipBuilder(pointsPrefix, board.getTip(pointsPrefix, TextUtils.formatLine(getString("Points-Line"), Integer.toString(mPlayer.getPlayerQueuedPoints())))));
+		addTip(rank1, new TipBuilder(rank1Prefix, board.getTip(rank1Prefix, na)));
+		addTip(rank2, new TipBuilder(rank2Prefix, board.getTip(rank2Prefix, na)));
+		addTip(rank3, new TipBuilder(rank3Prefix, board.getTip(rank3Prefix, na)));
 	}
 }

@@ -86,8 +86,11 @@ public abstract class ScoreboardAbstract {
 
 	public void updateEntry(int index, String p)
 	{
-		TipBuilder tip = tips[index];
-		tip.setCurrentTip(board.getTip(tip.getPrefix(), p));
+		if(index >= 0 && index < tips.length)
+		{
+			TipBuilder tip = tips[index];
+			tip.setCurrentTip(board.getTip(tip.getPrefix(), p));
+		}
 	}
 	
 	public void updateEntry(int index, int p)
@@ -110,6 +113,12 @@ public abstract class ScoreboardAbstract {
 	protected List<String> getStringList()
 	{
 		return board.getConfig().getStringList(key+"Lines");
+	}
+	
+	protected void addTip(int index, TipBuilder tipBuilder)
+	{
+		if(index >= 0 && index < tips.length)
+		this.tips[index] = tipBuilder;
 	}
 	
 	public void sendScoreboardTip(Player player, String stop) 

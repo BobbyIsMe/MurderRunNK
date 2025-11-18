@@ -16,7 +16,6 @@ public class MRScoreboardConfig extends AbstractFiles {
 		String play = "Scoreboard-Play.";
 
 		addDefault("Max Length", 24);
-		addDefault("Scoreboard-Time-Translation", "minutes");
 		addDefault("Scoreboard-NA-Translation", "N/A");
 		addDefault("Scoreboard-Title", "&0&kIII&r &4&lMurder Run &r&0&kIII");
 		addDefault("Scoreboard-Seconds", 15);
@@ -24,6 +23,13 @@ public class MRScoreboardConfig extends AbstractFiles {
 		addDefault("Scoreboard-Message-2", "&6»&fStarting in &b%ns");
 		addDefault("Scoreboard-Message-3", "&6»&eGame Intermission...");
 
+		addDefault(queue+"Map-Line", "%m");
+		addDefault(queue+"Mode-Line", "%m");
+		addDefault(queue+"Players-Line", "%m/%n");
+		addDefault(queue+"Time Limit-Line", "%m minutes");
+		addDefault(queue+"Round-Line", "%m");
+		addDefault(queue+"Points-Line", "%m");
+		addDefault(queue+"Rank-Line", "%m - %n");
 		addDefault(queue+"Map", 0);
 		addDefault(queue+"Mode", 1);
 		addDefault(queue+"Players", 2);
@@ -34,6 +40,11 @@ public class MRScoreboardConfig extends AbstractFiles {
 		addDefault(queue+"Rank-2", 7);
 		addDefault(queue+"Rank-3", 8);
 
+		addDefault(play+"Map-Line", "%m");
+		addDefault(play+"Timer-Line", "%m");
+		addDefault(play+"Mode-Line", "%m");
+		addDefault(play+"Killer-Line", "%m");
+		addDefault(play+"Survivors Left-Line", "%m");
 		addDefault(play+"Map", 0);
 		addDefault(play+"Timer", 1);
 		addDefault(play+"Mode", 2);

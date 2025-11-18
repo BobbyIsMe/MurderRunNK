@@ -23,6 +23,7 @@ public enum ConfigLang {
 	SPECTATORTAG("Player-Spectator-Tag", "&f[SPECTATOR] %p"),
 
 	//NPC names
+	NPCUNQUEUE("NPC-Unqueue Name", "&eClick to &c&lunqueue!"),
 	NPCJOINLIST("NPC-Join-List Name", "&eClick to Join a &6&lMap!"),
 	NPCJOINPLAYERS("Npc-Join-Players Tag", "&a&l%n PLAYERS"),
 	NPCNORMAL("Npc-Join-Normal", "&cNormal Mode"),

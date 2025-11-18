@@ -157,7 +157,7 @@ public class MRTeam {
 		main.initWorld(directory);
 	}
 	
-	public void initialize()
+	private void initialize()
 	{
 		killer = null;
 		task = null;
@@ -193,6 +193,12 @@ public class MRTeam {
 		task.cancel();
 		task = null;
 		this.playBoard = null;
+		if(allPlayers.size() == 0)
+		{
+			initialize();
+			return;	
+		}
+		
 		Server.getInstance().getScheduler().scheduleDelayedTask(main, () -> {
 
 			allSpectators.clear();
@@ -431,12 +437,13 @@ public class MRTeam {
 
 		Server.getInstance().getPluginManager().callEvent(new GameStartEvent(GameAttribute.STARTED, this));
 		killer.sendMessage(TextUtils.format(TextUtils.formatNumber(ConfigLang.MURDCOUNT.toString(), mapConfig.getPreparingTime())));
-		playSoundPlayer(killer, Sound.RANDOM_CLICK);
+		playSoundPlayer(killer, Sound.NOTE_PLING);
 
 		intermissionCount(20, () -> {
 
 			killer.teleport(mapConfig.getMurdererLocation(getMapLevel()));
-			playSoundMessage(TextUtils.format(ConfigLang.RELEASEMURD.toString()), Sound.BLOCK_END_PORTAL_SPAWN);
+			killer.sendMessage(TextUtils.format(ConfigLang.RELEASEMURD.toString()));
+			main.getServer().getScheduler().scheduleDelayedTask(main, () -> killer.getLevel().addSound(killer, Sound.BLOCK_END_PORTAL_SPAWN), 5);
 			startMurdererTimer();
 
 		}, allSurvivors, ConfigLang.MURDERANNOUNCE.toString(), ConfigLang.MURDCOUNT.toString());
@@ -463,7 +470,7 @@ public class MRTeam {
 				int i = k.getPlayerTime();
 
 //				updateEntry("Time", TextUtils.getTimeFormat(i));
-				updateEntry(playBoard.getInt("Timer"), TextUtils.getTimeFormat(i));
+				updateEntry(playBoard.getInt("Timer"), TextUtils.formatLine(playBoard.getString("Timer-Line"), TextUtils.getTimeFormat(i)));
 				sendScoreboardTip();
 
 				if(i == time)
@@ -625,11 +632,11 @@ public class MRTeam {
 		Player rank1 = size > 0 ? rankings.get(0) : null;
 		Player rank2 = size > 1 ? rankings.get(1) : null;
 		Player rank3 = size > 2 ? rankings.get(2) : null;
-		updateEntry(board.getInt("Queue.Players"), getPlayers().size()+"/"+mapConfig.getMaximumPlayers());
-		updateEntry(board.getInt("Queue.Round"), round+"/"+mapConfig.getMaximumPlayers());
-		updateEntry(board.getInt("Queue.Rank-1"), rank1 != null ? rank1.getName().concat(" - ").concat(TextUtils.getTimeFormat(MRPlayer.getMRPlayer(rank1).getPlayerTime())) : na);
-		updateEntry(board.getInt("Queue.Rank-2"), rank2 != null ? rank2.getName().concat(" - ").concat(TextUtils.getTimeFormat(MRPlayer.getMRPlayer(rank2).getPlayerTime())) : na);
-		updateEntry(board.getInt("Queue.Rank-3"), rank3 != null ? rank3.getName().concat(" - ").concat(TextUtils.getTimeFormat(MRPlayer.getMRPlayer(rank3).getPlayerTime())) : na);
+		updateEntry(board.getInt("Queue.Players"), TextUtils.formatLine(board.getString("Queue.Players-Line"), Integer.toString(getPlayers().size()), Integer.toString(mapConfig.getMaximumPlayers())));
+		updateEntry(board.getInt("Queue.Round"), TextUtils.formatLine(board.getString("Queue.Round-Line"), Integer.toString(getRound()), Integer.toString(getPlayers().size())));
+		updateEntry(board.getInt("Queue.Rank-1"), rank1 != null ? TextUtils.formatLine(board.getString("Queue.Rank-Line"), rank1.getName(), TextUtils.getTimeFormat(MRPlayer.getMRPlayer(rank1).getPlayerTime())) : na);
+		updateEntry(board.getInt("Queue.Rank-2"), rank2 != null ? TextUtils.formatLine(board.getString("Queue.Rank-Line"), rank2.getName(), TextUtils.getTimeFormat(MRPlayer.getMRPlayer(rank2).getPlayerTime())) : na);
+		updateEntry(board.getInt("Queue.Rank-3"), rank3 != null ? TextUtils.formatLine(board.getString("Queue.Rank-Line"), rank3.getName(), TextUtils.getTimeFormat(MRPlayer.getMRPlayer(rank3).getPlayerTime())) : na);
 		sendScoreboardTip();
 	}
 

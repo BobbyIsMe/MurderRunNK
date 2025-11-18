@@ -86,6 +86,8 @@ public class MRPlayer {
 
 	public void unqueue()
 	{
+		player.removeAllEffects();
+		player.getInventory().clearAll();
 		player.teleport(lobby.getMainLobbyLocation());
 		player.sendTip("!stop1!stop2");
 		player.sendActionBar("!bar");
@@ -205,6 +207,8 @@ public class MRPlayer {
 				player.teleport(lobby.getMainLobbyLocation());
 			
 			player.removeAllEffects();
+			player.sendTip("!stop1!stop2");
+			player.sendActionBar("!bar");
 		}
 
 		@EventHandler
@@ -247,7 +251,9 @@ public class MRPlayer {
 				if(team.getPlayBoard() != null)
 				{
 					mPlayer.removeAllDrops();
-					team.updateEntry(team.getPlayBoard().getInt("Survivors Left"), team.getSurvivors().size());
+
+					if (team.getKiller() != null && !player.getUniqueId().equals(team.getKiller().getUniqueId()))
+						team.updateEntry(team.getPlayBoard().getInt("Survivors Left"), TextUtils.formatLine(team.getPlayBoard().getString("Survivors Left-Line"), Integer.toString(team.getSurvivors().size())));
 //					team.updateEntry("Players", team.getSurvivors().size()+"");
 
 					if(team.timerGoing() && team.getSurvivors().size() == 0)

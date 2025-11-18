@@ -26,10 +26,10 @@ public class PlayScoreboard extends ScoreboardAbstract {
 		String killerPrefix = playPrefix[killer];
 		String sLPrefix = playPrefix[sL];
 		
-		this.tips[map] = new TipBuilder(mapPrefix, board.getTip(mapPrefix, team.getMapOrigin()));
-		this.tips[timer] = new TipBuilder(timerPrefix, board.getTip(timerPrefix, TextUtils.getTimeFormat(0)));
-		this.tips[mode] = new TipBuilder(modePrefix, board.getTip(modePrefix, team.getMode().toString()));
-		this.tips[killer] = new TipBuilder(killerPrefix, board.getTip(killerPrefix, team.getKiller().getName()));
-		this.tips[sL] = new TipBuilder(sLPrefix, board.getTip(sLPrefix, team.getSurvivors().size()));
+		addTip(map, new TipBuilder(mapPrefix, board.getTip(mapPrefix, TextUtils.formatLine(getString("Map-Line"), team.getMapOrigin()))));
+		addTip(timer, new TipBuilder(timerPrefix, board.getTip(timerPrefix, TextUtils.formatLine(getString("Timer-Line"), TextUtils.getTimeFormat(0)))));
+		addTip(mode, new TipBuilder(modePrefix, board.getTip(modePrefix, TextUtils.formatLine(getString("Mode-Line"), team.getMode().toString()))));
+		addTip(killer, new TipBuilder(killerPrefix, board.getTip(killerPrefix, TextUtils.formatLine(getString("Killer-Line"), team.getKiller().getName()))));
+		addTip(sL, new TipBuilder(sLPrefix, board.getTip(sLPrefix, TextUtils.formatLine(getString("Survivors Left-Line"), Integer.toString(team.getSurvivors().size())))));
 	}
 }

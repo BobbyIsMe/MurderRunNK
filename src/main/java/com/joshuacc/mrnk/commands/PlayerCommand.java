@@ -27,8 +27,8 @@ public class PlayerCommand extends Command {
 		this.setPermission("mr.npcadd");
 		this.commandParameters.clear();
 		this.commandParameters.put("default", new CommandParameter[] {
-				new CommandParameter("options", new String[] {
-						"normal", "escape"	
+				CommandParameter.newEnum("options", new String[] {
+						"normal", "escape", "unqueue"	
 				})
 		});
 	}
@@ -55,21 +55,32 @@ public class PlayerCommand extends Command {
 			switch(type)
 			{
 			case "normal":
-				Entity e = createEntity(player, "openlist %p normal");
-				lobby.addJoinNPCDetails(MapModes.NORMAL, e);
+				lobby.addJoinNPCDetails(MapModes.NORMAL, createEntityMode(player, "openlist %p normal"));
 				break;
 			case "escape":
-				Entity ent = createEntity(player, "openlist %p escape");
-				lobby.addJoinNPCDetails(MapModes.ESCAPE, ent);
+				lobby.addJoinNPCDetails(MapModes.ESCAPE, createEntityMode(player, "openlist %p escape"));
+				break;
+			case "unqueue":
+				lobby.addJoinNPCDetails("Unqueue", createEntityLobby(ConfigLang.NPCUNQUEUE.toString(), player, "unqueue %p"));
 				break;
 			}
 		}
 		return true;
 	}
 
-	private Entity createEntity(Player player, String command)
+	private Entity createEntityMode(Player player, String command)
 	{
 		String name = ConfigLang.NPCJOINLIST.toString();
+		CompoundTag nbt = nbt(player, name, command);
+		Entity ent = Entity.createEntity("NPCHuman", player.chunk, nbt);
+		ent.setNameTag(name);
+		ent.setNameTagAlwaysVisible(true);
+		ent.spawnToAll();
+		return ent;
+	}
+	
+	private Entity createEntityLobby(String name, Player player, String command)
+	{
 		CompoundTag nbt = nbt(player, name, command);
 		Entity ent = Entity.createEntity("NPCHuman", player.chunk, nbt);
 		ent.setNameTag(name);

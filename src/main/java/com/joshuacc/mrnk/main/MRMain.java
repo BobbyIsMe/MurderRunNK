@@ -9,6 +9,7 @@ import com.joshuacc.mrnk.commands.MRCommand;
 import com.joshuacc.mrnk.commands.OpenListCommand;
 import com.joshuacc.mrnk.commands.PlayerCommand;
 import com.joshuacc.mrnk.commands.TipCommand;
+import com.joshuacc.mrnk.commands.UnqueueCommand;
 import com.joshuacc.mrnk.files.MRArenasConfig;
 import com.joshuacc.mrnk.files.MRFormsTextsConfig;
 import com.joshuacc.mrnk.files.MRGameConfig;
@@ -161,6 +162,7 @@ public class MRMain extends PluginBase {
 		map.register("mr", new MRCommand(this));
 		map.register("npcadd", new PlayerCommand(this));
 		map.register("openlist", new OpenListCommand(this));
+		map.register("unqueue", new UnqueueCommand());
 		map.register("tip", new TipCommand());
 	}
 

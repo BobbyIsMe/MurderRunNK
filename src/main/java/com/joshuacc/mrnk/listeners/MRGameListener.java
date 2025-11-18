@@ -89,8 +89,7 @@ public class MRGameListener implements Listener {
 		String reason = TextUtils.formatPlayer(killer != null ? ConfigLang.SURVIVORKILLED.toString().replace("%k", killer.getName()) : ConfigLang.SURVIVORDIE.toString(), player);
 
 		team.addSpectator(player);
-//		team.updateEntry("Players", team.getSurvivors().size()+"");
-		team.updateEntry(4, team.getSurvivors().size());
+		team.updateEntry(team.getPlayBoard().getInt("Survivors Left"), TextUtils.formatLine(team.getPlayBoard().getString("Survivors Left-Line"), Integer.toString(team.getSurvivors().size())));
 
 		if(killer != null)
 		{
