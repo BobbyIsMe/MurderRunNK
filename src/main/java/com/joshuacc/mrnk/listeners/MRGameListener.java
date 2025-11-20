@@ -38,7 +38,8 @@ public class MRGameListener implements Listener {
 		if(event.getEntity() instanceof Player)
 		{
 			Player target = (Player) event.getEntity();
-			if(target.getHealth() - event.getFinalDamage() < 1f) 
+			MRPlayer mPlayer = MRPlayer.getMRPlayer(target);
+			if(mPlayer != null && target.getLevel().equals(mPlayer.getMapTeam().getMapLevel()) && target.getHealth() - event.getFinalDamage() < 1f) 
 			{
 				Server.getInstance().getPluginManager().callEvent(new PlayerKilledEvent(MRPlayer.getMRPlayer(target).getMapTeam(), target, event.getDamager() instanceof Player ? (Player) event.getDamager() : null));
 				event.setCancelled(true);
@@ -76,7 +77,7 @@ public class MRGameListener implements Listener {
 
 		else if(event.getGameAttribute() == GameAttribute.STARTED)
 		{
-
+			
 		}
 	}
 
@@ -88,8 +89,10 @@ public class MRGameListener implements Listener {
 		Player killer = event.getKiller();
 		String reason = TextUtils.formatPlayer(killer != null ? ConfigLang.SURVIVORKILLED.toString().replace("%k", killer.getName()) : ConfigLang.SURVIVORDIE.toString(), player);
 
+		
 		team.addSpectator(player);
 		team.updateEntry(team.getPlayBoard().getInt("Survivors Left"), TextUtils.formatLine(team.getPlayBoard().getString("Survivors Left-Line"), Integer.toString(team.getSurvivors().size())));
+		team.sendScoreboardTip();
 
 		if(killer != null)
 		{
@@ -135,8 +138,6 @@ public class MRGameListener implements Listener {
 			break;
 		}
 		
-		team.cancelTimer();
-
 		for(Player player : team.getPlayers())
 		{
 			player.sendTitle(title, type.getSubtitle());
@@ -147,7 +148,14 @@ public class MRGameListener implements Listener {
 				player.sendMessage(type.getMessage(killer));
 		}
 
+		for(Player players : team.getSurvivors())
+			team.addSpectator(players);
+		
+		team.removeAllSurvivors();
+		
 		if(killer != null)
 			team.addSpectator(killer);
+		
+		team.cancelTimer();
 	}
 }

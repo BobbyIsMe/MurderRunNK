@@ -1,5 +1,6 @@
 package com.joshuacc.mrnk.scoreboards;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.joshuacc.mrnk.files.MRScoreboardConfig;
@@ -136,6 +137,25 @@ public abstract class ScoreboardAbstract {
 			}
 		}
 
+		player.sendTip(string.append(stop).toString());
+	}
+	
+	public void sendScoreboardTip(ArrayList<Player> players, String stop) 
+	{
+		StringBuilder string = new StringBuilder();
+		for (int i = 0; i < tips.length; i++) 
+		{
+			TipBuilder tip = tips[i];
+			if(!tip.getCurrentTip().equals(tip.getPreviousTip())) 
+			{
+				string.append(tip.getCurrentTip());
+				tips[i].setPreviousTip(tip.getCurrentTip());
+			} else {
+				string.append(main.getEmpty());
+			}
+		}
+
+		for(Player player : players)
 		player.sendTip(string.append(stop).toString());
 	}
 }

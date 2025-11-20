@@ -58,7 +58,7 @@ public enum ConfigLang {
 	MAPSTARTED("Map-Start Message", "&eThe game has officially started! From now on, you can't leave the game until the end!"),
 	MAPTITLESTART("Start-Title", "&0&kIII&r &4&lMURDER RUN &r&0&kIII"),
 	MAPSUBTSTART("Start-Subtitle","&eSurvive long while you can!"),
-	MAPSELECT("Select-Killer Message", "&eSelecting random players in the arena to become the &4&lMURDERER!"),
+	SELECTKILLER("Select-Killer Message", "&eSelecting random players in the arena to become the &4&lMURDERER!"),
 	MAPRANDOM("Killer-Random", "&c&l%p"),
 	MAPRANDFIN("Random-Finish", "&eis the murderer!"),
 	KILLERLEAVE("Killer-Leave Message", "&eThe killer has left! Restarting round.."),

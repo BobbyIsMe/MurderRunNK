@@ -71,7 +71,7 @@ public class MRPlayer {
 
 	public void queue(boolean restart)
 	{
-		if(!restart)
+		if(restart)
 		{
 			player.removeAllEffects();
 			player.getInventory().clearAll();
@@ -86,6 +86,8 @@ public class MRPlayer {
 
 	public void unqueue()
 	{
+		mapTeam.updateScoreboardPlayerCount();
+		player.setNameTag(TextUtils.formatPlayer(ConfigLang.LOBBYTAG.toString(), player));
 		player.removeAllEffects();
 		player.getInventory().clearAll();
 		player.teleport(lobby.getMainLobbyLocation());
@@ -110,9 +112,9 @@ public class MRPlayer {
 		board.openScoreboard();
 	}
 	
-	public void setHasRound()
+	public void setHasRound(boolean value)
 	{
-		this.hasRound = true;
+		this.hasRound = value;
 	}
 
 	public void addDropItem(EntityItem item)
@@ -207,8 +209,12 @@ public class MRPlayer {
 				player.teleport(lobby.getMainLobbyLocation());
 			
 			player.removeAllEffects();
+			player.getInventory().clearAll();
 			player.sendTip("!stop1!stop2");
 			player.sendActionBar("!bar");
+			player.setGamemode(0);
+			player.setHealth(player.getMaxHealth());
+			player.getFoodData().sendFoodLevel(player.getFoodData().getMaxLevel());
 		}
 
 		@EventHandler
@@ -231,6 +237,7 @@ public class MRPlayer {
 
 			team.addAllPlayer(player);
 			team.updateScoreboardPlayerCount();
+			team.sendActionBar();
 			team.messageAllPlayers(TextUtils.format(TextUtils.formatPlayer(ConfigLang.MAPNOTIFYQUEUE.toString(), player)));
 
 			if(team.getPlayers().size() == config.getMinimumPlayers())

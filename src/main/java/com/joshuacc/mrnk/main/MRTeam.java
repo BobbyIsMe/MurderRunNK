@@ -123,6 +123,7 @@ public class MRTeam {
 	private String map;
 	private String mapId;
 	private String directory;
+	private String message;
 
 	private ArrayList<Player> allPlayers;
 	private ArrayList<Player> allSurvivors;
@@ -147,6 +148,7 @@ public class MRTeam {
 		this.mode = mode;
 		this.mapConfig = mapConfig;
 		this.board = main.getMRScoreboardConfig();
+		this.message = TextFormat.colorize('&', board.getString("Message-1"));
 		this.directory = new File(main.getFileDirectory(getMode()), mapId)+File.separator;
 		
 		mapMode.get(mode).put(mapId, this);
@@ -190,8 +192,12 @@ public class MRTeam {
 
 	public void cancelTimer()
 	{
-		task.cancel();
-		task = null;
+		if(task != null)
+		{
+			task.cancel();
+			task = null;
+		}
+
 		this.playBoard = null;
 		if(allPlayers.size() == 0)
 		{
@@ -207,11 +213,15 @@ public class MRTeam {
 			{
 				addSurvivor(player);
 				MRPlayer.getMRPlayer(player).queue(true);
+				player.setGamemode(0);
+				player.setHealth(player.getMaxHealth());
+				player.getFoodData().sendFoodLevel(player.getFoodData().getMaxLevel());
 			}
 
 			//updateEntry("Message", board.getString("Message-3"));
 			round++;
-			sendActionBar(TextFormat.colorize('&', board.getString("Message-3")));
+			message = TextFormat.colorize('&', board.getString("Message-3"));
+			sendActionBar();
 			updateScoreboardPlayerCount();
 			selectMurderer();
 
@@ -231,7 +241,8 @@ public class MRTeam {
 				if(allPlayers.size() >= mapConfig.getMinimumPlayers())
 				{
 //					updateEntry("Message", board.getString("Message-2"), i+"");
-					sendActionBar(TextFormat.colorize('&', board.getString("Message-2").replace("%n", i+"")));
+					message = TextFormat.colorize('&', board.getString("Message-2").replace("%n", i+""));
+					sendActionBar();
 					if(i == 0)
 					{
 						officialStart();
@@ -241,7 +252,8 @@ public class MRTeam {
 				else
 				{
 //					updateEntry("Message", board.getString("Message-1"));
-					sendActionBar(TextFormat.colorize('&', board.getString("Message-1")));
+					message = TextFormat.colorize('&', board.getString("Message-1"));
+					sendActionBar();
 					this.cancel();
 				}
 				i--;
@@ -259,7 +271,8 @@ public class MRTeam {
 			addSurvivor(players);
 
 //		updateEntry("Message", board.getString("Message-3"));
-		sendActionBar(TextFormat.colorize('&', board.getString("Message-3")));
+		message = TextFormat.colorize('&', board.getString("Message-3"));
+		sendActionBar();
 		TaskDelay task = new TaskDelay(main);
 		task.addTask(new TaskQueue(1) {
 
@@ -290,7 +303,7 @@ public class MRTeam {
 			@Override
 			public void doTask() 
 			{
-				playSoundMessage(TextUtils.format(ConfigLang.MAPSELECT.toString()), Sound.NOTE_BASS);
+				playSoundMessage(TextUtils.format(ConfigLang.SELECTKILLER.toString()), Sound.NOTE_BASS);
 				selectMurderer();
 			}
 		});
@@ -299,6 +312,9 @@ public class MRTeam {
 
 	private void selectMurderer()
 	{
+		if(!enoughPlayers())
+			return;
+		
 		ArrayList<Player> randomPlayers = new ArrayList<Player>();
 
 		for(Player players : allPlayers)
@@ -335,7 +351,7 @@ public class MRTeam {
 
 		else if(size == 1)
 		{
-			intermission(randomPlayers.get(0));
+			main.getServer().getScheduler().scheduleDelayedTask(main, () -> intermission(randomPlayers.get(0)), 20);
 		}
 
 		else if(size == 0)
@@ -428,12 +444,14 @@ public class MRTeam {
 		playBoard.openScoreboard();
 
 		for(Player player: allPlayers)
-			MRPlayer.getMRPlayer(player).setScoreboard(playBoard);
+			MRPlayer.getMRPlayer(player).setScoreboard(null);
+
 		removeActionBar();
 		sendScoreboardTip();
 
-		for (Player survivor : allSurvivors)
+		for (Player survivor : allSurvivors) {
 			survivor.teleport(mapConfig.getSurvivorLocation(getMapLevel()));
+		}
 
 		Server.getInstance().getPluginManager().callEvent(new GameStartEvent(GameAttribute.STARTED, this));
 		killer.sendMessage(TextUtils.format(TextUtils.formatNumber(ConfigLang.MURDCOUNT.toString(), mapConfig.getPreparingTime())));
@@ -509,23 +527,8 @@ public class MRTeam {
 					return;
 				}
 
-				if(!interm & allPlayers.size() <= 0) //TODO: Remember to change the value to 1
+				if(!enoughPlayers())
 				{
-					playBoard = null;
-					round = 1;
-					for(Player players : allPlayers)
-					{
-						players.sendMessage(ConfigLang.NOTENOUGHPLAYERS.toString());
-						playSoundPlayer(players, Sound.MOB_VILLAGER_NO);
-						players.addEffect(Effect.getEffect(Effect.BLINDNESS).setDuration(Integer.MAX_VALUE).setVisible(false));
-						sendActionBar(TextFormat.colorize('&', board.getString("Message-1")));
-						MRPlayer.getMRPlayer(players).queue(true);
-					}
-					
-					updateScoreboardPlayerCount();
-					if(started)
-						started = false;
-					
 					this.cancel();
 					return;
 				}
@@ -540,6 +543,37 @@ public class MRTeam {
 			}
 
 		}, delay, 20);
+	}
+	
+	private boolean enoughPlayers()
+	{
+		if(allPlayers.size() <= 1) //TODO: Remember to change the value to 1
+		{
+			allSurvivors.clear();
+			
+			playBoard = null;
+			round = 1;
+			for(Player players : allPlayers)
+			{
+				MRPlayer.getMRPlayer(players).setHasRound(false);
+				players.sendMessage(ConfigLang.NOTENOUGHPLAYERS.toString());
+				playSoundPlayer(players, Sound.MOB_VILLAGER_NO);
+				players.setNameTag(TextUtils.formatPlayerMap(ConfigLang.QUEUETAG.toString(), players, map));
+				players.addEffect(Effect.getEffect(Effect.BLINDNESS).setDuration(Integer.MAX_VALUE).setVisible(false));
+				message = TextFormat.colorize('&', board.getString("Message-1"));
+				sendActionBar();
+				
+				if(playBoard != null)
+				MRPlayer.getMRPlayer(players).queue(true);
+			}
+			
+			updateScoreboardPlayerCount();
+			if(started)
+				started = false;
+			
+			return false;
+		}
+		return true;
 	}
 	
 	public void addPlayerRankingByTime(Player player) 
@@ -656,7 +690,7 @@ public class MRTeam {
 		updateEntry(index, Integer.toString(p));
 	}
 
-	public void sendActionBar(String message)
+	public void sendActionBar()
 	{
 		if(message.length() != 0)
 		for(Player players : allPlayers)
@@ -671,10 +705,12 @@ public class MRTeam {
 	
 	public void sendScoreboardTip() 
 	{
+		if(playBoard == null)
 		for(Player players : allPlayers)
 		{
-			MRPlayer.getMRPlayer(players).getScoreboard().sendScoreboardTip(players, (playBoard == null) ? "!stop2" : "!stop1");
-		}
+			MRPlayer.getMRPlayer(players).getScoreboard().sendScoreboardTip(players, "!stop2");
+		} else
+			playBoard.sendScoreboardTip(allPlayers, "!stop1");
 	}
 
 	public Level getMapLevel()
@@ -752,14 +788,24 @@ public class MRTeam {
 		killer = player;
 		allSurvivors.remove(player);
 		player.setNameTag(TextUtils.formatPlayer(ConfigLang.KILLERTAG.toString(), player));
-		MRPlayer.getMRPlayer(player).setHasRound();
+		MRPlayer.getMRPlayer(player).setHasRound(true);
 	}
 
 	public void addSpectator(Player player)
 	{
-		allSurvivors.remove(player);
+		player.setGamemode(3);
 		allSpectators.add(player);
 		player.setNameTag(TextUtils.formatPlayer(ConfigLang.SPECTATORTAG.toString(), player));
+	}
+	
+	public void removeSurvivor(Player player)
+	{
+		allSurvivors.remove(player);
+	}
+	
+	public void removeAllSurvivors()
+	{
+		allSurvivors.clear();
 	}
 
 	public void removePlayer(Player player)
@@ -802,9 +848,8 @@ public class MRTeam {
 		return allPlayers;
 	}
 
-	public ArrayList<Player> getSurvivors()
-	{
-		return allSurvivors;
+	public ArrayList<Player> getSurvivors() {
+	    return allSurvivors;
 	}
 
 	public Player getKiller()

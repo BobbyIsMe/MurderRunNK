@@ -317,7 +317,7 @@ public class FormUtils {
 		MRArenasConfig config = main.getMapConfigs().get(map);
 		int normal = config.getMultiples(type);
 
-		if(main.getMapConfigs().get(map).isMapEnabled())
+		if(main.getMapConfigs().get(map).isMapEnabled() && MRPlayer.getMRPlayer(player) == null)
 			for(int i = 1; i <= normal; i++)
 			{
 				MRTeam team = MRTeam.getMapTeamByID(map, i, type);

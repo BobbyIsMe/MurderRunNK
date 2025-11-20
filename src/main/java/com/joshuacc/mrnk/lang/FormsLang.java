@@ -42,7 +42,15 @@ public enum FormsLang {
 	SNGTIME("Settings-Texts.Time Limit", "&6» &a&lTime Limit"),
 	SNGPOINTS("Settings-Texts.Points Limit", "&6» &a&lPoints Limit"),
 	SNGMINI("Settings-Texts.Minimum Players", "&6» &a&lMinimum Players"),
-	SNGMAX("Settings-Texts.Maximum Players", "&6» &a&lMaximum Players");
+	SNGMAX("Settings-Texts.Maximum Players", "&6» &a&lMaximum Players"),
+	
+	//Survivor Items Category Menu
+	SURVITEMSTITE("Survivor-Items.Title", "Survivor Items Category"),
+	SURVITEMSDESC("Survivor-Items.Description", "Choose an item category"),
+	SURVITEMSTRAPS("Survivor-Items.Traps", "&6» &eTraps"),
+	SURVITEMSARMOR("Survivor-Items.Armor", "&6» &eArmor"),
+	SURVITEMSPOTION("Survivor-Items.Potion", "&6» &ePotions");
+	
 
 	private String key;
 	private String val;
