@@ -124,23 +124,16 @@ public abstract class ScoreboardAbstract {
 	
 	public void sendScoreboardTip(Player player, String stop) 
 	{
-		StringBuilder string = new StringBuilder();
-		for (int i = 0; i < tips.length; i++) 
-		{
-			TipBuilder tip = tips[i];
-			if(!tip.getCurrentTip().equals(tip.getPreviousTip())) 
-			{
-				string.append(tip.getCurrentTip());
-				tips[i].setPreviousTip(tip.getCurrentTip());
-			} else {
-				string.append(main.getEmpty());
-			}
-		}
-
-		player.sendTip(string.append(stop).toString());
+		player.sendTip(getTipMessage().append(stop).toString());
 	}
 	
 	public void sendScoreboardTip(ArrayList<Player> players, String stop) 
+	{
+		for(Player player : players)
+		player.sendTip(getTipMessage().append(stop).toString());
+	}
+	
+	private StringBuilder getTipMessage()
 	{
 		StringBuilder string = new StringBuilder();
 		for (int i = 0; i < tips.length; i++) 
@@ -154,9 +147,7 @@ public abstract class ScoreboardAbstract {
 				string.append(main.getEmpty());
 			}
 		}
-
-		for(Player player : players)
-		player.sendTip(string.append(stop).toString());
+		return string;
 	}
 }
 

@@ -6,6 +6,10 @@ import java.util.UUID;
 import com.joshuacc.mrnk.events.PlayerJoinGameEvent;
 import com.joshuacc.mrnk.files.MRArenasConfig;
 import com.joshuacc.mrnk.files.MRLobbyConfig;
+import com.joshuacc.mrnk.items.ArmorMenu;
+import com.joshuacc.mrnk.items.FormMenu;
+import com.joshuacc.mrnk.items.FormMenu.GameMenus;
+import com.joshuacc.mrnk.items.ItemHelper;
 import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.lang.FormsLang;
 import com.joshuacc.mrnk.main.MRMain;
@@ -39,6 +43,8 @@ public class FormUtils {
 	{
 		this.main = main;
 		initializeMaps();
+		GameMenus.values();
+		ArmorMenu.registerArmor();
 	}
 	
 	public void initializeMaps()
@@ -160,6 +166,8 @@ public class FormUtils {
 			idMap.remove(player);
 			return;
 		}
+		
+		
 
 		switch(id) {
 		case 100:
@@ -167,6 +175,13 @@ public class FormUtils {
 			return;
 		case 102:
 			handleSettingsMapForm(player, (FormResponseCustom) response);
+			return;
+		}
+		
+		FormMenu menu = FormMenu.getFormMenu(id);
+		if(FormMenu.getFormMenu(id) != null)
+		{
+			menu.response(player, response);
 			return;
 		}
 

@@ -9,6 +9,7 @@ import com.joshuacc.mrnk.events.PlayerJoinGameEvent;
 import com.joshuacc.mrnk.events.GameEndEvent.WinType;
 import com.joshuacc.mrnk.files.MRArenasConfig;
 import com.joshuacc.mrnk.files.MRLobbyConfig;
+import com.joshuacc.mrnk.items.FormMenu.GameMenus;
 import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.scoreboards.ScoreboardAbstract;
 import com.joshuacc.mrnk.scoreboards.WaitScoreboard;
@@ -215,6 +216,8 @@ public class MRPlayer {
 			player.setGamemode(0);
 			player.setHealth(player.getMaxHealth());
 			player.getFoodData().sendFoodLevel(player.getFoodData().getMaxLevel());
+			GameMenus.ARMORMENU.getFormMenu().open(player);
+			player.sendMessage("e");
 		}
 
 		@EventHandler

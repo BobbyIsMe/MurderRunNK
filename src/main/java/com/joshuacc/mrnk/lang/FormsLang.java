@@ -8,7 +8,14 @@ public enum FormsLang {
 	//Placeholder
 	//%l - Map Name
 	//%n - Number
+	//%s - String
 
+	//Button essentials
+	BACKBUTTON("Buttons.Back", "&6» &4Back"),
+	FILTERBUTTON("Buttons.Filter", "&6» &aFilter"),
+	PREVIOUSBUTTON("Buttons.Previous", "&6» &4Previous"),
+	NEXTBUTTON("Buttons.Next", "&6» &4Next"),
+	
 	//Map Selector
 	SELMAPNAME("Map-Selector.Map Name", "&6» &2%l"),
 	SELMAPNUM("Map-Selector.Available Maps", "&8Available Maps: %n"),
@@ -44,12 +51,49 @@ public enum FormsLang {
 	SNGMINI("Settings-Texts.Minimum Players", "&6» &a&lMinimum Players"),
 	SNGMAX("Settings-Texts.Maximum Players", "&6» &a&lMaximum Players"),
 	
+	//General Filters
+	FILTERTITLE("Filters.Title", "Filter Items"),
+	FILTERDESC("Filters.Description", "Filter through relevant items"),
+	LOWTOHIGH("Filters.Low-To-High Prices", "Low To High Prices"),
+	HIGHTOLOW("Filters.High-To-Low Prices", "High To Low Prices"),
+	SEARCHITEM("Filters.Search-Item", "Search Item Name"),
+	
+	//Trap Filters
+	TRAPCLICK("Trap-Filters.Trap Click", "Trap Click"),
+	TRAPDROP("Trap-Filters.Trap Drop", "Trap Drop"),
+	
+	//Item Builder
+	ITEMNAME("Item.Name", "%s\nPrice: %n"),
+	
 	//Survivor Items Category Menu
-	SURVITEMSTITE("Survivor-Items.Title", "Survivor Items Category"),
+	SURVITEMSTITLE("Survivor-Items.Title", "Survivor Items Category"),
 	SURVITEMSDESC("Survivor-Items.Description", "Choose an item category"),
 	SURVITEMSTRAPS("Survivor-Items.Traps", "&6» &eTraps"),
 	SURVITEMSARMOR("Survivor-Items.Armor", "&6» &eArmor"),
-	SURVITEMSPOTION("Survivor-Items.Potion", "&6» &ePotions");
+	SURVITEMSPOTION("Survivor-Items.Potion", "&6» &eUtilities"),
+	
+	//Armor Shop Menu
+	ARMORTITLE("Armor.Title", "Armor Shop"),
+	ARMORDESC("Armor.Description", "Buy different armor pieces to protect yourself"),
+	
+	//Utilities Menu
+	UTILTITLE("Utilities.Title", "Utility Shop"),
+	UTILDESC("Utilities.Description", "Buy utilities to stall the murderer"),
+	
+	//Traps Menu
+	TRAPSTITLE("Traps.Title", "Trap Shop"),
+	TRAPSDESC("Traps.Desc", "Buy traps to help %s"),
+	TRAPNAME("Traps.Trap Name", "%s1 - %s2"),
+	
+	//Select Item Menu
+	SELITEMNAME("Select-Item.Title", "Select Item"),
+	SELITEMPURCHASE("Select-Trap.Purchase", "&6» &aPurchase"),
+	
+	//Murderer Items Category Menu
+	MURDITEMSTITLE("Killer-Items.Title", "Murderer Items Category"),
+	MURDITEMSDESC("Killer-Items.Description", "Choose an item category"),
+	MURDITEMSTRAPS("Killer-Items.Traps", "&6» &eTraps"),
+	;
 	
 
 	private String key;
