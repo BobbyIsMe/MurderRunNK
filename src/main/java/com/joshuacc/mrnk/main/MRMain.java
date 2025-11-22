@@ -13,6 +13,7 @@ import com.joshuacc.mrnk.commands.UnqueueCommand;
 import com.joshuacc.mrnk.files.MRArenasConfig;
 import com.joshuacc.mrnk.files.MRFormsTextsConfig;
 import com.joshuacc.mrnk.files.MRGameConfig;
+import com.joshuacc.mrnk.files.MRItemShopConfig;
 import com.joshuacc.mrnk.files.MRLanguagesConfig;
 import com.joshuacc.mrnk.files.MRLobbyConfig;
 import com.joshuacc.mrnk.files.MRPlayerConfig;
@@ -37,6 +38,7 @@ public class MRMain extends PluginBase {
 	private MRLobbyConfig lobby;
 	private MRScoreboardConfig board;
 	private MRPlayerConfig players;
+	private MRItemShopConfig itemShop;
 	private MRGameConfig game;
 	private FormUtils formUtil;
 
@@ -44,11 +46,14 @@ public class MRMain extends PluginBase {
 	private HashMap<MapModes,Integer> playerCount = new HashMap<>(); 
 	private String empty;
 
-	private static String prefix;
+	private String prefix;
+	
+	private static MRMain instance;
 
 	@Override
 	public void onEnable()
 	{
+		instance = this;
 		try {
 			Class.forName("de.lucgameshd.scoreboard.api.ScoreboardAPI");
 		} catch (ClassNotFoundException e) {
@@ -75,17 +80,20 @@ public class MRMain extends PluginBase {
 		prefix = ConfigLang.PREFIXMESSAGE.toString();
 
 		players = new MRPlayerConfig(this);
+		itemShop = new MRItemShopConfig(this);
 		board = new MRScoreboardConfig(this);
 		lobby = new MRLobbyConfig(this);
 		game = new MRGameConfig(this);
-		formUtil = new FormUtils(this);
 		
 		this.empty = "@".repeat(board.getMaxLength());
 
 		players.setupConfig();
+		itemShop.setupConfig();
 		board.setupConfig();
 		lobby.setupConfig();
 		game.setupConfig();
+		
+		formUtil = new FormUtils(this);
 
 		registerCommands();
 		registerListeners();
@@ -100,6 +108,11 @@ public class MRMain extends PluginBase {
 		PlayScoreboard.registerScoreboard(board);
 		
 		minigameMapLoader();
+	}
+	
+	public static MRMain getInstance()
+	{
+		return instance;
 	}
 
 	private void minigameMapLoader()
@@ -273,6 +286,11 @@ public class MRMain extends PluginBase {
 	{
 		return players;
 	}
+	
+	public MRItemShopConfig getMRItemShopConfig()
+	{
+		return itemShop;
+	}
 
 	public MRGameConfig getMRGameConfig()
 	{
@@ -284,7 +302,7 @@ public class MRMain extends PluginBase {
 		return formUtil;
 	}
 
-	public static String getPrefix()
+	public String getPrefix()
 	{
 		return prefix;
 	}

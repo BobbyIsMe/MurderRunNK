@@ -12,9 +12,11 @@ import cn.nukkit.form.window.FormWindow;
 public abstract class FormMenu {
 	
 	public enum GameMenus {
-		SURVITEMSMENU(null), //TODO: add this
 		SELITEMMENU(new SelectItemMenu(300)),
-		ARMORMENU(new ArmorMenu(301));
+		SURVTRAPSMENU(null),
+		ARMORMENU(new ArmorMenu(301)),
+		UTILMENU(null),
+		SURVITEMSMENU(new SurvivorItemsMenu(303));
 		
 		private FormMenu menu;
 		

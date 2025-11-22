@@ -17,7 +17,7 @@ public class TextUtils {
 
 	public static String format(String line)
 	{
-		return TextFormat.colorize('&', MRMain.getPrefix()+" "+line);
+		return TextFormat.colorize('&', MRMain.getInstance().getPrefix()+" "+line);
 	}
 
 	public static String formatLine(String line, String first)

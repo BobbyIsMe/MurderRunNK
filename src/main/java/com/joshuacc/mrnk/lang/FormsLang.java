@@ -70,7 +70,7 @@ public enum FormsLang {
 	SURVITEMSDESC("Survivor-Items.Description", "Choose an item category"),
 	SURVITEMSTRAPS("Survivor-Items.Traps", "&6» &eTraps"),
 	SURVITEMSARMOR("Survivor-Items.Armor", "&6» &eArmor"),
-	SURVITEMSPOTION("Survivor-Items.Potion", "&6» &eUtilities"),
+	SURVITEMSUTIL("Survivor-Items.Utilities", "&6» &eUtilities"),
 	
 	//Armor Shop Menu
 	ARMORTITLE("Armor.Title", "Armor Shop"),

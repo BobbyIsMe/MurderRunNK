@@ -24,6 +24,7 @@ public abstract class ItemMenu extends FormMenu {
 	
 	public abstract String getTitle();
 	public abstract String getDesc();
+	public abstract FormMenu getOrigin();
 	
 	@Override
 	public FormWindow createForm(Player player)
@@ -33,6 +34,7 @@ public abstract class ItemMenu extends FormMenu {
 		{
 			menu.addElement(item);
 		}
+		menu.addElement(backButton);
 		return menu;
 	}
 	
@@ -40,6 +42,15 @@ public abstract class ItemMenu extends FormMenu {
 	public void response(Player player, FormResponse response) 
 	{
 		FormResponseSimple r = (FormResponseSimple) response;
+		if(r == null)
+			return;
+		
+		if(r.getClickedButton().getText().equals(backButton.getText()))
+		{
+			getOrigin().open(player);
+			return;
+		} 
+		
 		if(r.getClickedButton() instanceof ShopItem)
 		{
 			((ShopItem) r.getClickedButton()).itemResponse(player);

@@ -6,10 +6,8 @@ import java.util.UUID;
 import com.joshuacc.mrnk.events.PlayerJoinGameEvent;
 import com.joshuacc.mrnk.files.MRArenasConfig;
 import com.joshuacc.mrnk.files.MRLobbyConfig;
-import com.joshuacc.mrnk.items.ArmorMenu;
 import com.joshuacc.mrnk.items.FormMenu;
 import com.joshuacc.mrnk.items.FormMenu.GameMenus;
-import com.joshuacc.mrnk.items.ItemHelper;
 import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.lang.FormsLang;
 import com.joshuacc.mrnk.main.MRMain;
@@ -159,15 +157,20 @@ public class FormUtils {
 	}
 
 	public void handleAllResponse(Player player, int id, FormWindow window, FormResponse response)
-	{
+	{	
+		FormMenu menu = FormMenu.getFormMenu(id);
+		if(FormMenu.getFormMenu(id) != null)
+		{
+			menu.response(player, response);
+			return;
+		}
+		
 		if(window.wasClosed())
 		{
 			idMap.remove(player);
 			return;
 		}
 		
-		
-
 		switch(id) {
 		case 100:
 			handleConfigMenuForm(player, (FormResponseSimple) response);
@@ -177,13 +180,6 @@ public class FormUtils {
 			return;
 		}
 		
-		FormMenu menu = FormMenu.getFormMenu(id);
-		if(FormMenu.getFormMenu(id) != null)
-		{
-			menu.response(player, response);
-			return;
-		}
-
 		for(MapModes mode : MapModes.values())
 			if(id == mode.getID())
 			{

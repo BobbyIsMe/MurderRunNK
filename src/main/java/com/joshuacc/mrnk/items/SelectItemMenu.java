@@ -43,15 +43,29 @@ public class SelectItemMenu extends FormMenu {
 	@Override
 	public void response(Player player, FormResponse response) 
 	{
+		ShopItem item = playerItem.get(player);
+		
+		if(item == null)
+			return;
+		
 		FormResponseSimple r = (FormResponseSimple) response;
-		if(r.getClickedButton().getText().equals(backButton.getText()))
+		
+		if(r == null)
 		{
-			playerItem.get(player).getCategory().open(player);
-		} else {
-			//TODO: give item
+			player.sendMessage("closed");
+			playerItem.remove(player);
+			return;
 		}
 		
-		playerItem.remove(player);
+		if(r.getClickedButton().getText().equals(backButton.getText()))
+		{
+			item.getCategory().open(player);
+			playerItem.remove(player);
+		} else {
+			//TODO: setup shop stuff
+			player.getInventory().addItem(item.getItem());
+			this.open(player);
+		}
 	}
 
 }
