@@ -217,7 +217,6 @@ public class MRPlayer {
 			player.setHealth(player.getMaxHealth());
 			player.getFoodData().sendFoodLevel(player.getFoodData().getMaxLevel());
 			GameMenus.ARMORMENU.getFormMenu().open(player);
-			player.sendMessage("e");
 		}
 
 		@EventHandler

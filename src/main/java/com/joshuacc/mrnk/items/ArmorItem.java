@@ -1,18 +1,17 @@
 package com.joshuacc.mrnk.items;
 
-import cn.nukkit.Player;
+import com.joshuacc.mrnk.items.FormMenu.GameMenus;
 
-public class ArmorItem extends ItemHelper
+public class ArmorItem extends ShopItem
 {
 
-	public ArmorItem(String text) {
-		super(text);
+	public ArmorItem(String text, String name, String description, int price)  {
+		super(text, name, description, price);
 	}
 
 	@Override
-	public void itemResponse(Player player) 
+	public FormMenu getCategory() 
 	{
-		player.sendMessage(getText());
+		return GameMenus.ARMORMENU.getFormMenu();
 	}
-
 }

@@ -44,7 +44,6 @@ public class FormUtils {
 		this.main = main;
 		initializeMaps();
 		GameMenus.values();
-		ArmorMenu.registerArmor();
 	}
 	
 	public void initializeMaps()
