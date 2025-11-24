@@ -6,14 +6,14 @@ import java.util.UUID;
 import com.joshuacc.mrnk.events.PlayerJoinGameEvent;
 import com.joshuacc.mrnk.files.MRArenasConfig;
 import com.joshuacc.mrnk.files.MRLobbyConfig;
-import com.joshuacc.mrnk.items.FormMenu;
-import com.joshuacc.mrnk.items.FormMenu.GameMenus;
 import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.lang.FormsLang;
 import com.joshuacc.mrnk.main.MRMain;
 import com.joshuacc.mrnk.main.MRPlayer;
 import com.joshuacc.mrnk.main.MRTeam;
 import com.joshuacc.mrnk.main.MRTeam.MapModes;
+import com.joshuacc.mrnk.menus.FormMenu;
+import com.joshuacc.mrnk.menus.FormMenu.GameMenus;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;

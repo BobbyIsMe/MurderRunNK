@@ -1,7 +1,8 @@
 package com.joshuacc.mrnk.items;
 
-import com.joshuacc.mrnk.items.FormMenu.GameMenus;
 import com.joshuacc.mrnk.lang.FormsLang;
+import com.joshuacc.mrnk.menus.FormMenu;
+import com.joshuacc.mrnk.menus.FormMenu.GameMenus;
 
 import cn.nukkit.form.element.ElementButtonImageData;
 

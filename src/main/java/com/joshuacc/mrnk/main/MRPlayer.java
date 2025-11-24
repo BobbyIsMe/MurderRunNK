@@ -9,10 +9,10 @@ import com.joshuacc.mrnk.events.PlayerJoinGameEvent;
 import com.joshuacc.mrnk.events.GameEndEvent.WinType;
 import com.joshuacc.mrnk.files.MRArenasConfig;
 import com.joshuacc.mrnk.files.MRLobbyConfig;
-import com.joshuacc.mrnk.items.FormMenu.GameMenus;
-import com.joshuacc.mrnk.items.ItemMenu;
 import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.lang.FormsLang;
+import com.joshuacc.mrnk.menus.ItemMenu;
+import com.joshuacc.mrnk.menus.FormMenu.GameMenus;
 import com.joshuacc.mrnk.scoreboards.ScoreboardAbstract;
 import com.joshuacc.mrnk.scoreboards.WaitScoreboard;
 import com.joshuacc.mrnk.utils.MapState;
@@ -59,7 +59,9 @@ public class MRPlayer {
 		this.itemDrops = new ArrayList<>();
 		this.itemFilters = new HashMap<>();
 		
+		itemFilters.put((ItemMenu) GameMenus.SURVTRAPSMENU.getFormMenu(), new MRItemFilters("", FormsLang.LOWTOHIGH.toString(), FormsLang.ALLCATEGORY.toString(), 1));
 		itemFilters.put((ItemMenu) GameMenus.ARMORMENU.getFormMenu(), new MRItemFilters("", FormsLang.LOWTOHIGH.toString(), FormsLang.ALLCATEGORY.toString(), 1));
+		itemFilters.put((ItemMenu) GameMenus.UTILMENU.getFormMenu(), new MRItemFilters("", FormsLang.LOWTOHIGH.toString(), FormsLang.ALLCATEGORY.toString(), 1));
 
 		this.hasRound = false;
 
@@ -173,8 +175,11 @@ public class MRPlayer {
 	public void addPoints(int qPts)
 	{
 		this.qPts += qPts;
-		if(qPts != 0 && this.qPts != 0)
-			board.updateEntry(board.getInt("Points"), qPts);
+		if(qPts != 0)
+		{
+			board.updateEntry(board.getInt("Points"), this.qPts);
+			board.sendScoreboardTip(player, "!stop2");
+		}
 	}
 	
 	public boolean hasRound()

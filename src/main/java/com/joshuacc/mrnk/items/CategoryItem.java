@@ -1,5 +1,7 @@
 package com.joshuacc.mrnk.items;
 
+import com.joshuacc.mrnk.menus.FormMenu;
+
 import cn.nukkit.Player;
 
 public class CategoryItem extends ItemHelper {

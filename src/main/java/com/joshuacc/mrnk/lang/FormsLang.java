@@ -13,8 +13,8 @@ public enum FormsLang {
 	//Button essentials
 	BACKBUTTON("Buttons.Back", "&6» &4Back"),
 	FILTERBUTTON("Buttons.Filter", "&6» &aFilter"),
-	PREVIOUSBUTTON("Buttons.Previous", "&6» &4Previous"),
-	NEXTBUTTON("Buttons.Next", "&6» &4Next"),
+	PREVIOUSBUTTON("Buttons.Previous", "&6<< &4Previous"),
+	NEXTBUTTON("Buttons.Next", "&4Next &6>>"),
 	
 	//Map Selector
 	SELMAPNAME("Map-Selector.Map Name", "&6» &2%l"),
@@ -66,14 +66,17 @@ public enum FormsLang {
 	TRAPDROP("Filters.Trap Drop", "Trap Drop"),
 	
 	//Item Builder
-	ITEMNAME("Item.Name", "&l%s\n&r&8Price: &2%n"),
+	ITEMNAME("Item.Name", "&l%s1\n&r%s2"),
+	ITEMPRICE("Item.Price", "&8Price: &2%n pts"),
+	POINTSLEFT("Item.Points Left", "&8Points Left: &2%n pts"),
+	CURRENTPAGE("Item.Current Page", "Page %n of %m"),
 	
 	//Survivor Items Category Menu
 	SURVITEMSTITLE("Survivor-Items.Title", "Survivor Items Category"),
 	SURVITEMSDESC("Survivor-Items.Description", "Choose an item category"),
-	SURVITEMSTRAPS("Survivor-Items.Traps", "&6» &eTraps"),
-	SURVITEMSARMOR("Survivor-Items.Armor", "&6» &eArmor"),
-	SURVITEMSUTIL("Survivor-Items.Utilities", "&6» &eUtilities"),
+	SURVITEMSTRAPS("Survivor-Items.Traps", "&6» &bTraps"),
+	SURVITEMSARMOR("Survivor-Items.Armor", "&6» &bArmor"),
+	SURVITEMSUTIL("Survivor-Items.Utilities", "&6» &bUtilities"),
 	
 	//Armor Shop Menu
 	ARMORTITLE("Armor.Title", "Armor Shop"),
@@ -95,7 +98,7 @@ public enum FormsLang {
 	//Murderer Items Category Menu
 	MURDITEMSTITLE("Killer-Items.Title", "Murderer Items Category"),
 	MURDITEMSDESC("Killer-Items.Description", "Choose an item category"),
-	MURDITEMSTRAPS("Killer-Items.Traps", "&6» &eTraps"),
+	MURDITEMSTRAPS("Killer-Items.Traps", "&6» &bTraps"),
 	;
 	
 
