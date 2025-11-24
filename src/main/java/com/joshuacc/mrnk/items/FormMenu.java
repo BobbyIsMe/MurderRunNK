@@ -16,7 +16,8 @@ public abstract class FormMenu {
 		SURVTRAPSMENU(null),
 		ARMORMENU(new ArmorMenu(301)),
 		UTILMENU(null),
-		SURVITEMSMENU(new SurvivorItemsMenu(303));
+		SURVITEMSMENU(new SurvivorItemsMenu(303)),
+		FILTERITEMSMENU(new FilterItemsMenu(299));
 		
 		private FormMenu menu;
 		
@@ -60,10 +61,13 @@ public abstract class FormMenu {
 		return this;
 	}
 	
-	
 	public void open(Player player)
 	{
-		player.showFormWindow(createForm(player), id);
+		FormWindow form = createForm(player);
+		if(form == null)
+			return;
+		
+		player.showFormWindow(form, id);
 	}
 	
 	public void open(FormWindow window, Player player)

@@ -8,26 +8,37 @@ import cn.nukkit.item.Item;
 
 public abstract class ShopItem extends ItemHelper {
 
+	private final int index;
 	private final String name;
 	private final String description;
+	private final String category;
 	private final int price;
 	private final int item;
 	
-	public ShopItem(String text, String name, String description, int price, int item) 
+	public ShopItem(int index, String text, String name, String description, int price, int item, String category) 
 	{
 		super(text);
+		this.index = index;
 		this.name = name;
 		this.description = description;
 		this.price = price;
 		this.item = item;
+		this.category = category;
 	}
 	
-	public ShopItem(String text, ElementButtonImageData image, String name, String description, int price, int item) {
+	public ShopItem(int index, String text, ElementButtonImageData image, String name, String description, int price, int item, String category) {
 		super(text, image);
+		this.index = index;
 		this.name = name;
 		this.description = description;
 		this.price = price;
 		this.item = item;
+		this.category = category;
+	}
+	
+	public int getIndex()
+	{
+		return index;
 	}
 
 	public String getName()
@@ -48,6 +59,11 @@ public abstract class ShopItem extends ItemHelper {
 	public Item getItem()
 	{
 		return Item.get(item);
+	}
+	
+	public String getType()
+	{
+		return category;
 	}
 	
 	public abstract FormMenu getCategory();

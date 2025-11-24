@@ -10,7 +10,9 @@ import com.joshuacc.mrnk.events.GameEndEvent.WinType;
 import com.joshuacc.mrnk.files.MRArenasConfig;
 import com.joshuacc.mrnk.files.MRLobbyConfig;
 import com.joshuacc.mrnk.items.FormMenu.GameMenus;
+import com.joshuacc.mrnk.items.ItemMenu;
 import com.joshuacc.mrnk.lang.ConfigLang;
+import com.joshuacc.mrnk.lang.FormsLang;
 import com.joshuacc.mrnk.scoreboards.ScoreboardAbstract;
 import com.joshuacc.mrnk.scoreboards.WaitScoreboard;
 import com.joshuacc.mrnk.utils.MapState;
@@ -38,6 +40,7 @@ public class MRPlayer {
 	private ScoreboardAbstract board;
 
 	private ArrayList<EntityItem> itemDrops = new ArrayList<EntityItem>();
+	private HashMap<ItemMenu, MRItemFilters> itemFilters = new HashMap<>();
 
 	private int time;
 	private int qPts;
@@ -54,6 +57,9 @@ public class MRPlayer {
 		this.time = 0;
 
 		this.itemDrops = new ArrayList<>();
+		this.itemFilters = new HashMap<>();
+		
+		itemFilters.put((ItemMenu) GameMenus.ARMORMENU.getFormMenu(), new MRItemFilters("", FormsLang.LOWTOHIGH.toString(), FormsLang.ALLCATEGORY.toString(), 1));
 
 		this.hasRound = false;
 
@@ -132,6 +138,11 @@ public class MRPlayer {
 	{
 		itemDrops.forEach((e) -> e.close());
 		itemDrops.clear();
+	}
+	
+	public MRItemFilters getItemFilter(ItemMenu menu)
+	{
+		return itemFilters.get(menu);
 	}
 
 	public static MRPlayer getMRPlayer(Player player)
@@ -216,7 +227,6 @@ public class MRPlayer {
 			player.setGamemode(0);
 			player.setHealth(player.getMaxHealth());
 			player.getFoodData().sendFoodLevel(player.getFoodData().getMaxLevel());
-			GameMenus.SURVITEMSMENU.getFormMenu().open(player);
 		}
 
 		@EventHandler
@@ -241,6 +251,7 @@ public class MRPlayer {
 			team.updateScoreboardPlayerCount();
 			team.sendActionBar();
 			team.messageAllPlayers(TextUtils.format(TextUtils.formatPlayer(ConfigLang.MAPNOTIFYQUEUE.toString(), player)));
+			GameMenus.SURVITEMSMENU.getFormMenu().open(player);
 
 			if(team.getPlayers().size() == config.getMinimumPlayers())
 				Server.getInstance().getPluginManager().callEvent(new GameStartEvent(GameAttribute.STARTING, team));

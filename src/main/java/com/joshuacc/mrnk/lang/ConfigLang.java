@@ -71,14 +71,18 @@ public enum ConfigLang {
 	SURVIVORDIE("Surv-Die Message", "&a%p &ehas died!"),
 	SURVIVORWIN("Survivor-Win", "&a&lSURVIVORS WIN!"),
 	MURDERERWIN("Murderer-Win", "&c&lMURDERER WINS!"),
-	REASON1("Reason-1", "&eThe murderer ran out of time!"),
-	REASON2("Reason-2", "&eAll survivors have died!"),
-	REASON3("Reason-3", "&eThe last survivor has left the arena!"),
-	REASON4("Reason-4", "&eMurderer has left the arena!"),
+	REASON1("Reason.1", "&eThe murderer ran out of time!"),
+	REASON2("Reason.2", "&eAll survivors have died!"),
+	REASON3("Reason.3", "&eThe last survivor has left the arena!"),
+	REASON4("Reason.4", "&eMurderer has left the arena!"),
 	WIN1("Win-1 Message", "&eThe &cmurderer &eran out of time to kill everyone, the &asurvivors &ewin!"),
 	WIN2("Win-2 Message", "&c&l%p &r&ehas killed all the survivors, they have won the round!"),
 	WIN3("Win-3 Message", "&eThe &asurvivors &ehave left the arena and none are left, the &cmurderer &ewins the round!"),
 	WIN4("Win-4 Message", "&eThe &cmurderer &eleft the game, the &asurvivors &ewin!"),
+	
+	//Messages when buying or selling an item
+	BUYITEMSUCCESS("Buy-Item.Success", "&aYou have successfully bought %s for %n!"),
+	BUYITEMFAIL("Buy-Item.Fail", "&cSorry, you need %n &cmore credits to buy %s"),
 	
 	//Messages shown at the end of the game
 	WINNERDRUMROLL("Winner-DrumRoll Message", "&eAnd the winner is..."),

@@ -1,8 +1,9 @@
 package com.joshuacc.mrnk.items;
 
+import java.util.ArrayList;
+import java.util.List;
 import com.joshuacc.mrnk.lang.FormsLang;
 import com.joshuacc.mrnk.main.MRMain;
-
 import cn.nukkit.form.element.ElementButtonImageData;
 import cn.nukkit.utils.ConfigSection;
 import cn.nukkit.utils.TextFormat;
@@ -13,17 +14,24 @@ public class ArmorMenu extends ItemMenu {
 	{
 		super(id);
 		ConfigSection armor = MRMain.getInstance().getMRItemShopConfig().getAllItemsByType("Armor");
-		for(String item : armor.getKeys(false))
-		{
-			ConfigSection itemSection = armor.getSection(item);
-			String name = TextFormat.colorize(itemSection.getString("Name"));
-			itemSection.getString("path");
-			registerItem(new ArmorItem(name, new ElementButtonImageData(
-					itemSection.getString("Path"), itemSection.getString("Image")), 
-					name, 
-					itemSection.getString("Description"), 
-					itemSection.getInt("Price"),
-					itemSection.getInt("Item")));
+		List<String> keys = new ArrayList<>(armor.getKeys(false));
+		for (int i = 0; i < keys.size(); i++) {
+		    String item = keys.get(i);
+
+		    ConfigSection itemSection = armor.getSection(item);
+
+		    String name = itemSection.getString("Name");
+		    int price = itemSection.getInt("Price");
+
+		    registerItem(new ArmorItem(
+		    	i,
+		        TextFormat.colorize(FormsLang.ITEMNAME.toString().replace("%s", name).replace("%n", Integer.toString(price))),
+		        new ElementButtonImageData(itemSection.getString("Path"), itemSection.getString("Image")),
+		        name,
+		        itemSection.getString("Description"),
+		        price,
+		        itemSection.getInt("Item")
+		    ));
 		}
 	}
 

@@ -52,7 +52,6 @@ public class SelectItemMenu extends FormMenu {
 		
 		if(r == null)
 		{
-			player.sendMessage("closed");
 			playerItem.remove(player);
 			return;
 		}

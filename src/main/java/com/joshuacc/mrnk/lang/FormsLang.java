@@ -54,16 +54,19 @@ public enum FormsLang {
 	//General Filters
 	FILTERTITLE("Filters.Title", "Filter Items"),
 	FILTERDESC("Filters.Description", "Filter through relevant items"),
+	SEARCHKEYWORD("Filters.Search-Keyword", "Search Keyword"),
+	
+	//Dropdown Filters
+	SORTPRICE("Filters.Sort Price", "Sort By Price"),
 	LOWTOHIGH("Filters.Low-To-High Prices", "Low To High Prices"),
 	HIGHTOLOW("Filters.High-To-Low Prices", "High To Low Prices"),
-	SEARCHITEM("Filters.Search-Item", "Search Item Name"),
-	
-	//Trap Filters
-	TRAPCLICK("Trap-Filters.Trap Click", "Trap Click"),
-	TRAPDROP("Trap-Filters.Trap Drop", "Trap Drop"),
+	SORTCATEGORY("Filters.Sort Type", "Sort By Type"),
+	ALLCATEGORY("Filters.All Category", "All"),
+	TRAPCLICK("Filters.Trap Click", "Trap Click"),
+	TRAPDROP("Filters.Trap Drop", "Trap Drop"),
 	
 	//Item Builder
-	ITEMNAME("Item.Name", "%s\nPrice: %n"),
+	ITEMNAME("Item.Name", "&l%s\n&r&8Price: &2%n"),
 	
 	//Survivor Items Category Menu
 	SURVITEMSTITLE("Survivor-Items.Title", "Survivor Items Category"),
