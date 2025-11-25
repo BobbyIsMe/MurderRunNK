@@ -1,0 +1,5 @@
+name: MurderRunNK
+main: com.joshuacc.mrnk.main.MRMain
+author: Joshua CC
+api: ["1.0.0"]
+version: 1.3.1
