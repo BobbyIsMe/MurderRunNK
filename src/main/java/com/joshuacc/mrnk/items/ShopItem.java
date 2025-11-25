@@ -7,6 +7,7 @@ import com.joshuacc.mrnk.menus.FormMenu.GameMenus;
 import cn.nukkit.Player;
 import cn.nukkit.form.element.ElementButtonImageData;
 import cn.nukkit.item.Item;
+import cn.nukkit.utils.TextFormat;
 
 public abstract class ShopItem extends ItemHelper {
 
@@ -16,8 +17,9 @@ public abstract class ShopItem extends ItemHelper {
 	private final String category;
 	private final int price;
 	private final int item;
+	private final boolean stackable;
 	
-	public ShopItem(int index, String text, String name, String description, int price, int item, String category) 
+	public ShopItem(int index, String text, String name, String description, int price, int item, String category, boolean stackable) 
 	{
 		super(text);
 		this.index = index;
@@ -26,9 +28,10 @@ public abstract class ShopItem extends ItemHelper {
 		this.price = price;
 		this.item = item;
 		this.category = category;
+		this.stackable = stackable;
 	}
 	
-	public ShopItem(int index, String text, ElementButtonImageData image, String name, String description, int price, int item, String category) {
+	public ShopItem(int index, String text, ElementButtonImageData image, String name, String description, int price, int item, String category, boolean stackable) {
 		super(text, image);
 		this.index = index;
 		this.name = name;
@@ -36,6 +39,7 @@ public abstract class ShopItem extends ItemHelper {
 		this.price = price;
 		this.item = item;
 		this.category = category;
+		this.stackable = stackable;
 	}
 	
 	public int getIndex()
@@ -60,12 +64,19 @@ public abstract class ShopItem extends ItemHelper {
 	
 	public Item getItem()
 	{
-		return Item.get(item);
+		Item i = Item.get(item);
+		i.setCustomName(TextFormat.colorize("&r"+name));
+		return i;
 	}
 	
 	public String getType()
 	{
 		return category;
+	}
+	
+	public boolean isStackable()
+	{
+		return stackable;
 	}
 	
 	public abstract FormMenu getCategory();

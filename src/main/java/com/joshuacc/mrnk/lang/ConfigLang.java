@@ -83,6 +83,7 @@ public enum ConfigLang {
 	//Messages when buying or selling an item
 	BUYITEMSUCCESS("Buy-Item.Success", "&aYou have successfully bought %s &r&afor &2%n &apoints"),
 	BUYITEMFAIL("Buy-Item.Fail", "&cSorry, you need &2%n &cmore points to buy %s"),
+	BUYITEMSTACK("Buy-Item.Stack", "&cSorry, you can only have one %s &r&cin your inventory"),
 	
 	//Messages shown at the end of the game
 	WINNERDRUMROLL("Winner-DrumRoll Message", "&eAnd the winner is..."),

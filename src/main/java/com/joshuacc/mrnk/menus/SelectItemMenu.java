@@ -15,6 +15,7 @@ import cn.nukkit.form.response.FormResponse;
 import cn.nukkit.form.response.FormResponseSimple;
 import cn.nukkit.form.window.FormWindow;
 import cn.nukkit.form.window.FormWindowSimple;
+import cn.nukkit.item.Item;
 import cn.nukkit.level.Sound;
 import cn.nukkit.utils.TextFormat;
 
@@ -74,20 +75,24 @@ public class SelectItemMenu extends FormMenu {
 			item.getCategory().open(player);
 			playerItem.remove(player);
 		} else {
-			//TODO: setup shop stuff
-			if(mPlayer.getPlayerQueuedPoints() >= item.getPrice())
-			{
-				player.getInventory().addItem(item.getItem());
-				player.getLevel().addSound(player, Sound.RANDOM_ORB);
-				mPlayer.addPoints(-item.getPrice());
-				player.sendMessage(TextUtils.format(ConfigLang.BUYITEMSUCCESS.toString().replace("%s", item.getName()).replace("%n", Integer.toString(item.getPrice()))));
-			} else
-			{
-				player.getLevel().addSound(player, Sound.RANDOM_ANVIL_LAND);
-				player.sendMessage(TextUtils.format(ConfigLang.BUYITEMFAIL.toString().replace("%s", item.getName()).replace("%n", Integer.toString(item.getPrice() - mPlayer.getPlayerQueuedPoints()))));
-			}
+			if(!player.getInventory().isFull())
+				if(!item.isStackable() && player.getInventory().contains(item.getItem()))
+				{
+					player.getLevel().addSound(player, Sound.MOB_VILLAGER_NO);
+					player.sendMessage(TextFormat.colorize(ConfigLang.BUYITEMSTACK.toString().replace("%s", item.getName())));
+				}
+				else if(mPlayer.getPlayerQueuedPoints() >= item.getPrice())
+				{
+					player.getInventory().addItem(item.getItem());
+					player.getLevel().addSound(player, Sound.RANDOM_ORB);
+					mPlayer.addPoints(-item.getPrice());
+					player.sendMessage(TextUtils.format(ConfigLang.BUYITEMSUCCESS.toString().replace("%s", item.getName()).replace("%n", Integer.toString(item.getPrice()))));
+				} else
+				{
+					player.getLevel().addSound(player, Sound.RANDOM_ANVIL_LAND);
+					player.sendMessage(TextUtils.format(ConfigLang.BUYITEMFAIL.toString().replace("%s", item.getName()).replace("%n", Integer.toString(item.getPrice() - mPlayer.getPlayerQueuedPoints()))));
+				}
 			this.open(player);
 		}
 	}
-
 }
