@@ -1,7 +1,10 @@
 package com.joshuacc.mrnk.commands;
 
 import com.joshuacc.mrnk.main.MRMain;
+import com.joshuacc.mrnk.main.MRPlayer;
+import com.joshuacc.mrnk.main.MRTeam;
 import com.joshuacc.mrnk.main.MRTeam.MapModes;
+import com.joshuacc.mrnk.menus.FormMenu.GameMenus;
 import com.joshuacc.mrnk.utils.FormUtils;
 
 import cn.nukkit.Player;
@@ -42,6 +45,23 @@ public class OpenListCommand extends Command {
 				break;
 			case "escape":
 				forms.addMapsSelector(target, MapModes.ESCAPE);
+				break;
+			case "shop":
+			{
+				MRPlayer mPlayer = MRPlayer.getMRPlayer(target);
+				if(mPlayer != null)
+				{
+					MRTeam team = mPlayer.getMapTeam();
+					Player killer = team.getKiller();
+					if(team.onIntermission() && killer != null)
+						if (target.getName().equals(killer.getName())) 
+						{
+							//TODO: Murderer item menu
+						} else {
+							GameMenus.SURVITEMSMENU.getFormMenu().open(target);
+						}
+				}
+			}
 				break;
 			}
 			break;

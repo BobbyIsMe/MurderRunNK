@@ -7,6 +7,7 @@ import java.util.TreeMap;
 import cn.nukkit.Server;
 import cn.nukkit.event.Listener;
 import cn.nukkit.item.Item;
+import cn.nukkit.utils.TextFormat;
 
 public abstract class MRTraps implements Comparable<MRTraps>, Listener {
 
@@ -26,7 +27,7 @@ public abstract class MRTraps implements Comparable<MRTraps>, Listener {
 	
 	public void setTrapName()
 	{
-		trapItemName = "§r"+MRMain.getInstance().getMRTrapsConfig().getString(getName(), "Name");
+		trapItemName = TextFormat.colorize("&r"+MRMain.getInstance().getMRTrapsConfig().getString(getName(), "Name"));
 	}
 	
 	public static void addMRTrap(MRTraps trap, boolean surv, MRMain main)

@@ -28,7 +28,7 @@ public class PlayerCommand extends Command {
 		this.commandParameters.clear();
 		this.commandParameters.put("default", new CommandParameter[] {
 				CommandParameter.newEnum("options", new String[] {
-						"normal", "escape", "unqueue"	
+						"normal", "escape", "unqueue", "shop", "sell"	
 				})
 		});
 	}
@@ -62,6 +62,12 @@ public class PlayerCommand extends Command {
 				break;
 			case "unqueue":
 				lobby.addJoinNPCDetails("Unqueue", createEntityLobby(ConfigLang.NPCUNQUEUE.toString(), player, "unqueue %p"));
+				break;
+			case "shop":
+				lobby.addJoinNPCDetails("Shop", createEntityLobby(ConfigLang.NPCSHOP.toString(), player, "openlist %p shop"));
+				break;
+			case "sell":
+				lobby.addJoinNPCDetails("Sell", createEntityLobby(ConfigLang.NPCSELL.toString(), player, "sell %p"));
 				break;
 			}
 		}

@@ -24,10 +24,12 @@ public enum ConfigLang {
 
 	//NPC names
 	NPCUNQUEUE("NPC-Unqueue Name", "&eClick to &c&lunqueue!"),
-	NPCJOINLIST("NPC-Join-List Name", "&eClick to Join a &6&lMap!"),
-	NPCJOINPLAYERS("Npc-Join-Players Tag", "&a&l%n PLAYERS"),
-	NPCNORMAL("Npc-Join-Normal", "&cNormal Mode"),
-	NPCESCAPE("Npc-Join-Escape", "&cEscape Mode"),
+	NPCSHOP("NPC-Shop", "&eClick to &bbuy items!"),
+	NPCSELL("NPC-Sell", "&eClick to &bsell held item!"),
+	NPCJOINLIST("NPC-Join.List Name", "&eClick to Join a &6&lMap!"),
+	NPCJOINPLAYERS("Npc-Join.Players Tag", "&a&l%n PLAYERS"),
+	NPCNORMAL("Npc-Join.Normal", "&cNormal Mode"),
+	NPCESCAPE("Npc-Join.Escape", "&cEscape Mode"),
 
 	//Messages when you execute the command or config something in the map
 	FAILCONFIG("Map-Config-Fail Message", "&cYou must set all locations for the map! (Vehicle is optional)"),
@@ -84,6 +86,7 @@ public enum ConfigLang {
 	BUYITEMSUCCESS("Buy-Item Message.Success", "&aYou have successfully bought %s &r&afor &2%n &apoints"),
 	BUYITEMFAIL("Buy-Item Message.Fail", "&cSorry, you need &2%n &cmore points to buy %s"),
 	BUYITEMSTACK("Buy-Item Message.Stack", "&cSorry, you can only have one %s &r&cin your inventory"),
+	SELLITEMSUCESS("Sell-Item Message", "&aYou have successfully sold %s &r&afor &2%n &apoints"),
 	MURDERERNOTREL("Murderer-Not-Released Message", "&cThe murderer has not been released yet!"),
 	
 	//Messages shown at the end of the game

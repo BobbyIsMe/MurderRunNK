@@ -8,6 +8,7 @@ import java.util.Map;
 import com.joshuacc.mrnk.commands.MRCommand;
 import com.joshuacc.mrnk.commands.OpenListCommand;
 import com.joshuacc.mrnk.commands.PlayerCommand;
+import com.joshuacc.mrnk.commands.SellCommand;
 import com.joshuacc.mrnk.commands.TipCommand;
 import com.joshuacc.mrnk.commands.UnqueueCommand;
 import com.joshuacc.mrnk.files.MRArenasConfig;
@@ -23,6 +24,7 @@ import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.listeners.MRGameListener;
 import com.joshuacc.mrnk.main.MRTeam.MapModes;
 import com.joshuacc.mrnk.scoreboards.PlayScoreboard;
+import com.joshuacc.mrnk.traps.Nacrotics;
 import com.joshuacc.mrnk.traps.Test;
 import com.joshuacc.mrnk.utils.EmptyGenerator;
 import com.joshuacc.mrnk.utils.FormUtils;
@@ -99,6 +101,7 @@ public class MRMain extends PluginBase {
 		traps.addDefaults();
 		
 		MRTraps.addMRTrap(new Test(), true, this);
+		MRTraps.addMRTrap(new Nacrotics(), true, this);
 		
 		for(MRTraps survTrap : MRTraps.getTraps(true))
 		{
@@ -198,6 +201,7 @@ public class MRMain extends PluginBase {
 		map.register("openlist", new OpenListCommand(this));
 		map.register("unqueue", new UnqueueCommand());
 		map.register("tip", new TipCommand());
+		map.register("sell", new SellCommand());
 	}
 
 	private void registerListeners()

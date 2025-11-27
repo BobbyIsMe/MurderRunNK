@@ -45,11 +45,11 @@ public class SelectItemMenu extends FormMenu {
 		ElementButton button = item.getImage() != null ? new ElementButton(FormsLang.SELITEMPURCHASE.toString(), item.getImage()) : new ElementButton(FormsLang.SELITEMPURCHASE.toString());
 		menu.addElement(backButton);
 		menu.addButton(button);
-		menu.addElement(new ElementLabel(item.getName()));
+		menu.addElement(new ElementLabel(TextFormat.colorize(item.getName())));
 		menu.addElement(new ElementLabel(
 				TextUtils.formatNumber(FormsLang.ITEMPRICE.toString(), item.getPrice())
 				+ "\n" + TextUtils.formatNumber(FormsLang.POINTSLEFT.toString(), mPlayer.getPlayerQueuedPoints())));
-		menu.addElement(new ElementLabel(item.getDescription()));
+		menu.addElement(new ElementLabel(TextFormat.colorize(item.getDescription())));
 		return menu;
 	}
 
