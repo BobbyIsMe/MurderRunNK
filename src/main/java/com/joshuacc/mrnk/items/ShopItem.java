@@ -42,6 +42,7 @@ public abstract class ShopItem extends ItemHelper {
 		this.stackable = stackable;
 	}
 	
+
 	public int getIndex()
 	{
 		return index;
@@ -66,6 +67,8 @@ public abstract class ShopItem extends ItemHelper {
 	{
 		Item i = Item.get(item);
 		i.setCustomName(TextFormat.colorize("&r"+name));
+		if(description.length() != 0)
+			i.setLore(TextFormat.colorize("&r"+description));
 		return i;
 	}
 	

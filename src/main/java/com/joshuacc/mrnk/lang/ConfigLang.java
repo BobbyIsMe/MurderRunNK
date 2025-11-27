@@ -81,9 +81,10 @@ public enum ConfigLang {
 	WIN4("Win-4 Message", "&eThe &cmurderer &eleft the game, the &asurvivors &ewin!"),
 	
 	//Messages when buying or selling an item
-	BUYITEMSUCCESS("Buy-Item.Success", "&aYou have successfully bought %s &r&afor &2%n &apoints"),
-	BUYITEMFAIL("Buy-Item.Fail", "&cSorry, you need &2%n &cmore points to buy %s"),
-	BUYITEMSTACK("Buy-Item.Stack", "&cSorry, you can only have one %s &r&cin your inventory"),
+	BUYITEMSUCCESS("Buy-Item Message.Success", "&aYou have successfully bought %s &r&afor &2%n &apoints"),
+	BUYITEMFAIL("Buy-Item Message.Fail", "&cSorry, you need &2%n &cmore points to buy %s"),
+	BUYITEMSTACK("Buy-Item Message.Stack", "&cSorry, you can only have one %s &r&cin your inventory"),
+	MURDERERNOTREL("Murderer-Not-Released Message", "&cThe murderer has not been released yet!"),
 	
 	//Messages shown at the end of the game
 	WINNERDRUMROLL("Winner-DrumRoll Message", "&eAnd the winner is..."),

@@ -18,10 +18,12 @@ import com.joshuacc.mrnk.files.MRLanguagesConfig;
 import com.joshuacc.mrnk.files.MRLobbyConfig;
 import com.joshuacc.mrnk.files.MRPlayerConfig;
 import com.joshuacc.mrnk.files.MRScoreboardConfig;
+import com.joshuacc.mrnk.files.MRTrapsConfig;
 import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.listeners.MRGameListener;
 import com.joshuacc.mrnk.main.MRTeam.MapModes;
 import com.joshuacc.mrnk.scoreboards.PlayScoreboard;
+import com.joshuacc.mrnk.traps.Test;
 import com.joshuacc.mrnk.utils.EmptyGenerator;
 import com.joshuacc.mrnk.utils.FormUtils;
 import com.joshuacc.mrnk.utils.NPCHuman;
@@ -39,6 +41,7 @@ public class MRMain extends PluginBase {
 	private MRScoreboardConfig board;
 	private MRPlayerConfig players;
 	private MRItemShopConfig itemShop;
+	private MRTrapsConfig traps;
 	private MRGameConfig game;
 	private FormUtils formUtil;
 
@@ -84,6 +87,7 @@ public class MRMain extends PluginBase {
 		board = new MRScoreboardConfig(this);
 		lobby = new MRLobbyConfig(this);
 		game = new MRGameConfig(this);
+		traps = new MRTrapsConfig(this);
 		
 		this.empty = "@".repeat(board.getMaxLength());
 
@@ -92,6 +96,23 @@ public class MRMain extends PluginBase {
 		board.setupConfig();
 		lobby.setupConfig();
 		game.setupConfig();
+		traps.addDefaults();
+		
+		MRTraps.addMRTrap(new Test(), true, this);
+		
+		for(MRTraps survTrap : MRTraps.getTraps(true))
+		{
+			traps.addTrap(survTrap.getName(), "path", survTrap.getIcon(), survTrap.getTrapName(), survTrap.getTrapDesc(), survTrap.getPrice(), survTrap.getItem().getId());
+			survTrap.setTrapName();
+		}
+		
+		for(MRTraps survTrap : MRTraps.getTraps(false))
+		{
+			traps.addTrap(survTrap.getName(), "path", survTrap.getIcon(), survTrap.getTrapName(), survTrap.getTrapDesc(), survTrap.getPrice(), survTrap.getItem().getId());
+			survTrap.setTrapName();
+		}
+		
+		traps.getConfig().save();
 		
 		formUtil = new FormUtils(this);
 
@@ -295,6 +316,11 @@ public class MRMain extends PluginBase {
 	public MRGameConfig getMRGameConfig()
 	{
 		return game;
+	}
+	
+	public MRTrapsConfig getMRTrapsConfig()
+	{
+		return traps;
 	}
 
 	public FormUtils getFormUtil()

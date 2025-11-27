@@ -166,6 +166,11 @@ public class MRPlayer {
 	{
 		return time;
 	}
+	
+	public Player getPlayer()
+	{
+		return player;
+	}
 
 	public int getPlayerQueuedPoints()
 	{

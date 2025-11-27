@@ -89,6 +89,8 @@ public enum FormsLang {
 	//Traps Menu
 	TRAPSTITLE("Traps.Title", "Trap Shop"),
 	TRAPSDESC("Traps.Desc", "Buy traps to help %s"),
+	SURVTRAPSDESC("Traps.Surv Desc", "stall the murderer!"),
+	MURDTRAPSDESC("Traps.Killer Desc", "find and kill everyone!"),
 	TRAPNAME("Traps.Trap Name", "%s1 - %s2"),
 	
 	//Select Item Menu

@@ -12,7 +12,7 @@ import cn.nukkit.form.window.FormWindowSimple;
 
 public class SurvivorItemsMenu extends FormMenu {
 
-	private ItemHelper traps = new CategoryItem(FormsLang.SURVITEMSTRAPS.toString(), null);
+	private ItemHelper traps = new CategoryItem(FormsLang.SURVITEMSTRAPS.toString(), GameMenus.SURVTRAPSMENU.getFormMenu());
 	private ItemHelper armor = new CategoryItem(FormsLang.SURVITEMSARMOR.toString(), GameMenus.ARMORMENU.getFormMenu());
 	private ItemHelper utility = new CategoryItem(FormsLang.SURVITEMSUTIL.toString(), null);
 	
@@ -25,6 +25,7 @@ public class SurvivorItemsMenu extends FormMenu {
 	{
 		FormWindowSimple menu = new FormWindowSimple(FormsLang.SURVITEMSTITLE.toString(), FormsLang.SURVITEMSDESC.toString());
 		menu.addElement(armor);
+		menu.addElement(traps);
 		return menu;
 	}
 

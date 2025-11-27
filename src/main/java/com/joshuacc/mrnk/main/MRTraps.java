@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.TreeMap;
 
-import cn.nukkit.Player;
+import cn.nukkit.Server;
 import cn.nukkit.event.Listener;
 import cn.nukkit.item.Item;
 
@@ -12,14 +12,26 @@ public abstract class MRTraps implements Comparable<MRTraps>, Listener {
 
 	private static final TreeMap<String, MRTraps> survTrap;
 	private static final TreeMap<String, MRTraps> killerTrap;
+	private String trapItemName;
 
 	static {
 		survTrap = new TreeMap<String,MRTraps>();
 		killerTrap = new TreeMap<String,MRTraps>();
 	}	
 	
-	public static void addMRTrap(MRTraps trap, boolean surv)
+	public String getTrapItemName()
 	{
+		return trapItemName;
+	}
+	
+	public void setTrapName()
+	{
+		trapItemName = "§r"+MRMain.getInstance().getMRTrapsConfig().getString(getName(), "Name");
+	}
+	
+	public static void addMRTrap(MRTraps trap, boolean surv, MRMain main)
+	{
+		Server.getInstance().getPluginManager().registerEvents(trap, main);
 		if(surv)
 			survTrap.put(trap.getName(), trap);
 		else
@@ -49,19 +61,12 @@ public abstract class MRTraps implements Comparable<MRTraps>, Listener {
 	}
 	
 	public abstract String getName();
+	public abstract String getIcon();
+	public abstract int getPrice();
 	public abstract String getTrapDesc();
 	public abstract boolean oneTimeUse();
-	public abstract int getCooldown();
-	public abstract void getAbility(Player player);
-	protected abstract Item getItem();
-	protected abstract String getTrapName();
-	protected abstract String getLore();
-	
-	public Item addItem()
-	{
-		Item item = getItem();
-		item.setCustomName(getName());
-		item.setLore(getLore());
-		return item;
-	}
+	public abstract Item getItem();
+	public abstract String getType();
+	public abstract boolean isStackable();
+	public abstract String getTrapName();
 }

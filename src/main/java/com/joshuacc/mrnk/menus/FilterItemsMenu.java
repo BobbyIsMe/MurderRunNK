@@ -44,7 +44,7 @@ public class FilterItemsMenu extends FormMenu {
 		sortPrice.add(FormsLang.HIGHTOLOW.toString());
 		
 		sortType.add(FormsLang.ALLCATEGORY.toString());
-		if (menus.get(player) instanceof SurvivorTrapMenu) {
+		if (menus.get(player) instanceof SurvivorTrapsMenu) {
 			sortType.add(FormsLang.TRAPCLICK.toString());
 			sortType.add(FormsLang.TRAPDROP.toString());
 		}

@@ -13,7 +13,7 @@ public abstract class FormMenu {
 	
 	public enum GameMenus {
 		SELITEMMENU(new SelectItemMenu(300)),
-		SURVTRAPSMENU(null),
+		SURVTRAPSMENU(new SurvivorTrapsMenu(301)),
 		ARMORMENU(new ArmorMenu(302)),
 		UTILMENU(null),
 		SURVITEMSMENU(new SurvivorItemsMenu(304)),
