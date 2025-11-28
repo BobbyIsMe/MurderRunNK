@@ -5,12 +5,14 @@ import java.io.FilenameFilter;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.joshuacc.mrnk.commands.AreaCommand;
 import com.joshuacc.mrnk.commands.MRCommand;
 import com.joshuacc.mrnk.commands.OpenListCommand;
 import com.joshuacc.mrnk.commands.PlayerCommand;
 import com.joshuacc.mrnk.commands.SellCommand;
 import com.joshuacc.mrnk.commands.TipCommand;
 import com.joshuacc.mrnk.commands.UnqueueCommand;
+import com.joshuacc.mrnk.files.MRAreasConfig;
 import com.joshuacc.mrnk.files.MRArenasConfig;
 import com.joshuacc.mrnk.files.MRFormsTextsConfig;
 import com.joshuacc.mrnk.files.MRGameConfig;
@@ -45,6 +47,7 @@ public class MRMain extends PluginBase {
 	private MRItemShopConfig itemShop;
 	private MRTrapsConfig traps;
 	private MRGameConfig game;
+	private MRAreasConfig areas;
 	private FormUtils formUtil;
 
 	private HashMap<String,MRArenasConfig> mapConfigs = new HashMap<>();
@@ -90,6 +93,7 @@ public class MRMain extends PluginBase {
 		lobby = new MRLobbyConfig(this);
 		game = new MRGameConfig(this);
 		traps = new MRTrapsConfig(this);
+		areas = new MRAreasConfig(this);
 		
 		this.empty = "@".repeat(board.getMaxLength());
 
@@ -98,6 +102,7 @@ public class MRMain extends PluginBase {
 		board.setupConfig();
 		lobby.setupConfig();
 		game.setupConfig();
+		areas.setupConfig();
 		traps.addDefaults();
 		
 		MRTraps.addMRTrap(new Test(), true, this);
@@ -202,6 +207,7 @@ public class MRMain extends PluginBase {
 		map.register("unqueue", new UnqueueCommand());
 		map.register("tip", new TipCommand());
 		map.register("sell", new SellCommand());
+		map.register("area", new AreaCommand(this));
 	}
 
 	private void registerListeners()
@@ -325,6 +331,11 @@ public class MRMain extends PluginBase {
 	public MRTrapsConfig getMRTrapsConfig()
 	{
 		return traps;
+	}
+	
+	public MRAreasConfig getMRAreasConfig()
+	{
+		return areas;
 	}
 
 	public FormUtils getFormUtil()

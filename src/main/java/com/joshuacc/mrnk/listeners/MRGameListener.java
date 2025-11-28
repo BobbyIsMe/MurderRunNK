@@ -5,6 +5,7 @@ import com.joshuacc.mrnk.events.GameEndEvent.WinType;
 import com.joshuacc.mrnk.events.GameStartEvent;
 import com.joshuacc.mrnk.events.GameStartEvent.GameAttribute;
 import com.joshuacc.mrnk.events.PlayerKilledEvent;
+import com.joshuacc.mrnk.files.MRAreasConfig;
 import com.joshuacc.mrnk.files.MRGameConfig;
 import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.main.MRMain;
@@ -18,18 +19,27 @@ import cn.nukkit.Server;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
+import cn.nukkit.event.block.BlockBreakEvent;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
+import cn.nukkit.event.entity.EntityDamageEvent;
+import cn.nukkit.event.player.PlayerFoodLevelChangeEvent;
+import cn.nukkit.event.player.PlayerInteractEvent;
+import cn.nukkit.event.player.PlayerInteractEvent.Action;
 import cn.nukkit.item.Item;
+import cn.nukkit.level.Location;
+import cn.nukkit.utils.ConfigSection;
 
 public class MRGameListener implements Listener {
 
 	private MRMain main;
 	private MRGameConfig game;
+	private MRAreasConfig areas;
 
 	public MRGameListener(MRMain main)
 	{
 		this.main = main;
 		this.game = main.getMRGameConfig();
+		this.areas = main.getMRAreasConfig();
 	}
 
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -104,6 +114,72 @@ public class MRGameListener implements Listener {
 
 		if(team.getSurvivors().size() == 0)
 			Server.getInstance().getPluginManager().callEvent(new GameEndEvent(team, WinType.KILL_ALL));
+	}
+	
+	@EventHandler
+	public void onBreakArena(BlockBreakEvent event)
+	{
+		Player player = event.getPlayer();
+		ConfigSection section = areas.getArea(player);
+		if(section != null && !section.getBoolean("Break Blocks"))
+		{
+			event.setCancelled(true);
+		}
+	}
+	
+	@EventHandler
+	public void onHit(EntityDamageEvent event)
+	{
+		if(!(event.getEntity() instanceof Player))
+			return;
+		
+		Player player = (Player) event.getEntity();
+		ConfigSection section = areas.getArea(player);
+		if(section != null && !section.getBoolean("Damage"))
+		{
+			event.setCancelled(true);
+		}
+	}
+	
+	@EventHandler
+	public void onHunger(PlayerFoodLevelChangeEvent event)
+	{
+		Player player = (Player) event.getPlayer();
+		ConfigSection section = areas.getArea(player);
+		if(section != null && !section.getBoolean("Hunger"))
+		{
+			event.setCancelled(true);
+		}
+	}
+	
+	@EventHandler
+	public void onInteract(PlayerInteractEvent event)
+	{
+		Player player = event.getPlayer();
+		if(player.getInventory().getItemInHand().getName().equals(areas.getAreaItemName()) && event.getBlock() != null)
+		{
+			Location loc = event.getBlock().getLocation();
+			if(event.getAction() == Action.LEFT_CLICK_BLOCK)
+			{
+				areas.addPos1(player, loc);
+				player.sendMessage(TextUtils.format(ConfigLang.AREAADDEDPOS1.toString()));
+			} else if(event.getAction() == Action.RIGHT_CLICK_BLOCK)
+			{
+				areas.addPos2(player, loc);
+				player.sendMessage(TextUtils.format(ConfigLang.AREAADDEDPOS2.toString()));
+			}
+			event.setCancelled(true);
+		}
+	}
+	
+	@EventHandler
+	public void onBreak(BlockBreakEvent event)
+	{
+		Player player = event.getPlayer();
+		if(player.getInventory().getItemInHand().getName().equals(areas.getAreaItemName()))
+		{
+			event.setCancelled(true);
+		}
 	}
 
 	@EventHandler

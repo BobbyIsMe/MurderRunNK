@@ -49,6 +49,13 @@ public enum ConfigLang {
 	MLOCATIONMESSAGE("Setup M-Location Message", "&aSuccessfully set murderer location!"),
 	GLOCATIONMESSAGE("Setup G-Location Message", "&aSuccessfully set game-end location!"),
 	VLOCATIONMESSAGE("Setup V-Location Message", "&aSuccessfully set vehicle location!"),
+	AREAADDEDPOS1("Area-Added Message.Set Pos1", "&aPosition 1 set!"),
+	AREAADDEDPOS2("Area-Added Message.Set Pos2", "&aPosition 2 set!"),
+	AREAADDEDSUCCESS("Area-Added Message.Success", "&aSuccessfully set protected area for %l!"),
+	AREAADDEDNOPOS1("Area-Added Message.No Pos1", "&cNo position 1 set!"),
+	AREAADDEDNOPOS2("Area-Added Message.No Pos1", "&cNo position 1 set!"),
+	AREAREMOVEDSUCCESS("Area-Removed Message.Success", "&aSuccessfully removed area for %l!"),
+	AREAREMOVEDFAILED("Area-Removed Message.Failed", "&cNo area to remove nearby!"),
 
 	//Messages shown while in a game
 	PLAYERQUEUE("Player-Queue Message", "&eYou have been queued in %l!"),

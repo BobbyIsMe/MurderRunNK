@@ -120,9 +120,10 @@ public class MRTeam {
 	private TaskHandler task;
 	private MRMain main;
 
-	private String map;
-	private String mapId;
-	private String directory;
+	private final String levelName;
+	private final String map;
+	private final String mapId;
+	private final String directory;
 	private String message;
 
 	private ArrayList<Player> allPlayers;
@@ -143,6 +144,7 @@ public class MRTeam {
 	public MRTeam(MRMain main, String map, MapModes mode, MRArenasConfig mapConfig, int multiple)
 	{
 		this.main = main;
+		this.levelName =  new File(main.getFileDirectory("Maps"), map)+File.separator;
 		this.map = map;
 		this.mapId = map+"-"+multiple;
 		this.mode = mode;
@@ -547,7 +549,7 @@ public class MRTeam {
 	
 	private boolean enoughPlayers()
 	{
-		if(allPlayers.size() <= 1) //TODO: Remember to change the value to 1
+		if(allPlayers.size() <= 0) //TODO: Remember to change the value to 1
 		{
 			allSurvivors.clear();
 			
@@ -721,6 +723,11 @@ public class MRTeam {
 	public String getMapOrigin()
 	{
 		return map;
+	}
+	
+	public String getMapLevelOriginName()
+	{
+		return levelName;
 	}
 
 	public String getMapId()

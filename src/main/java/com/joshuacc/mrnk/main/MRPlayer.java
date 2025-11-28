@@ -261,7 +261,6 @@ public class MRPlayer {
 			team.updateScoreboardPlayerCount();
 			team.sendActionBar();
 			team.messageAllPlayers(TextUtils.format(TextUtils.formatPlayer(ConfigLang.MAPNOTIFYQUEUE.toString(), player)));
-			GameMenus.SURVITEMSMENU.getFormMenu().open(player);
 
 			if(team.getPlayers().size() == config.getMinimumPlayers())
 				Server.getInstance().getPluginManager().callEvent(new GameStartEvent(GameAttribute.STARTING, team));
