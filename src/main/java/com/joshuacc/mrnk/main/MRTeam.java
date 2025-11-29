@@ -226,8 +226,6 @@ public class MRTeam {
 			sendActionBar();
 			updateScoreboardPlayerCount();
 			selectMurderer();
-
-			interm = true;
 		}, 40);
 	}
 
@@ -267,7 +265,6 @@ public class MRTeam {
 	private void officialStart()
 	{
 		started = true;
-		interm = true;
 
 		for(Player players : allPlayers)
 			addSurvivor(players);
@@ -358,7 +355,6 @@ public class MRTeam {
 
 		else if(size == 0)
 		{
-			//TODO: end game
 			int delay = 2;
 			TaskDelay task = new TaskDelay(main);
 			playSoundMessage(TextUtils.format(ConfigLang.WINNERDRUMROLL.toString()), Sound.MOB_VILLAGER_IDLE);
@@ -436,7 +432,7 @@ public class MRTeam {
 			players.sendTitle("§4§l"+select.getName()+"§r", ConfigLang.MAPRANDFIN.toString(), 0, 60, 0);
 			playSoundPlayer(players, Sound.MOB_ENDERDRAGON_GROWL);
 		}
-		intermissionCount(40, () -> releaseMurderer(), allPlayers, ConfigLang.INTERMISSION.toString(), ConfigLang.INTERCOUNT.toString());
+		intermissionCount(40, mapConfig.getPreparingTime(), () -> releaseMurderer(), allPlayers, ConfigLang.INTERMISSION.toString(), ConfigLang.INTERCOUNT.toString());
 	}
 
 	private void releaseMurderer()
@@ -446,7 +442,10 @@ public class MRTeam {
 		playBoard.openScoreboard();
 
 		for(Player player: allPlayers)
+		{
 			MRPlayer.getMRPlayer(player).setScoreboard(null);
+			player.closeFormWindows();
+		}
 
 		removeActionBar();
 		sendScoreboardTip();
@@ -456,10 +455,10 @@ public class MRTeam {
 		}
 
 		Server.getInstance().getPluginManager().callEvent(new GameStartEvent(GameAttribute.STARTED, this));
-		killer.sendMessage(TextUtils.format(TextUtils.formatNumber(ConfigLang.MURDCOUNT.toString(), mapConfig.getPreparingTime())));
+		killer.sendMessage(TextUtils.format(TextUtils.formatNumber(ConfigLang.MURDCOUNT.toString(), mapConfig.getHidingTime())));
 		playSoundPlayer(killer, Sound.NOTE_PLING);
 
-		intermissionCount(20, () -> {
+		intermissionCount(20, mapConfig.getHidingTime(), () -> {
 
 			killer.teleport(mapConfig.getMurdererLocation(getMapLevel()));
 			killer.sendMessage(TextUtils.format(ConfigLang.RELEASEMURD.toString()));
@@ -478,6 +477,7 @@ public class MRTeam {
 
 			MRPlayer k = MRPlayer.getMRPlayer(killer);
 			int time = mapConfig.getTimeLimit();
+			int y = mapConfig.getYLevelStart();
 
 			@Override
 			public void onRun(int arg0) 
@@ -488,9 +488,25 @@ public class MRTeam {
 				k.updateTime();
 
 				int i = k.getPlayerTime();
+				
+				for(Player surv : allSurvivors)
+				{
+					if(surv.getY() >= y)
+						surv.attack(2);
+				}
 
-//				updateEntry("Time", TextUtils.getTimeFormat(i));
 				updateEntry(playBoard.getInt("Timer"), TextUtils.formatLine(playBoard.getString("Timer-Line"), TextUtils.getTimeFormat(i)));
+				
+				if(i % mapConfig.getYLevelTime() == 0)
+				{
+					y-= mapConfig.getYLevelDecrement();
+					for(Player all : allPlayers)
+					{
+						all.sendMessage(TextUtils.format(ConfigLang.YLEVELANNOUNCE.toString().replace("%n", Integer.toString(y))));
+					}
+					updateEntry(playBoard.getInt("Y Level Limit"), TextUtils.formatLine(playBoard.getString("Y Level Limit-Line"), Integer.toString(y)));
+				}
+				
 				sendScoreboardTip();
 
 				if(i == time)
@@ -504,12 +520,12 @@ public class MRTeam {
 		}, 20, 20);
 	}
 
-	private void intermissionCount(int delay, FinishTask task, ArrayList<Player> player, String announce, String countdown)
+	private void intermissionCount(int delay, int seconds, FinishTask task, ArrayList<Player> player, String announce, String countdown)
 	{
 		main.getServer().getScheduler().scheduleDelayedRepeatingTask(new Task() {
 
-			int i = mapConfig.getPreparingTime();
-			int time = mapConfig.getPreparingTime();
+			int i = seconds;
+			int time = seconds;
 
 			@Override
 			public void onRun(int arg0) 
@@ -536,7 +552,11 @@ public class MRTeam {
 				}
 
 				if(i == time)
+				{
+					if(playBoard == null)
+						interm = true;
 					playSoundMessage(player, TextUtils.format(TextUtils.formatNumber(announce, i)), Sound.RANDOM_ANVIL_USE);
+				}
 
 				else if(i % 60 == 0 || i == 15 || i == 10 || i <= 5)
 					playSoundMessage(TextUtils.format(TextUtils.formatNumber(countdown, i)), Sound.RANDOM_CLICK);

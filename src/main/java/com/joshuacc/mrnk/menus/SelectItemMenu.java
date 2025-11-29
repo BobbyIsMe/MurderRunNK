@@ -83,6 +83,12 @@ public class SelectItemMenu extends FormMenu {
 				}
 				else if(mPlayer.getPlayerQueuedPoints() >= item.getPrice())
 				{
+					Item it = item.getItem();
+					if(item.getType().equals(FormsLang.TRAPDROP.toString()))
+					{
+						it.getNamedTag().putBoolean("Droppable", true);
+						it.setNamedTag(it.getNamedTag());
+					}
 					player.getInventory().addItem(item.getItem());
 					player.getLevel().addSound(player, Sound.RANDOM_ORB);
 					mPlayer.addPoints(-item.getPrice());

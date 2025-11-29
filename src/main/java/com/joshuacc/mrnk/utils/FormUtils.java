@@ -105,6 +105,10 @@ public class FormUtils {
 			editForm.addElement(new ElementInput(modes.getMapMultiples(), modes.getMode().toLowerCase(), config.getInt(modes.getMode()+" Multiples")));
 
 		editForm.addElement(new ElementInput(FormsLang.SNGPREP.toString(), "prepare", config.getInt("Preparing Time")));
+		editForm.addElement(new ElementInput(FormsLang.SNGHIDE.toString(), "hiding time", config.getInt("Hiding Time")));
+		editForm.addElement(new ElementInput(FormsLang.SNGYLEVELTIME.toString(), "y level time", config.getInt("Y Level Time")));
+		editForm.addElement(new ElementInput(FormsLang.SNGYLEVELSTART.toString(), "y level start", config.getInt("Y Level Start")));
+		editForm.addElement(new ElementInput(FormsLang.SNGYLEVELDECR.toString(), "y level decrement", config.getInt("Y Level Decrement")));
 		editForm.addElement(new ElementInput(FormsLang.SNGTIME.toString(), "time", config.getInt("Time Limit")));
 		editForm.addElement(new ElementInput(FormsLang.SNGPOINTS.toString(), "points", config.getInt("Points Limit")));
 		editForm.addElement(new ElementInput(FormsLang.SNGMINI.toString(), "mini", config.getInt("Minimum Players")));
@@ -250,11 +254,15 @@ public class FormUtils {
 				i++;
 			}
 
-			config.setValue("Preparing Time", response.getInputResponse(3));
-			config.setValue("Time Limit", response.getInputResponse(4));
-			config.setValue("Points Limit", response.getInputResponse(5));
-			config.setValue("Minimum Players", response.getInputResponse(6));
-			config.setValue("Maximum Players", response.getInputResponse(7));
+			config.setValue("Preparing Time", response.getInputResponse(i++));
+			config.setValue("Hiding Time", response.getInputResponse(i++));
+			config.setValue("Y Level Time", response.getInputResponse(i++));
+			config.setValue("Y Level Start", response.getInputResponse(i++));
+			config.setValue("Y Level Decrement", response.getInputResponse(i++));
+			config.setValue("Time Limit", response.getInputResponse(i++));
+			config.setValue("Points Limit", response.getInputResponse(i++));
+			config.setValue("Minimum Players", response.getInputResponse(i++));
+			config.setValue("Maximum Players", response.getInputResponse(i++));
 			config.getConfig().save();
 			player.sendMessage(TextUtils.formatLevel(ConfigLang.CHANGESETTINGS.toString(), map));
 		} catch(Exception e) {

@@ -11,6 +11,7 @@ import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.main.MRMain;
 import com.joshuacc.mrnk.main.MRPlayer;
 import com.joshuacc.mrnk.main.MRTeam;
+import com.joshuacc.mrnk.utils.ItemDelay;
 import com.joshuacc.mrnk.utils.NPCHuman;
 import com.joshuacc.mrnk.utils.TextUtils;
 
@@ -22,6 +23,7 @@ import cn.nukkit.event.Listener;
 import cn.nukkit.event.block.BlockBreakEvent;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
+import cn.nukkit.event.player.PlayerDropItemEvent;
 import cn.nukkit.event.player.PlayerFoodLevelChangeEvent;
 import cn.nukkit.event.player.PlayerInteractEvent;
 import cn.nukkit.event.player.PlayerInteractEvent.Action;
@@ -43,18 +45,39 @@ public class MRGameListener implements Listener {
 	}
 
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-	public void onDeath(EntityDamageByEntityEvent event)
+	public void onAttack(EntityDamageEvent event) 
 	{
-		if(event.getEntity() instanceof Player)
-		{
-			Player target = (Player) event.getEntity();
-			MRPlayer mPlayer = MRPlayer.getMRPlayer(target);
-			if(mPlayer != null && target.getLevel().equals(mPlayer.getMapTeam().getMapLevel()) && target.getHealth() - event.getFinalDamage() < 1f) 
-			{
-				Server.getInstance().getPluginManager().callEvent(new PlayerKilledEvent(MRPlayer.getMRPlayer(target).getMapTeam(), target, event.getDamager() instanceof Player ? (Player) event.getDamager() : null));
-				event.setCancelled(true);
-			}
-		}
+	    if(!(event.getEntity() instanceof Player)) return;
+
+	    Player target = (Player) event.getEntity();
+	    MRPlayer mPlayer = MRPlayer.getMRPlayer(target);
+	    if(mPlayer == null) return;
+	    
+	    MRTeam team = mPlayer.getMapTeam();
+	    Player killer = team.getKiller();
+
+	    if(killer != null && target.getName().equals(mPlayer.getMapTeam().getKiller().getName())) 
+	    {
+	        event.setDamage(0);
+	        return;
+	    }
+
+	    Player damager = null;
+	    if(event instanceof EntityDamageByEntityEvent && event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK)
+	    {
+	        EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
+
+	        if(e.getDamager() instanceof Player) 
+	        {
+	            damager = (Player) e.getDamager();
+	        }
+	    }
+
+	    if (target.getLevel().equals(team.getMapLevel()) && target.getHealth() - event.getFinalDamage() < 1f) 
+	    {
+	        Server.getInstance().getPluginManager().callEvent(new PlayerKilledEvent(team, target, damager));
+	        event.setCancelled(true);
+	    }
 	}
 
 	@EventHandler
@@ -181,6 +204,16 @@ public class MRGameListener implements Listener {
 			event.setCancelled(true);
 		}
 	}
+	
+	@EventHandler
+	public void onDrop(PlayerDropItemEvent event)
+	{
+		Item item = event.getItem();
+		if(item.getNamedTag() != null && !item.getNamedTag().getBoolean("Droppable"))
+		{
+			event.setCancelled(true);
+		}
+	}
 
 	@EventHandler
 	public void onEndRound(GameEndEvent event)
@@ -210,18 +243,21 @@ public class MRGameListener implements Listener {
 			
 			if(killer != null)
 			MRPlayer.getMRPlayer(killer).setTime(team.getMapConfig().getTimeLimit());
-			team.addPlayerRankingByTime(killer); //TODO: Remove this after testing
 			break;
 		}
 		
 		for(Player player : team.getPlayers())
 		{
+			MRPlayer mPlayer = MRPlayer.getMRPlayer(player);
 			player.sendTitle(title, type.getSubtitle());
 
 			if(type != WinType.KILL_ALL)
 				player.sendMessage(type.getMessage());
 			else
 				player.sendMessage(type.getMessage(killer));
+			
+			mPlayer.removeAllDrops();
+			ItemDelay.getInstance().removeAllCooldown(player);
 		}
 
 		for(Player players : team.getSurvivors())

@@ -45,11 +45,13 @@ public class MRScoreboardConfig extends AbstractFiles {
 		addDefault(play+"Mode-Line", "%m");
 		addDefault(play+"Killer-Line", "%m");
 		addDefault(play+"Survivors Left-Line", "%m");
+		addDefault(play+"Y Level Limit-Line", "%m");
 		addDefault(play+"Map", 0);
 		addDefault(play+"Timer", 1);
 		addDefault(play+"Mode", 2);
 		addDefault(play+"Killer", 3);
 		addDefault(play+"Survivors Left", 4);
+		addDefault(play+"Y Level Limit", 5);
 	}
 
 	

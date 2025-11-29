@@ -45,7 +45,13 @@ public abstract class TrapDrop extends MRTraps {
 	{
 		EntityItem item = event.getEntity();
 		if(item.getItem().getName().equals(getTrapItemName()))
+		{
 			ItemParticle.getInstance().addParticle(item);
+			Player owner = Server.getInstance().getPlayer(item.getItem().getNamedTag().getString("Owner"));
+			MRPlayer mPlayer = MRPlayer.getMRPlayer(owner);
+			if(owner != null && mPlayer != null)
+				mPlayer.addDropItem(item);
+		}
 	}
 	
 	@EventHandler
@@ -59,6 +65,7 @@ public abstract class TrapDrop extends MRTraps {
 			{
 				Item item = event.getItem();
 				item.getNamedTag().putString("Owner", player.getName());
+				item.getNamedTag().putString("Trap", getName());
 				item.getNamedTag().putInt("Particle", getParticle());
 				item.setNamedTag(item.getNamedTag());
 			} else
@@ -84,6 +91,7 @@ public abstract class TrapDrop extends MRTraps {
 				it.setCount(1);
 				player.dropItem(it);
 				it.getNamedTag().putString("Owner", player.getName());
+				it.getNamedTag().putString("Trap", getName());
 				it.getNamedTag().putInt("Particle", getParticle());
 				it.setNamedTag(it.getNamedTag());
 				player.getInventory().decreaseCount(player.getInventory().getHeldItemIndex());

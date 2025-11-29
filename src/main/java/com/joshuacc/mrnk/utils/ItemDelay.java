@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import com.joshuacc.mrnk.main.MRMain;
-import com.joshuacc.mrnk.main.MRPlayer;
 import com.joshuacc.mrnk.traps.TrapClick;
 
 import cn.nukkit.Player;
@@ -14,7 +13,7 @@ import cn.nukkit.item.Item;
 
 public class ItemDelay {
 
-	private final HashMap<MRPlayer, HashMap<TrapClick, Delay>> delay;
+	private final HashMap<Player, HashMap<TrapClick, Delay>> delay;
 	
 	private static final ItemDelay instance = new ItemDelay();
 	
@@ -24,13 +23,12 @@ public class ItemDelay {
 		 Server.getInstance().getScheduler().scheduleRepeatingTask(MRMain.getInstance(), () -> {
 			 long now = System.currentTimeMillis();
 
-			    Iterator<Map.Entry<MRPlayer, HashMap<TrapClick, Delay>>> playerIter = delay.entrySet().iterator();
+			    Iterator<Map.Entry<Player, HashMap<TrapClick, Delay>>> playerIter = delay.entrySet().iterator();
 
 			    while (playerIter.hasNext()) 
 			    {
-			        Map.Entry<MRPlayer, HashMap<TrapClick, Delay>> playerEntry = playerIter.next();
-			        MRPlayer mPlayer = playerEntry.getKey();
-			        Player player = mPlayer.getPlayer();
+			        Map.Entry<Player, HashMap<TrapClick, Delay>> playerEntry = playerIter.next();
+			        Player player =  playerEntry.getKey();
 			        HashMap<TrapClick, Delay> traps = playerEntry.getValue();
 
 			        Iterator<Map.Entry<TrapClick, Delay>> trapIterator = traps.entrySet().iterator();
@@ -69,23 +67,23 @@ public class ItemDelay {
         return instance;
     }
 	
-	public void addCooldown(MRPlayer mPlayer, TrapClick trap)
+	public void addCooldown(Player player, TrapClick trap)
 	{
 		if(trap.getDelay() == -1)
 			return;
 		
-		delay.putIfAbsent(mPlayer, new HashMap<>());
-		delay.get(mPlayer).put(trap, new Delay(trap.getDelay()));
+		delay.putIfAbsent(player, new HashMap<>());
+		delay.get(player).put(trap, new Delay(trap.getDelay()));
 	}
 	
-	public boolean onCooldown(MRPlayer mPlayer, TrapClick trap)
+	public boolean onCooldown(Player player, TrapClick trap)
 	{
-		return delay.containsKey(mPlayer) && delay.get(mPlayer).get(trap) != null;
+		return delay.containsKey(player) && delay.get(player).get(trap) != null;
 	}
 	
-	public void removeAllCooldown(MRPlayer mPlayer)
+	public void removeAllCooldown(Player player)
 	{
-		delay.remove(mPlayer);
+		delay.remove(player);
 	}
 }
 

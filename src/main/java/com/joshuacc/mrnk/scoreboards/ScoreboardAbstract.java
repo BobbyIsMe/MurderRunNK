@@ -12,7 +12,7 @@ import cn.nukkit.Player;
 public abstract class ScoreboardAbstract {
 
 	protected static final int queueSize = 9;
-	protected static final int playSize = 5;
+	protected static final int playSize = 6;
 	protected static final String[] queuePrefix = new String[queueSize];
 	protected static final String[] playPrefix = new String[playSize];
 	
@@ -70,12 +70,14 @@ public abstract class ScoreboardAbstract {
 		int pMode = b.getInt(play+"Mode");
 		int pKiller = b.getInt(play+"Killer");
 		int pSL = b.getInt(play+"Survivors Left");
+		int pY = b.getInt(play+"Y Level Limit");
 		
 		playPrefix[pMap] = "p_"+pMap;
 		playPrefix[pTimer] = "p_"+pTimer;
 		playPrefix[pMode] = "p_"+pMode;
 		playPrefix[pKiller] = "p_"+pKiller;
 		playPrefix[pSL] = "p_"+pSL;
+		playPrefix[pY] = "p_"+pY;
 	}
 
 	protected abstract void scoreboardStuff();

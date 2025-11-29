@@ -70,6 +70,7 @@ public abstract class ShopItem extends ItemHelper {
 		if(description.length() != 0)
 			i.setLore(TextFormat.colorize("&r"+description));
 		i.getNamedTag().putInt("Price", getPrice());
+		i.getNamedTag().putBoolean("Droppable", false);
 		i.setNamedTag(i.getNamedTag());
 		return i;
 	}

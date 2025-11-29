@@ -14,9 +14,11 @@ public abstract class FormMenu {
 	public enum GameMenus {
 		SELITEMMENU(new SelectItemMenu(300)),
 		SURVTRAPSMENU(new SurvivorTrapsMenu(301)),
+		MURDTRAPSMENU(new MurdererTrapsMenu(320)),
 		ARMORMENU(new ArmorMenu(302)),
 		UTILMENU(null),
 		SURVITEMSMENU(new SurvivorItemsMenu(304)),
+		MURDITEMSMENU(new MurdererItemsMenu(321)),
 		FILTERITEMSMENU(new FilterItemsMenu(305));
 		
 		private FormMenu menu;

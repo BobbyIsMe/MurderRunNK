@@ -34,7 +34,11 @@ public class MRArenasConfig extends AbstractFiles {
 		String sLocation = "Survivor Location.";
 		String eLocation = "Game End Location.";
 		addDefault(prefix+"Enabled", false);
-		addDefault(prefix+"Preparing Time", 30);
+		addDefault(prefix+"Preparing Time", 60);
+		addDefault(prefix+"Hiding Time", 30);
+		addDefault(prefix+"Y Level Time", 60);
+		addDefault(prefix+"Y Level Start", 150);
+		addDefault(prefix+"Y Level Decrement", 50);
 		addDefault(prefix+"Time Limit", 480);
 		addDefault(prefix+"Points Limit", 500);
 		addDefault(prefix+"Minimum Players", 3);
@@ -212,6 +216,26 @@ public class MRArenasConfig extends AbstractFiles {
 	public int getPreparingTime()
 	{
 		return config.getInt(mapName+".Preparing Time");
+	}
+	
+	public int getHidingTime()
+	{
+		return config.getInt(mapName+".Hiding Time");
+	}
+
+	public int getYLevelTime()
+	{
+		return config.getInt(mapName+".Y Level Time");
+	}
+
+	public int getYLevelStart()
+	{
+		return config.getInt(mapName+".Y Level Start");
+	}
+
+	public int getYLevelDecrement()
+	{
+		return config.getInt(mapName+".Y Level Decrement");
 	}
 
 	public int getPointsLimit()

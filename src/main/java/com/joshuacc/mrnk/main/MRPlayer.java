@@ -59,16 +59,12 @@ public class MRPlayer {
 		this.itemDrops = new ArrayList<>();
 		this.itemFilters = new HashMap<>();
 		
+		itemFilters.put((ItemMenu) GameMenus.MURDTRAPSMENU.getFormMenu(), new MRItemFilters("", FormsLang.LOWTOHIGH.toString(), FormsLang.ALLCATEGORY.toString(), 1));
 		itemFilters.put((ItemMenu) GameMenus.SURVTRAPSMENU.getFormMenu(), new MRItemFilters("", FormsLang.LOWTOHIGH.toString(), FormsLang.ALLCATEGORY.toString(), 1));
 		itemFilters.put((ItemMenu) GameMenus.ARMORMENU.getFormMenu(), new MRItemFilters("", FormsLang.LOWTOHIGH.toString(), FormsLang.ALLCATEGORY.toString(), 1));
 		itemFilters.put((ItemMenu) GameMenus.UTILMENU.getFormMenu(), new MRItemFilters("", FormsLang.LOWTOHIGH.toString(), FormsLang.ALLCATEGORY.toString(), 1));
 
 		this.hasRound = false;
-
-		int max = mapTeam.getMapConfig().getPointsLimit();
-		int i = main.getMRPlayerConfig().getPoints(player);
-
-		this.qPts = i >= max ? max : i;
 
 		addPlayer.put(player, this);
 	}
@@ -84,12 +80,14 @@ public class MRPlayer {
 		{
 			player.removeAllEffects();
 			player.getInventory().clearAll();
-
-			removeAllDrops();
 		}
 
-		setScoreboard(new WaitScoreboard(player, main));
+		int max = mapTeam.getMapConfig().getPointsLimit();
+		int i = main.getMRPlayerConfig().getPoints(player);
 
+		this.qPts = i >= max ? max : i;
+		
+		setScoreboard(new WaitScoreboard(player, main));
 		player.teleport(lobby.getQueueLobbyLocation());
 	}
 
@@ -118,7 +116,8 @@ public class MRPlayer {
 	public void setScoreboard(ScoreboardAbstract board)
 	{
 		this.board = board;
-		board.openScoreboard();
+		if(board != null)
+			board.openScoreboard();
 	}
 	
 	public void setHasRound(boolean value)

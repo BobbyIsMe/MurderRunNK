@@ -27,7 +27,6 @@ import com.joshuacc.mrnk.listeners.MRGameListener;
 import com.joshuacc.mrnk.main.MRTeam.MapModes;
 import com.joshuacc.mrnk.scoreboards.PlayScoreboard;
 import com.joshuacc.mrnk.traps.Nacrotics;
-import com.joshuacc.mrnk.traps.Test;
 import com.joshuacc.mrnk.utils.EmptyGenerator;
 import com.joshuacc.mrnk.utils.FormUtils;
 import com.joshuacc.mrnk.utils.NPCHuman;
@@ -105,7 +104,6 @@ public class MRMain extends PluginBase {
 		areas.setupConfig();
 		traps.addDefaults();
 		
-		MRTraps.addMRTrap(new Test(), true, this);
 		MRTraps.addMRTrap(new Nacrotics(), true, this);
 		
 		for(MRTraps survTrap : MRTraps.getTraps(true))

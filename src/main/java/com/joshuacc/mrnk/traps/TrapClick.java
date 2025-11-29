@@ -53,10 +53,10 @@ public abstract class TrapClick extends MRTraps {
 			{
 				if(!oneTimeUse())
 				{
-					if(!ItemDelay.getInstance().onCooldown(mPlayer, this)) 
+					if(!ItemDelay.getInstance().onCooldown(player, this)) 
 					{
 						if(performClickAbility(player))
-							ItemDelay.getInstance().addCooldown(mPlayer, this);
+							ItemDelay.getInstance().addCooldown(player, this);
 					}
 				} else 
 					performClickAbility(player);

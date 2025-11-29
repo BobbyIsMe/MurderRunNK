@@ -9,10 +9,10 @@ import com.joshuacc.mrnk.utils.TextUtils;
 
 import cn.nukkit.Player;
 import cn.nukkit.item.Item;
-import cn.nukkit.level.Level;
 import cn.nukkit.level.Location;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.utils.ConfigSection;
+import cn.nukkit.utils.TextFormat;
 
 public class MRAreasConfig extends AbstractFiles {
 
@@ -62,7 +62,7 @@ public class MRAreasConfig extends AbstractFiles {
 	public void giveAreaItem(Player player)
 	{
 		Item item = Item.get(Item.STICK);
-		item.setCustomName(getAreaItemName());
+		item.setCustomName(TextFormat.colorize(getAreaItemName()));
 		player.getInventory().addItem(item);
 	}
 	
@@ -132,8 +132,6 @@ public class MRAreasConfig extends AbstractFiles {
 	        
 	        if (isInside(pos1, pos2, player))
 	            return area;
-	        else
-	        	player.sendMessage(pos1.x +", "+pos1.y+", "+pos1.z);
 	    }
 	    return null;
 	}

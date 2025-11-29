@@ -56,7 +56,7 @@ public class OpenListCommand extends Command {
 					if(team.onIntermission() && killer != null)
 						if (target.getName().equals(killer.getName())) 
 						{
-							//TODO: Murderer item menu
+							GameMenus.MURDITEMSMENU.getFormMenu().open(target);
 						} else {
 							GameMenus.SURVITEMSMENU.getFormMenu().open(target);
 						}
