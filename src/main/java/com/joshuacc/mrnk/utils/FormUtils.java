@@ -63,6 +63,7 @@ public class FormUtils {
 		}
 		FormWindowSimple configMenu = new FormWindowSimple(FormsLang.CONTITLE.toString(), FormsLang.CONDESC.toString());
 		configMenu.addButton(new ElementButton(FormsLang.CONTPLOBBY.toString()));
+		configMenu.addButton(new ElementButton(FormsLang.CONTPQLOBBY.toString()));
 		configMenu.addButton(new ElementButton(FormsLang.CONLOBBY.toString()));
 		configMenu.addButton(new ElementButton(FormsLang.CONWLOBBY.toString()));
 		if(maps != null)
@@ -204,10 +205,13 @@ public class FormUtils {
 			player.teleport(main.getMRLobbyConfig().getMainLobbyLocation());
 			break;
 		case 1:
+			player.teleport(main.getMRLobbyConfig().getQueueLobbyLocation());
+			break;
+		case 2:
 			lobby.setupLobbyLocation(player, true);
 			player.sendMessage(ConfigLang.SUCCESSLOBBY.toString());
 			break;
-		case 2:
+		case 3:
 			lobby.setupLobbyLocation(player, false);
 			player.sendMessage(ConfigLang.SUCCESSWLOBBY.toString());
 			break;

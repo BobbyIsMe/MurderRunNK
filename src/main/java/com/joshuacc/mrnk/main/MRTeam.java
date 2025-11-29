@@ -815,6 +815,7 @@ public class MRTeam {
 		killer = player;
 		allSurvivors.remove(player);
 		player.setNameTag(TextUtils.formatPlayer(ConfigLang.KILLERTAG.toString(), player));
+		main.getMRGameConfig().giveItem(player);
 		MRPlayer.getMRPlayer(player).setHasRound(true);
 	}
 

@@ -32,7 +32,7 @@ public class MRAreasConfig extends AbstractFiles {
 	
 	public String getAreaItemName()
 	{
-		return config.getString("Area-Item Name");
+		return TextFormat.colorize(config.getString("Area-Item Name"));
 	}
 	
 	public void addPos1(Player player, Location loc)

@@ -32,6 +32,10 @@ public class AreaCommand extends Command {
 			return false;
 		
 		Player player = (Player) sender;
+
+		if(!player.hasPermission("mr.area"))
+			return false;
+		
 		String option = args[0];
 		switch(args.length)
 		{

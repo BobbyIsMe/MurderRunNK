@@ -23,10 +23,15 @@ import cn.nukkit.event.Listener;
 import cn.nukkit.event.block.BlockBreakEvent;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
+import cn.nukkit.event.inventory.InventoryClickEvent;
+import cn.nukkit.event.inventory.InventoryTransactionEvent;
 import cn.nukkit.event.player.PlayerDropItemEvent;
 import cn.nukkit.event.player.PlayerFoodLevelChangeEvent;
 import cn.nukkit.event.player.PlayerInteractEvent;
 import cn.nukkit.event.player.PlayerInteractEvent.Action;
+import cn.nukkit.inventory.PlayerInventory;
+import cn.nukkit.inventory.transaction.action.InventoryAction;
+import cn.nukkit.inventory.transaction.action.SlotChangeAction;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Location;
 import cn.nukkit.utils.ConfigSection;
@@ -108,12 +113,60 @@ public class MRGameListener implements Listener {
 		if(event.getGameAttribute() == GameAttribute.STARTING)
 			team.startQueueLobby();
 
-		else if(event.getGameAttribute() == GameAttribute.STARTED)
-		{
-			
-		}
+//		else if(event.getGameAttribute() == GameAttribute.STARTED)
+//		{
+//			
+//		}
 	}
+	
+	@EventHandler
+	public void onInventoryClick(InventoryClickEvent event) 
+	{
+	    if(!(event.getInventory() instanceof PlayerInventory)) 
+	    	return;
 
+	    int slot = event.getSlot();
+	    Player player = event.getPlayer();
+	    MRPlayer mPlayer = MRPlayer.getMRPlayer(player);
+	    
+	    if(mPlayer == null)
+	    	return;
+	    
+	    Player killer = mPlayer.getMapTeam().getKiller();
+
+	    if(killer != null && player.getName().equals(killer.getName()) && slot >= 36 && slot <= 39) 
+	    {
+	        event.setCancelled(true);
+	    }
+	}
+	
+	@EventHandler
+	public void onTransaction(InventoryTransactionEvent event) 
+	{
+	    Player player = event.getTransaction().getSource();
+	    MRPlayer mPlayer = MRPlayer.getMRPlayer(player);
+	    if(mPlayer == null)
+	    	return;
+	    
+	    Player killer = mPlayer.getMapTeam().getKiller();
+	    
+	    if(killer != null && player.getName().equals(killer.getName()))
+			for(InventoryAction action : event.getTransaction().getActions()) 
+			{
+				if (!(action instanceof SlotChangeAction))
+					continue;
+
+				SlotChangeAction slotAction = (SlotChangeAction) action;
+				int slot = slotAction.getSlot();
+
+				if (slot >= 36 && slot <= 39) 
+				{
+					event.setCancelled(true);
+					break;
+				}
+			}
+	}
+	
 	@EventHandler
 	public void onKill(PlayerKilledEvent event)
 	{
@@ -144,7 +197,18 @@ public class MRGameListener implements Listener {
 	{
 		Player player = event.getPlayer();
 		ConfigSection section = areas.getArea(player);
-		if(section != null && !section.getBoolean("Break Blocks"))
+		if(section != null && !section.getBoolean("Break Blocks") && player.getGamemode() != 1)
+		{
+			event.setCancelled(true);
+		}
+	}
+	
+	@EventHandler
+	public void onClickBlocks(PlayerInteractEvent event)
+	{
+		Player player = event.getPlayer();
+		ConfigSection section = areas.getArea(player);
+		if(section != null && event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getBlock() != null && player.getGamemode() != 1)
 		{
 			event.setCancelled(true);
 		}

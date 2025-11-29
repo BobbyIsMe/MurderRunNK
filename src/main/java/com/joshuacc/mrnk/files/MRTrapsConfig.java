@@ -30,6 +30,11 @@ public class MRTrapsConfig extends AbstractFiles {
 		return config.getString("Item-Cooldown");
 	}
 	
+	public void putDefault(String trap, String key, Object value)
+	{
+		addDefault(trap+"."+key, value);
+	}
+	
 	public String getString(String trap, String key)
 	{
 		return config.getString(trap+"."+key);

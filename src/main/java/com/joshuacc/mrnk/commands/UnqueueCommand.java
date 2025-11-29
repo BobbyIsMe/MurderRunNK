@@ -21,6 +21,7 @@ public class UnqueueCommand extends Command {
 	{
 		if(sender instanceof Player)
 			return false;
+		
 		switch(args.length)
 		{
 		case 0: 

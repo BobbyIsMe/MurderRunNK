@@ -9,6 +9,7 @@ import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.entity.item.EntityItem;
 import cn.nukkit.level.Level;
+import cn.nukkit.level.Location;
 import cn.nukkit.level.particle.GenericParticle;
 import cn.nukkit.level.particle.Particle;
 import cn.nukkit.math.Vector3;
@@ -78,6 +79,24 @@ public class ItemParticle {
 	public void addParticle(EntityItem item)
 	{
 		particles.add(item);
+	}
+	
+	public void addParticle(Location loc, int p)
+	{
+		addParticle(loc, p, 50);
+	}
+
+	public void addParticle(Location loc, int p, int size)
+	{
+		Particle particle = new GenericParticle(loc, p);
+		for (int x = 0; x < size; x++) {
+			particle.setComponents(
+					loc.x + randomWithRange(-0.7,0.4),
+					loc.y + randomWithRange(0.1,0.6),
+					loc.z + randomWithRange(-0.5,0.6)
+					);
+			loc.getLevel().addParticle(particle);
+		}
 	}
 	
 	public void removeParticle(EntityItem item)
