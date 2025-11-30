@@ -58,7 +58,7 @@ public abstract class TrapClick extends MRTraps {
 				Server.getInstance().getPluginManager().callEvent(trapEvent);
 				if(!trapEvent.isCancelled())
 				{
-					if(!oneTimeUse())
+					if(oneTimeUse())
 					{
 						performClickAbility(player);
 						player.getInventory().decreaseCount(player.getInventory().getHeldItemIndex());

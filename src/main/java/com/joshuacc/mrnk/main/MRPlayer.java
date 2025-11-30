@@ -18,6 +18,7 @@ import com.joshuacc.mrnk.scoreboards.WaitScoreboard;
 import com.joshuacc.mrnk.utils.GameScheduler.Schedulers;
 import com.joshuacc.mrnk.utils.GameTask;
 import com.joshuacc.mrnk.utils.MapState;
+import com.joshuacc.mrnk.utils.TaskAct;
 import com.joshuacc.mrnk.utils.TextUtils;
 
 import cn.nukkit.Player;
@@ -30,6 +31,7 @@ import cn.nukkit.event.player.PlayerJoinEvent;
 import cn.nukkit.event.player.PlayerLocallyInitializedEvent;
 import cn.nukkit.event.player.PlayerQuitEvent;
 import cn.nukkit.level.particle.FloatingTextParticle;
+import cn.nukkit.scheduler.TaskHandler;
 
 public class MRPlayer {
 
@@ -43,6 +45,7 @@ public class MRPlayer {
 
 	private ArrayList<EntityItem> itemDrops;
 	private ArrayList<GameTask> tasks;
+	private ArrayList<TaskReference> delayedTasks;
 	private HashMap<ItemMenu, MRItemFilters> itemFilters;
 
 	private int time;
@@ -60,7 +63,8 @@ public class MRPlayer {
 		this.time = 0;
 
 		this.itemDrops = new ArrayList<>();
-		this.tasks = new ArrayList<>() ;
+		this.tasks = new ArrayList<>();
+		this.delayedTasks = new ArrayList<>();
 		this.itemFilters = new HashMap<>();
 		
 		itemFilters.put((ItemMenu) GameMenus.MURDTRAPSMENU.getFormMenu(), new MRItemFilters("", FormsLang.LOWTOHIGH.toString(), FormsLang.ALLCATEGORY.toString(), 1));
@@ -156,13 +160,32 @@ public class MRPlayer {
 		Schedulers.TRAPS.getGameScheduler().addTask(task);
 	}
 	
+	public void addDelayedTask(TaskAct task, int delay)
+	{
+		TaskReference t = new TaskReference(task);
+
+		t.setHandler(Server.getInstance().getScheduler().scheduleDelayedTask(main, () -> 
+		{
+			task.doTask();
+			delayedTasks.remove(t);
+		}, delay * 20));
+		
+		delayedTasks.add(t);
+	}
+	
 	public void removeGameTask(GameTask task)
 	{
 		tasks.remove(task);
 	}
-	
+
 	public void removeAllGameTasks()
 	{
+		for(TaskReference t : delayedTasks)
+		{
+			t.getHandler().cancel();
+			t.doTask();
+		}
+		
 		for(GameTask task : tasks)
 		{
 			if(task.getEndTask() != null)
@@ -305,6 +328,7 @@ public class MRPlayer {
 				
 				if(team.getPlayBoard() != null)
 				{
+					mPlayer.removeAllGameTasks();
 					mPlayer.removeAllDrops();
 
 					if (team.getKiller() != null && !player.getUniqueId().equals(team.getKiller().getUniqueId()))
@@ -327,4 +351,29 @@ public class MRPlayer {
 		}
 	}
 }
+
+class TaskReference {
+	private final TaskAct task;
+    private TaskHandler handler;
+    public TaskReference(TaskAct task)
+    {
+    	this.task = task;
+    }
+    
+    public void setHandler(TaskHandler handler)
+    {
+    	this.handler = handler;
+    }
+    
+    public TaskHandler getHandler()
+    {
+    	return handler;
+    }
+    
+    public void doTask()
+    {
+    	task.doTask();
+    }
+}
+
 

@@ -56,7 +56,7 @@ public abstract class MRTraps implements Comparable<MRTraps>, Listener {
 	
 	public int getMeta()
 	{
-		return 1;
+		return 0;
 	}
 	
 	@Override

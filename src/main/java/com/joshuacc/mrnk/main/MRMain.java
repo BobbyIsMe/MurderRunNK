@@ -30,6 +30,8 @@ import com.joshuacc.mrnk.scoreboards.PlayScoreboard;
 import com.joshuacc.mrnk.traps.FullCounter;
 import com.joshuacc.mrnk.traps.Nacrotics;
 import com.joshuacc.mrnk.traps.Nightmare;
+import com.joshuacc.mrnk.traps.Phase;
+import com.joshuacc.mrnk.traps.Pinpoint;
 import com.joshuacc.mrnk.traps.Portal;
 import com.joshuacc.mrnk.utils.EmptyGenerator;
 import com.joshuacc.mrnk.utils.FormUtils;
@@ -113,8 +115,10 @@ public class MRMain extends PluginBase {
 		MRTraps.addMRTrap(new Nacrotics(), true, this);
 		MRTraps.addMRTrap(new FullCounter(), true, this);
 		MRTraps.addMRTrap(new Portal(), true, this);
+		MRTraps.addMRTrap(new Phase(), true, this);
 		
 		MRTraps.addMRTrap(new Nightmare(), false, this);
+		MRTraps.addMRTrap(new Pinpoint(), false, this);
 		
 		for(MRTraps survTrap : MRTraps.getTraps(true))
 		{

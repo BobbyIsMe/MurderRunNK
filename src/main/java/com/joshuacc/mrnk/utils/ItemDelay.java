@@ -69,7 +69,7 @@ public class ItemDelay {
 	
 	public void addCooldown(Player player, TrapClick trap)
 	{
-		if(trap.getDelay() == -1)
+		if(trap.oneTimeUse())
 			return;
 		
 		delay.putIfAbsent(player, new HashMap<>());

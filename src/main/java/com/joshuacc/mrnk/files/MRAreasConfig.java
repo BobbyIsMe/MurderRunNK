@@ -9,6 +9,7 @@ import com.joshuacc.mrnk.utils.TextUtils;
 
 import cn.nukkit.Player;
 import cn.nukkit.item.Item;
+import cn.nukkit.level.Level;
 import cn.nukkit.level.Location;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.utils.ConfigSection;
@@ -114,10 +115,16 @@ public class MRAreasConfig extends AbstractFiles {
 	
 	public ConfigSection getArea(Player player)
 	{
+		if(player == null || player.getLevel() == null) 
+			return null;
 		String level = player.getLevel().getName();
 		MRPlayer mPlayer = MRPlayer.getMRPlayer(player);
-		if(mPlayer != null && player.getLevel().equals(mPlayer.getMapTeam().getMapLevel()))
-			level = mPlayer.getMapTeam().getMapLevelOriginName();
+		if(mPlayer != null)
+		{
+			Level l = mPlayer.getMapTeam().getMapLevel();
+			if(l != null && player.getLevel().equals(l))
+				level = mPlayer.getMapTeam().getMapLevelOriginName();
+		}
 		
 		ConfigSection section = config.getSection(level);
 	    if (section == null) return null;

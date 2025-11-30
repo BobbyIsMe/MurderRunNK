@@ -25,6 +25,7 @@ import cn.nukkit.event.block.BlockBreakEvent;
 import cn.nukkit.event.block.BlockPlaceEvent;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
+import cn.nukkit.event.entity.EntityDamageEvent.DamageCause;
 import cn.nukkit.event.inventory.InventoryClickEvent;
 import cn.nukkit.event.inventory.InventoryTransactionEvent;
 import cn.nukkit.event.player.PlayerDropItemEvent;
@@ -85,6 +86,33 @@ public class MRGameListener implements Listener {
 	    {
 	        Server.getInstance().getPluginManager().callEvent(new PlayerKilledEvent(team, target, damager));
 	        event.setCancelled(true);
+	    }
+	}
+	
+	@EventHandler
+	public void onFallToVoid(EntityDamageEvent event)
+	{
+		if(!(event.getEntity() instanceof Player)) return;
+
+	    Player target = (Player) event.getEntity();
+	    if(event.getCause() == DamageCause.VOID)
+	    {
+	    	event.setCancelled(true);
+	    	
+	    	Location mloc = main.getMRLobbyConfig().getMainLobbyLocation();
+	    	if(mloc.getLevel() != null && target.getLevel().equals(mloc.getLevel()))
+	    	{
+	    		target.teleport(mloc);
+	    		return;
+	    	}
+	    	
+	    	Location qloc = main.getMRLobbyConfig().getQueueLobbyLocation();
+	    	if(qloc.getLevel() != null && target.getLevel().equals(qloc.getLevel()))
+	    	{
+	    		target.teleport(qloc);
+	    		return;
+	    	}
+	    	
 	    }
 	}
 
@@ -235,13 +263,22 @@ public class MRGameListener implements Listener {
 	@EventHandler
 	public void onHunger(PlayerFoodLevelChangeEvent event)
 	{
-		Player player = (Player) event.getPlayer();
-		ConfigSection section = areas.getArea(player);
-		if(section != null && !section.getBoolean("Hunger"))
-		{
-			player.getFoodData().setLevel(player.getFoodData().getMaxLevel());
-			event.setCancelled(true);
-		}
+	    try {
+	        // your normal handler code
+			Player player = (Player) event.getPlayer();
+			if(player != null)
+			{
+				ConfigSection section = areas.getArea(player);
+				if(section != null && !section.getBoolean("Hunger") && player.getGamemode() != 3)
+				{
+					player.getFoodData().setLevel(player.getFoodData().getMaxLevel());
+					event.setCancelled(true);
+				}
+			}
+			
+	    } catch(Exception e) {
+	        e.printStackTrace();
+	    }
 	}
 	
 	@EventHandler
