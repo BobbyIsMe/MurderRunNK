@@ -27,7 +27,7 @@ public class SurvivorTrapsMenu extends ItemMenu {
 			        trapName,
 			        config.getString(name, "Description"),
 			        price,
-			        config.getInt(name, "Item"), trap.getType(), trap.isStackable()));
+			        config.getInt(name, "Item"), config.getInt(name, "Meta"), trap.getType(), trap.isStackable()));
 			i++;
 		}
 	}

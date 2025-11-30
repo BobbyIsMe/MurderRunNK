@@ -17,9 +17,10 @@ public abstract class ShopItem extends ItemHelper {
 	private final String category;
 	private final int price;
 	private final int item;
+	private final int meta;
 	private final boolean stackable;
 	
-	public ShopItem(int index, String text, String name, String description, int price, int item, String category, boolean stackable) 
+	public ShopItem(int index, String text, String name, String description, int price, int item, int meta, String category, boolean stackable) 
 	{
 		super(text);
 		this.index = index;
@@ -27,17 +28,19 @@ public abstract class ShopItem extends ItemHelper {
 		this.description = description;
 		this.price = price;
 		this.item = item;
+		this.meta = meta;
 		this.category = category;
 		this.stackable = stackable;
 	}
 	
-	public ShopItem(int index, String text, ElementButtonImageData image, String name, String description, int price, int item, String category, boolean stackable) {
+	public ShopItem(int index, String text, ElementButtonImageData image, String name, String description, int price, int item, int meta, String category, boolean stackable) {
 		super(text, image);
 		this.index = index;
 		this.name = name;
 		this.description = description;
 		this.price = price;
 		this.item = item;
+		this.meta = meta;
 		this.category = category;
 		this.stackable = stackable;
 	}
@@ -65,7 +68,7 @@ public abstract class ShopItem extends ItemHelper {
 	
 	public Item getItem()
 	{
-		Item i = Item.get(item);
+		Item i = Item.get(item, meta);
 		i.setCustomName(TextFormat.colorize("&r"+name));
 		if(description.length() != 0)
 			i.setLore(TextFormat.colorize("&r"+description));

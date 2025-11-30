@@ -51,16 +51,18 @@ public abstract class TrapDrop extends MRTraps {
 			Player owner = Server.getInstance().getPlayer(item.getItem().getNamedTag().getString("Owner"));
 			MRPlayer mPlayer = MRPlayer.getMRPlayer(owner);
 			if(owner != null && mPlayer != null)
+			{
 				mPlayer.addDropItem(item);
+			}
 		}
 	}
 	
 	@EventHandler
 	public void onDrop(PlayerDropItemEvent event)
 	{
-		if(event.getItem().getName().equals(getTrapItemName()))
+		Player player = event.getPlayer();
+		if(event.getItem().getCustomName().equals(getTrapItemName()))
 		{
-			Player player = event.getPlayer();
 			MRPlayer mPlayer = MRPlayer.getMRPlayer(player);
 			if(mPlayer != null && player.getLevel().equals(mPlayer.getMapTeam().getMapLevel()))
 			{

@@ -10,7 +10,7 @@ public class ArmorItem extends ShopItem
 {
 
 	public ArmorItem(int index, String text, ElementButtonImageData image, String name, String description, int price, int item)  {
-		super(index, text, image, name, description, price, item, FormsLang.ALLCATEGORY.toString(), false);
+		super(index, text, image, name, description, price, item, 1, FormsLang.ALLCATEGORY.toString(), false);
 	}
 
 	@Override

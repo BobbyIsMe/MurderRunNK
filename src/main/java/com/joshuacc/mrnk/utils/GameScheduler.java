@@ -49,6 +49,8 @@ public class GameScheduler {
 					if (task.getDelay() > 0 || task.getDelay() == -1) 
 					{
 						task.getLoopTask().doTask();
+						
+						if(task.getDelay() != -1)
 						task.decrement();
 					} else {
 						if(task.getEndTask() != null)

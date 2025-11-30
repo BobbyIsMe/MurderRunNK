@@ -8,8 +8,8 @@ import cn.nukkit.form.element.ElementButtonImageData;
 public class TrapItem extends ShopItem {
 
 	public TrapItem(int index, String text, ElementButtonImageData image, String name, String description, int price,
-			int item, String category, boolean stackable) {
-		super(index, text, image, name, description, price, item, category, stackable);
+			int item, int meta, String category, boolean stackable) {
+		super(index, text, image, name, description, price, item, meta, category, stackable);
 	}
 
 	@Override

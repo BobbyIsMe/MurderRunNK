@@ -89,7 +89,7 @@ public class SelectItemMenu extends FormMenu {
 						it.getNamedTag().putBoolean("Droppable", true);
 						it.setNamedTag(it.getNamedTag());
 					}
-					player.getInventory().addItem(item.getItem());
+					player.getInventory().addItem(it);
 					player.getLevel().addSound(player, Sound.RANDOM_ORB);
 					mPlayer.addPoints(-item.getPrice());
 					player.sendMessage(TextUtils.format(ConfigLang.BUYITEMSUCCESS.toString().replace("%s", item.getName()).replace("%n", Integer.toString(item.getPrice()))));

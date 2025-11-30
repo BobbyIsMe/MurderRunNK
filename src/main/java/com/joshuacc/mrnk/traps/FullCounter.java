@@ -91,9 +91,9 @@ public class FullCounter extends TrapClick {
 	}
 
 	@Override
-	public Item getItem() 
+	public int getItem() 
 	{
-		return new Item(Item.GLOWSTONE_BLOCK);
+		return Item.GLOWSTONE_BLOCK;
 	}
 
 	@Override

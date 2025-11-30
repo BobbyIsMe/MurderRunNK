@@ -90,9 +90,15 @@ public class Nightmare extends TrapClick {
 	}
 
 	@Override
-	public Item getItem() 
+	public int getItem() 
 	{
-		return new Item(Item.WOOL, 15);
+		return Item.WOOL;
+	}
+	
+	@Override
+	public int getMeta()
+	{
+		return 15;
 	}
 
 	@Override

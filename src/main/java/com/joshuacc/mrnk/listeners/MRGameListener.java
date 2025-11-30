@@ -121,7 +121,7 @@ public class MRGameListener implements Listener {
 //			
 //		}
 	}
-	
+//	
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) 
 	{
@@ -184,30 +184,6 @@ public class MRGameListener implements Listener {
 		}
 	}
 	
-	@EventHandler
-	public void onKill(PlayerKilledEvent event)
-	{
-		MRTeam team = event.getTeam();
-		Player player = event.getKilled();
-		Player killer = event.getKiller();
-		String reason = TextUtils.formatPlayer(killer != null ? ConfigLang.SURVIVORKILLED.toString().replace("%k", killer.getName()) : ConfigLang.SURVIVORDIE.toString(), player);
-
-		
-		team.addSpectator(player);
-		team.updateEntry(team.getPlayBoard().getInt("Survivors Left"), TextUtils.formatLine(team.getPlayBoard().getString("Survivors Left-Line"), Integer.toString(team.getSurvivors().size())));
-		team.sendScoreboardTip();
-
-		if(killer != null)
-		{
-			main.getMRPlayerConfig().incrementPoints(killer, game.getKillPoints());
-		}
-
-		for(Player players : team.getPlayers())
-			players.sendMessage(reason);
-
-		if(team.getSurvivors().size() == 0)
-			Server.getInstance().getPluginManager().callEvent(new GameEndEvent(team, WinType.KILL_ALL));
-	}
 	
 	@EventHandler
 	public void onBreakArena(BlockPlaceEvent event)
@@ -251,7 +227,7 @@ public class MRGameListener implements Listener {
 		Player player = (Player) event.getEntity();
 		ConfigSection section = areas.getArea(player);
 		if(section != null && !section.getBoolean("Damage"))
-		{
+		{	
 			event.setCancelled(true);
 		}
 	}
@@ -263,6 +239,7 @@ public class MRGameListener implements Listener {
 		ConfigSection section = areas.getArea(player);
 		if(section != null && !section.getBoolean("Hunger"))
 		{
+			player.getFoodData().setLevel(player.getFoodData().getMaxLevel());
 			event.setCancelled(true);
 		}
 	}
@@ -305,6 +282,31 @@ public class MRGameListener implements Listener {
 		{
 			event.setCancelled(true);
 		}
+	}
+	
+	@EventHandler
+	public void onKill(PlayerKilledEvent event)
+	{
+		MRTeam team = event.getTeam();
+		Player player = event.getKilled();
+		Player killer = event.getKiller();
+		String reason = TextUtils.formatPlayer(killer != null ? ConfigLang.SURVIVORKILLED.toString().replace("%k", killer.getName()) : ConfigLang.SURVIVORDIE.toString(), player);
+
+		
+		team.addSpectator(player);
+		team.updateEntry(team.getPlayBoard().getInt("Survivors Left"), TextUtils.formatLine(team.getPlayBoard().getString("Survivors Left-Line"), Integer.toString(team.getSurvivors().size())));
+		team.sendScoreboardTip();
+
+		if(killer != null)
+		{
+			main.getMRPlayerConfig().incrementPoints(killer, game.getKillPoints());
+		}
+
+		for(Player players : team.getPlayers())
+			players.sendMessage(reason);
+
+		if(team.getSurvivors().size() == 0)
+			Server.getInstance().getPluginManager().callEvent(new GameEndEvent(team, WinType.KILL_ALL));
 	}
 
 	@EventHandler
@@ -349,6 +351,7 @@ public class MRGameListener implements Listener {
 				player.sendMessage(type.getMessage(killer));
 			
 			mPlayer.removeAllDrops();
+			mPlayer.removeAllGameTasks();
 			ItemDelay.getInstance().removeAllCooldown(player);
 		}
 

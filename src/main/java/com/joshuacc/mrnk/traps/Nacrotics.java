@@ -27,9 +27,9 @@ public class Nacrotics extends TrapDrop {
 	}
 
 	@Override
-	public Item getItem() 
+	public int getItem() 
 	{
-		return new Item(Item.COAL_BLOCK);
+		return Item.COAL_BLOCK;
 	}
 
 	@Override

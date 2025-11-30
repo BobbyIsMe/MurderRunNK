@@ -3,9 +3,6 @@ package com.joshuacc.mrnk.utils;
 import java.util.ArrayList;
 import java.util.Iterator;
 import com.joshuacc.mrnk.main.MRMain;
-import com.joshuacc.mrnk.main.MRPlayer;
-
-import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.entity.item.EntityItem;
 import cn.nukkit.level.Level;
@@ -33,15 +30,6 @@ public class ItemParticle {
 			    	EntityItem item = iterator.next();
 			    	if(item.isClosed()) {
 		                iterator.remove();
-		                Player owner = Server.getInstance().getPlayer(item.getItem().getNamedTag().getString("Owner"));
-						if(owner != null && owner.isOnline())
-						{
-							MRPlayer mPlayer = MRPlayer.getMRPlayer(owner);
-							if(mPlayer != null)
-							{
-								mPlayer.removeDropItem(item);
-							}
-						}
 		                continue;
 		            }
 		            

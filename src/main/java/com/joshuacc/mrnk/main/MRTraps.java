@@ -6,7 +6,6 @@ import java.util.TreeMap;
 
 import cn.nukkit.Server;
 import cn.nukkit.event.Listener;
-import cn.nukkit.item.Item;
 import cn.nukkit.utils.TextFormat;
 
 public abstract class MRTraps implements Comparable<MRTraps>, Listener {
@@ -55,6 +54,11 @@ public abstract class MRTraps implements Comparable<MRTraps>, Listener {
 			return killerTrap.get(name);
 	}
 	
+	public int getMeta()
+	{
+		return 1;
+	}
+	
 	@Override
 	public int compareTo(MRTraps traps)
 	{
@@ -66,7 +70,7 @@ public abstract class MRTraps implements Comparable<MRTraps>, Listener {
 	public abstract int getPrice();
 	public abstract String getTrapDesc();
 	public abstract boolean oneTimeUse();
-	public abstract Item getItem();
+	public abstract int getItem();
 	public abstract String getType();
 	public abstract boolean isStackable();
 	public abstract String getTrapName();

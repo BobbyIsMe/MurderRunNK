@@ -1,6 +1,5 @@
 package com.joshuacc.mrnk.traps;
 
-import com.joshuacc.mrnk.events.GameEndEvent;
 import com.joshuacc.mrnk.events.TrapTriggeredEvent;
 import com.joshuacc.mrnk.main.MRPlayer;
 import com.joshuacc.mrnk.main.MRTraps;
@@ -43,11 +42,17 @@ public class Portal extends TrapDrop {
 	}
 
 	@Override
-	public Item getItem() 
+	public int getItem() 
 	{
-		return new Item(Item.WOOL, 10);
+		return Item.WOOL;
 	}
 
+	@Override
+	public int getMeta()
+	{
+		return 10;
+	}
+	
 	@Override
 	public String getTrapName() 
 	{
@@ -69,11 +74,11 @@ public class Portal extends TrapDrop {
 	@Override
 	protected int getParticle() 
 	{
-		return Particle.TYPE_DUST;
+		return Particle.TYPE_FLAME;
 	}
 	
 	@EventHandler
-	public void onSpawn(ItemSpawnEvent event)
+	public void onSpawnItem(ItemSpawnEvent event)
 	{
 		EntityItem item = event.getEntity();
 		if(item.getItem().getName().equals(getTrapItemName()))
@@ -81,14 +86,14 @@ public class Portal extends TrapDrop {
 			Player owner = Server.getInstance().getPlayer(item.getItem().getNamedTag().getString("Owner"));
 			MRPlayer mPlayer = MRPlayer.getMRPlayer(owner);
 			if(owner != null && mPlayer != null) {
-				GameTask task = new GameTask(0);
+				GameTask task = new GameTask(-1);
 				task.addLoopTask(new TaskAct() 
 				{
 
 					@Override
 					public void doTask() 
 					{
-						for(Entity ent : item.getLevel().getNearbyEntities(item.getBoundingBox().grow(1, 1, 1))) 
+						for(Entity ent : item.getLevel().getNearbyEntities(item.getBoundingBox().grow(0.5, 0.5, 0.5))) 
 						{
 							if(ent instanceof EntityItem) 
 							{
@@ -114,12 +119,6 @@ public class Portal extends TrapDrop {
 				mPlayer.addGameTask(task);
 			}
 		}
-	}
-	
-	@EventHandler
-	public void onGameEnd(GameEndEvent event)
-	{
-
 	}
 	
 	@EventHandler

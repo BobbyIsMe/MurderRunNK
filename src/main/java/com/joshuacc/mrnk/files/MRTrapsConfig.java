@@ -15,7 +15,7 @@ public class MRTrapsConfig extends AbstractFiles {
 		addDefault("Item-Cooldown", "&6On cooldown: &c%n seconds left");
 	}
 	
-	public void addTrap(String trap, String path, String image, String name, String description, int price, int material)
+	public void addTrap(String trap, String path, String image, String name, String description, int price, int material, int meta)
 	{
 		addDefault(trap+".Path", path);
 		addDefault(trap+".Image", image);
@@ -23,6 +23,7 @@ public class MRTrapsConfig extends AbstractFiles {
 		addDefault(trap+".Description", description);
 		addDefault(trap+".Price", price);
 		addDefault(trap+".Item", material);
+		addDefault(trap+".Meta", meta);
 	}
 	
 	public String getItemCooldownText()

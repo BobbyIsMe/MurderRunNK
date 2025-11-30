@@ -165,6 +165,7 @@ public class MRPlayer {
 	{
 		for(GameTask task : tasks)
 		{
+			if(task.getEndTask() != null)
 			task.getEndTask().doTask();
 			Schedulers.TRAPS.getGameScheduler().removeTask(task);
 		}

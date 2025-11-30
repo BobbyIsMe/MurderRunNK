@@ -30,6 +30,7 @@ import com.joshuacc.mrnk.scoreboards.PlayScoreboard;
 import com.joshuacc.mrnk.traps.FullCounter;
 import com.joshuacc.mrnk.traps.Nacrotics;
 import com.joshuacc.mrnk.traps.Nightmare;
+import com.joshuacc.mrnk.traps.Portal;
 import com.joshuacc.mrnk.utils.EmptyGenerator;
 import com.joshuacc.mrnk.utils.FormUtils;
 import com.joshuacc.mrnk.utils.NPCHuman;
@@ -111,19 +112,20 @@ public class MRMain extends PluginBase {
 		
 		MRTraps.addMRTrap(new Nacrotics(), true, this);
 		MRTraps.addMRTrap(new FullCounter(), true, this);
+		MRTraps.addMRTrap(new Portal(), true, this);
 		
 		MRTraps.addMRTrap(new Nightmare(), false, this);
 		
 		for(MRTraps survTrap : MRTraps.getTraps(true))
 		{
-			traps.addTrap(survTrap.getName(), "path", survTrap.getIcon(), survTrap.getTrapName(), survTrap.getTrapDesc(), survTrap.getPrice(), survTrap.getItem().getId());
+			traps.addTrap(survTrap.getName(), "path", survTrap.getIcon(), survTrap.getTrapName(), survTrap.getTrapDesc(), survTrap.getPrice(), survTrap.getItem(), survTrap.getMeta());
 			survTrap.setTrapName();
 		}
 		
-		for(MRTraps survTrap : MRTraps.getTraps(false))
+		for(MRTraps murdTrap : MRTraps.getTraps(false))
 		{
-			traps.addTrap(survTrap.getName(), "path", survTrap.getIcon(), survTrap.getTrapName(), survTrap.getTrapDesc(), survTrap.getPrice(), survTrap.getItem().getId());
-			survTrap.setTrapName();
+			traps.addTrap(murdTrap.getName(), "path", murdTrap.getIcon(), murdTrap.getTrapName(), murdTrap.getTrapDesc(), murdTrap.getPrice(), murdTrap.getItem(), murdTrap.getMeta());
+			murdTrap.setTrapName();
 		}
 		
 		traps.getConfig().save();
