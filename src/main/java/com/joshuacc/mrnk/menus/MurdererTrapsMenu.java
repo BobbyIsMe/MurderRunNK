@@ -1,7 +1,7 @@
 package com.joshuacc.mrnk.menus;
 
 import com.joshuacc.mrnk.files.MRTrapsConfig;
-import com.joshuacc.mrnk.items.TrapItem;
+import com.joshuacc.mrnk.items.MurdererTrapItem;
 import com.joshuacc.mrnk.lang.FormsLang;
 import com.joshuacc.mrnk.main.MRMain;
 import com.joshuacc.mrnk.main.MRTraps;
@@ -21,7 +21,7 @@ public class MurdererTrapsMenu extends ItemMenu {
 			String name = trap.getName();
 			String trapName = config.getString(name, "Name");
 			int price = config.getInt(name, "Price");
-			registerItem(new TrapItem(i,
+			registerItem(new MurdererTrapItem(i,
 					TextFormat.colorize(FormsLang.ITEMNAME.toString().replace("%s1", trapName).replace("%s2", TextFormat.colorize(FormsLang.ITEMPRICE.toString().replace("%n", Integer.toString(price))))),
 					new ElementButtonImageData(config.getString(name, "Path"), config.getString(name, "Image")),
 			        trapName,

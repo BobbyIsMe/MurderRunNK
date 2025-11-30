@@ -1,5 +1,6 @@
 package com.joshuacc.mrnk.traps;
 
+import com.joshuacc.mrnk.events.TrapPlacedEvent;
 import com.joshuacc.mrnk.events.TrapTriggeredEvent;
 import com.joshuacc.mrnk.lang.FormsLang;
 import com.joshuacc.mrnk.main.MRPlayer;
@@ -66,11 +67,17 @@ public abstract class TrapDrop extends MRTraps {
 			MRPlayer mPlayer = MRPlayer.getMRPlayer(player);
 			if(mPlayer != null && player.getLevel().equals(mPlayer.getMapTeam().getMapLevel()))
 			{
-				Item item = event.getItem();
-				item.getNamedTag().putString("Owner", player.getName());
-				item.getNamedTag().putString("Trap", getName());
-				item.getNamedTag().putInt("Particle", getParticle());
-				item.setNamedTag(item.getNamedTag());
+				TrapPlacedEvent trapEvent = new TrapPlacedEvent(player, this);
+				Server.getInstance().getPluginManager().callEvent(trapEvent);
+				if(!trapEvent.isCancelled())
+				{
+					Item item = event.getItem();
+					item.getNamedTag().putString("Owner", player.getName());
+					item.getNamedTag().putString("Trap", getName());
+					item.getNamedTag().putInt("Particle", getParticle());
+					item.setNamedTag(item.getNamedTag());
+				} else
+					event.setCancelled(true);
 			} else
 			event.setCancelled(true);
 		}
@@ -90,14 +97,19 @@ public abstract class TrapDrop extends MRTraps {
 			MRTeam team = MRPlayer.getMRPlayer(player).getMapTeam();
 			if(mPlayer != null && player.getLevel().equals(team.getMapLevel())) 
 			{
-				Item it = item.clone();
-				it.setCount(1);
-				player.dropItem(it);
-				it.getNamedTag().putString("Owner", player.getName());
-				it.getNamedTag().putString("Trap", getName());
-				it.getNamedTag().putInt("Particle", getParticle());
-				it.setNamedTag(it.getNamedTag());
-				player.getInventory().decreaseCount(player.getInventory().getHeldItemIndex());
+				TrapPlacedEvent trapEvent = new TrapPlacedEvent(player, this);
+				Server.getInstance().getPluginManager().callEvent(trapEvent);
+				if(!trapEvent.isCancelled())
+				{
+					Item it = item.clone();
+					it.setCount(1);
+					it.getNamedTag().putString("Owner", player.getName());
+					it.getNamedTag().putString("Trap", getName());
+					it.getNamedTag().putInt("Particle", getParticle());
+					it.setNamedTag(it.getNamedTag());
+					player.dropItem(it);
+					player.getInventory().decreaseCount(player.getInventory().getHeldItemIndex());
+				}
 			}
 			
 			event.setCancelled(true);

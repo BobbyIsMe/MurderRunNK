@@ -78,6 +78,12 @@ public class MRGameListener implements Listener {
 
 	        if(e.getDamager() instanceof Player) 
 	        {
+	        	if(team.getSurvivors().contains(damager) && team.getSurvivors().contains(target))
+	        	{
+	        		event.setCancelled(true);
+	        		return;
+	        	}
+	        	
 	            damager = (Player) e.getDamager();
 	        }
 	    }
@@ -327,10 +333,11 @@ public class MRGameListener implements Listener {
 		MRTeam team = event.getTeam();
 		Player player = event.getKilled();
 		Player killer = event.getKiller();
-		String reason = TextUtils.formatPlayer(killer != null ? ConfigLang.SURVIVORKILLED.toString().replace("%k", killer.getName()) : ConfigLang.SURVIVORDIE.toString(), player);
+		String reason = TextUtils.formatPlayer(killer != null ? TextUtils.format(ConfigLang.SURVIVORKILLED.toString().replace("%k", killer.getName())) : TextUtils.format(ConfigLang.SURVIVORDIE.toString()), player);
 
 		
 		team.addSpectator(player);
+		team.removeSurvivor(player);
 		team.updateEntry(team.getPlayBoard().getInt("Survivors Left"), TextUtils.formatLine(team.getPlayBoard().getString("Survivors Left-Line"), Integer.toString(team.getSurvivors().size())));
 		team.sendScoreboardTip();
 

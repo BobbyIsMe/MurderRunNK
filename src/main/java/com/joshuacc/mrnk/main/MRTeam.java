@@ -535,8 +535,8 @@ public class MRTeam {
 				if(killer == null)
 				{
 					messageAllPlayers(TextUtils.format(ConfigLang.KILLERLEAVE.toString()));
-					selectMurderer();
 					this.cancel();
+					selectMurderer();
 					return;
 				}
 
@@ -556,7 +556,10 @@ public class MRTeam {
 				if(i == time)
 				{
 					if(playBoard == null)
+					{
+						main.getMRGameConfig().giveItem(killer);
 						interm = true;
+					}
 					playSoundMessage(player, TextUtils.format(TextUtils.formatNumber(announce, i)), Sound.RANDOM_ANVIL_USE);
 				}
 
@@ -571,16 +574,15 @@ public class MRTeam {
 	
 	private boolean enoughPlayers()
 	{
-		if(allPlayers.size() <= 0) //TODO: Remember to change the value to 1
+		if(allPlayers.size() <= 1) //TODO: Remember to change the value to 1
 		{
 			allSurvivors.clear();
 			
-			playBoard = null;
 			round = 1;
 			for(Player players : allPlayers)
 			{
 				MRPlayer.getMRPlayer(players).setHasRound(false);
-				players.sendMessage(ConfigLang.NOTENOUGHPLAYERS.toString());
+				players.sendMessage(TextUtils.format(ConfigLang.NOTENOUGHPLAYERS.toString()));
 				playSoundPlayer(players, Sound.MOB_VILLAGER_NO);
 				players.setNameTag(TextUtils.formatPlayerMap(ConfigLang.QUEUETAG.toString(), players, map));
 				players.addEffect(Effect.getEffect(Effect.BLINDNESS).setDuration(Integer.MAX_VALUE).setVisible(false));
@@ -588,7 +590,10 @@ public class MRTeam {
 				sendActionBar();
 				
 				if(playBoard != null || interm)
-				MRPlayer.getMRPlayer(players).queue(true);
+				{
+					playBoard = null;
+					MRPlayer.getMRPlayer(players).queue(true);
+				}
 			}
 			
 			updateScoreboardPlayerCount();
@@ -818,7 +823,6 @@ public class MRTeam {
 		allSurvivors.remove(player);
 		player.setNameTag(TextUtils.formatPlayer(ConfigLang.KILLERTAG.toString(), player));
 		player.addEffect(Effect.getEffect(Effect.SPEED).setDuration(Integer.MAX_VALUE).setAmplifier(0).setVisible(false));
-		main.getMRGameConfig().giveItem(player);
 		MRPlayer.getMRPlayer(player).setHasRound(true);
 	}
 

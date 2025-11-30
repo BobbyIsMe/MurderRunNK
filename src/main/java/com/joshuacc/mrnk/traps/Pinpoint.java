@@ -80,8 +80,8 @@ public class Pinpoint extends TrapClick {
 	}
 	
 	private void createBeam(Player loc, Player surv) {
-		Vector3 a = loc.clone();
-		Vector3 b = surv.clone();
+		Vector3 a = loc.clone().add(0, 1, 0);
+		Vector3 b = surv.clone().add(0, 1, 0);
 	    Vector3 direction = b.subtract(a);
 	    double length = direction.length();
 	    direction = direction.normalize();

@@ -7,6 +7,7 @@ import com.joshuacc.mrnk.main.MRPlayer;
 import com.joshuacc.mrnk.main.MRTeam;
 import com.joshuacc.mrnk.main.MRTraps;
 import com.joshuacc.mrnk.utils.ItemDelay;
+import com.joshuacc.mrnk.utils.TextUtils;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
@@ -70,7 +71,7 @@ public abstract class TrapClick extends MRTraps {
 					}
 				}
 			} else
-				player.sendMessage(ConfigLang.MURDERERNOTREL.toString());
+				player.sendMessage(TextUtils.format(ConfigLang.MURDERERNOTREL.toString()));
 			event.setCancelled(true);
 		}
 	}

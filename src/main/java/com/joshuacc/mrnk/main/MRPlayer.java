@@ -101,7 +101,6 @@ public class MRPlayer {
 
 	public void unqueue()
 	{
-		mapTeam.updateScoreboardPlayerCount();
 		player.setNameTag(TextUtils.formatPlayer(ConfigLang.LOBBYTAG.toString(), player));
 		player.removeAllEffects();
 		player.getInventory().clearAll();
@@ -192,6 +191,8 @@ public class MRPlayer {
 			task.getEndTask().doTask();
 			Schedulers.TRAPS.getGameScheduler().removeTask(task);
 		}
+		
+		delayedTasks.clear();
 		tasks.clear();
 	}
 

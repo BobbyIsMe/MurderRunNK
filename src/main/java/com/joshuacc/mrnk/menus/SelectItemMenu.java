@@ -79,7 +79,7 @@ public class SelectItemMenu extends FormMenu {
 				if(!item.isStackable() && player.getInventory().contains(item.getItem()))
 				{
 					player.getLevel().addSound(player, Sound.MOB_VILLAGER_NO);
-					player.sendMessage(TextFormat.colorize(ConfigLang.BUYITEMSTACK.toString().replace("%s", item.getName())));
+					player.sendMessage((TextUtils.format(TextFormat.colorize(ConfigLang.BUYITEMSTACK.toString().replace("%s", item.getName())))));
 				}
 				else if(mPlayer.getPlayerQueuedPoints() >= item.getPrice())
 				{

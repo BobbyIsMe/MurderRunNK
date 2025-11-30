@@ -1,10 +1,14 @@
 package com.joshuacc.mrnk.traps;
 
+import com.joshuacc.mrnk.events.TrapPlacedEvent;
 import com.joshuacc.mrnk.events.TrapTriggeredEvent;
+import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.main.MRPlayer;
+import com.joshuacc.mrnk.main.MRTeam;
 import com.joshuacc.mrnk.main.MRTraps;
 import com.joshuacc.mrnk.utils.GameTask;
 import com.joshuacc.mrnk.utils.TaskAct;
+import com.joshuacc.mrnk.utils.TextUtils;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
@@ -78,6 +82,26 @@ public class Portal extends TrapDrop {
 	}
 	
 	@EventHandler
+	public void onDropPortal(TrapPlacedEvent event)
+	{
+		if(event.getTrap() != this)
+			return;
+		
+		Player player = event.getOwner();
+		MRPlayer mPlayer = MRPlayer.getMRPlayer(player);
+		if(mPlayer != null)
+		{
+			MRTeam team = mPlayer.getMapTeam();
+			Player killer = team.getKiller();
+			if(killer != null && !player.getLevel().equals(killer.getLevel()))
+			{
+				player.sendMessage(TextUtils.format(ConfigLang.MURDERERNOTREL.toString()));
+				event.setCancelled(true);
+			}
+		}
+	}
+	
+	@EventHandler
 	public void onSpawnItem(ItemSpawnEvent event)
 	{
 		EntityItem item = event.getEntity();
@@ -102,9 +126,10 @@ public class Portal extends TrapDrop {
 								if(e.getNamedTag() != null) 
 								{
 									MRTraps trap = MRTraps.getTrap(e.getNamedTag().getString("Trap"));
-									if(trap instanceof TrapDrop && !trap.getName().equals(getName()))
+									Player killer = mPlayer.getMapTeam().getKiller();
+									if(killer != null && trap instanceof TrapDrop && !trap.getName().equals(getName()))
 									{
-										((TrapDrop) trap).doAbility(owner, eitem);
+										((TrapDrop) trap).doAbility(killer, eitem);
 										item.close();
 										eitem.close();
 										task.cancel();

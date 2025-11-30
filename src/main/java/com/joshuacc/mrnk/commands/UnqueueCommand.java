@@ -38,6 +38,7 @@ public class UnqueueCommand extends Command {
 				{
 					team.removePlayer(target);
 					mPlayer.unqueue();
+					team.updateScoreboardPlayerCount();
 				}
 			}
 			

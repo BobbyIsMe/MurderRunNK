@@ -131,8 +131,9 @@ public abstract class ScoreboardAbstract {
 	
 	public void sendScoreboardTip(ArrayList<Player> players, String stop) 
 	{
+		String string = getTipMessage().append(stop).toString();
 		for(Player player : players)
-		player.sendTip(getTipMessage().append(stop).toString());
+			player.sendTip(string);
 	}
 	
 	private StringBuilder getTipMessage()

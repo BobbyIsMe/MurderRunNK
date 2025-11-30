@@ -57,7 +57,7 @@ public class FullCounter extends TrapClick {
 			Player player = (Player) event.getDamager();
 			if(player.getName().equals(MRPlayer.getMRPlayer(player).getMapTeam().getKiller().getName()))
 			{
-				player.setMotion(player.getDirectionVector().multiply(-4));
+				player.setMotion(player.getDirectionVector().multiply(-2));
 				ItemParticle.getInstance().addParticle(player, Particle.TYPE_HUGE_EXPLODE, 2);
 				player.getLevel().addSound(player, Sound.MOB_GHAST_FIREBALL);
 				player.sendTitle(message);
