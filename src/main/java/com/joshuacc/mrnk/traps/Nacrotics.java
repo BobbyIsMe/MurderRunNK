@@ -47,7 +47,7 @@ public class Nacrotics extends TrapDrop {
 	@Override
 	public String getIcon() 
 	{
-		return "textures/blocks/coal_block";
+		return "textures/items/nacrotics";
 	}
 
 	@Override

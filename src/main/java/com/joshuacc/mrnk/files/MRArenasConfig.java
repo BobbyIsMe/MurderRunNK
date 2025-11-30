@@ -38,7 +38,8 @@ public class MRArenasConfig extends AbstractFiles {
 		addDefault(prefix+"Hiding Time", 30);
 		addDefault(prefix+"Y Level Time", 60);
 		addDefault(prefix+"Y Level Start", 150);
-		addDefault(prefix+"Y Level Decrement", 50);
+		addDefault(prefix+"Y Level End", 100);
+		addDefault(prefix+"Y Level Decrement", 10);
 		addDefault(prefix+"Time Limit", 480);
 		addDefault(prefix+"Points Limit", 500);
 		addDefault(prefix+"Minimum Players", 3);
@@ -231,6 +232,11 @@ public class MRArenasConfig extends AbstractFiles {
 	public int getYLevelStart()
 	{
 		return config.getInt(mapName+".Y Level Start");
+	}
+	
+	public int getYLevelEnd()
+	{
+		return config.getInt(mapName+".Y Level End");
 	}
 
 	public int getYLevelDecrement()

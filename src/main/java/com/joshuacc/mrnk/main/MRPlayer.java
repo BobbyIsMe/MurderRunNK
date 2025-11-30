@@ -15,6 +15,8 @@ import com.joshuacc.mrnk.menus.ItemMenu;
 import com.joshuacc.mrnk.menus.FormMenu.GameMenus;
 import com.joshuacc.mrnk.scoreboards.ScoreboardAbstract;
 import com.joshuacc.mrnk.scoreboards.WaitScoreboard;
+import com.joshuacc.mrnk.utils.GameScheduler.Schedulers;
+import com.joshuacc.mrnk.utils.GameTask;
 import com.joshuacc.mrnk.utils.MapState;
 import com.joshuacc.mrnk.utils.TextUtils;
 
@@ -39,8 +41,9 @@ public class MRPlayer {
 	private MRLobbyConfig lobby;
 	private ScoreboardAbstract board;
 
-	private ArrayList<EntityItem> itemDrops = new ArrayList<EntityItem>();
-	private HashMap<ItemMenu, MRItemFilters> itemFilters = new HashMap<>();
+	private ArrayList<EntityItem> itemDrops;
+	private ArrayList<GameTask> tasks;
+	private HashMap<ItemMenu, MRItemFilters> itemFilters;
 
 	private int time;
 	private int qPts;
@@ -57,6 +60,7 @@ public class MRPlayer {
 		this.time = 0;
 
 		this.itemDrops = new ArrayList<>();
+		this.tasks = new ArrayList<>() ;
 		this.itemFilters = new HashMap<>();
 		
 		itemFilters.put((ItemMenu) GameMenus.MURDTRAPSMENU.getFormMenu(), new MRItemFilters("", FormsLang.LOWTOHIGH.toString(), FormsLang.ALLCATEGORY.toString(), 1));
@@ -144,6 +148,27 @@ public class MRPlayer {
 	public MRItemFilters getItemFilter(ItemMenu menu)
 	{
 		return itemFilters.get(menu);
+	}
+	
+	public void addGameTask(GameTask task)
+	{
+		tasks.add(task);
+		Schedulers.TRAPS.getGameScheduler().addTask(task);
+	}
+	
+	public void removeGameTask(GameTask task)
+	{
+		tasks.remove(task);
+	}
+	
+	public void removeAllGameTasks()
+	{
+		for(GameTask task : tasks)
+		{
+			task.getEndTask().doTask();
+			Schedulers.TRAPS.getGameScheduler().removeTask(task);
+		}
+		tasks.clear();
 	}
 
 	public static MRPlayer getMRPlayer(Player player)
@@ -234,6 +259,7 @@ public class MRPlayer {
 			player.sendTip("!stop1!stop2");
 			player.sendActionBar("!bar");
 			player.setGamemode(0);
+			player.setMovementSpeed(0.1f);
 			player.setHealth(player.getMaxHealth());
 			player.getFoodData().sendFoodLevel(player.getFoodData().getMaxLevel());
 		}

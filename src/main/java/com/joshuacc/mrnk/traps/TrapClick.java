@@ -1,5 +1,6 @@
 package com.joshuacc.mrnk.traps;
 
+import com.joshuacc.mrnk.events.TrapTriggeredEvent;
 import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.lang.FormsLang;
 import com.joshuacc.mrnk.main.MRPlayer;
@@ -8,6 +9,7 @@ import com.joshuacc.mrnk.main.MRTraps;
 import com.joshuacc.mrnk.utils.ItemDelay;
 
 import cn.nukkit.Player;
+import cn.nukkit.Server;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.player.PlayerInteractEvent;
 import cn.nukkit.item.Item;
@@ -49,17 +51,24 @@ public abstract class TrapClick extends MRTraps {
 		if (mPlayer != null && item.getCustomName().equals(getTrapItemName())) 
 		{
 			MRTeam team = MRPlayer.getMRPlayer(player).getMapTeam();
-			if(team.getKiller() != null && team.getKiller().getLevel().equals(team.getMapLevel())) 
+			Player killer = team.getKiller();
+			if(killer != null && killer.getLevel().equals(team.getMapLevel())) 
 			{
-				if(!oneTimeUse())
+				TrapTriggeredEvent trapEvent = new TrapTriggeredEvent(player, this);
+				Server.getInstance().getPluginManager().callEvent(trapEvent);
+				if(!trapEvent.isCancelled())
 				{
-					if(!ItemDelay.getInstance().onCooldown(player, this)) 
+					if(!oneTimeUse())
+					{
+						performClickAbility(player);
+						player.getInventory().decreaseCount(player.getInventory().getHeldItemIndex());
+					} else
+					if (!ItemDelay.getInstance().onCooldown(player, this)) 
 					{
 						if(performClickAbility(player))
 							ItemDelay.getInstance().addCooldown(player, this);
 					}
-				} else 
-					performClickAbility(player);
+				}
 			} else
 				player.sendMessage(ConfigLang.MURDERERNOTREL.toString());
 			event.setCancelled(true);

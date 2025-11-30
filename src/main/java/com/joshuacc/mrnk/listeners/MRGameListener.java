@@ -17,16 +17,19 @@ import com.joshuacc.mrnk.utils.TextUtils;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
+import cn.nukkit.entity.item.EntityArmorStand;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.block.BlockBreakEvent;
+import cn.nukkit.event.block.BlockPlaceEvent;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.inventory.InventoryClickEvent;
 import cn.nukkit.event.inventory.InventoryTransactionEvent;
 import cn.nukkit.event.player.PlayerDropItemEvent;
 import cn.nukkit.event.player.PlayerFoodLevelChangeEvent;
+import cn.nukkit.event.player.PlayerInteractEntityEvent;
 import cn.nukkit.event.player.PlayerInteractEvent;
 import cn.nukkit.event.player.PlayerInteractEvent.Action;
 import cn.nukkit.inventory.PlayerInventory;
@@ -168,6 +171,20 @@ public class MRGameListener implements Listener {
 	}
 	
 	@EventHandler
+	public void onInteractArmorStand(PlayerInteractEntityEvent event)
+	{
+		if(!(event.getEntity() instanceof EntityArmorStand))
+			return;
+		
+		Player player = event.getPlayer();
+		MRPlayer mPlayer = MRPlayer.getMRPlayer(player);
+		if(mPlayer != null && player.getLevel().equals(mPlayer.getMapTeam().getMapLevel()))
+		{
+			event.setCancelled(true);
+		}
+	}
+	
+	@EventHandler
 	public void onKill(PlayerKilledEvent event)
 	{
 		MRTeam team = event.getTeam();
@@ -193,6 +210,17 @@ public class MRGameListener implements Listener {
 	}
 	
 	@EventHandler
+	public void onBreakArena(BlockPlaceEvent event)
+	{
+		Player player = event.getPlayer();
+		ConfigSection section = areas.getArea(player);
+		if(section != null && !section.getBoolean("Break Blocks") && player.getGamemode() != 1)
+		{
+			event.setCancelled(true);
+		}
+	}
+	
+	@EventHandler
 	public void onBreakArena(BlockBreakEvent event)
 	{
 		Player player = event.getPlayer();
@@ -208,7 +236,7 @@ public class MRGameListener implements Listener {
 	{
 		Player player = event.getPlayer();
 		ConfigSection section = areas.getArea(player);
-		if(section != null && event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getBlock() != null && player.getGamemode() != 1)
+		if(section != null && event.getBlock() != null && (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.PHYSICAL) && player.getGamemode() != 1)
 		{
 			event.setCancelled(true);
 		}

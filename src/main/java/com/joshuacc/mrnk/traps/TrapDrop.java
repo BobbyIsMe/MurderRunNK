@@ -1,5 +1,6 @@
 package com.joshuacc.mrnk.traps;
 
+import com.joshuacc.mrnk.events.TrapTriggeredEvent;
 import com.joshuacc.mrnk.lang.FormsLang;
 import com.joshuacc.mrnk.main.MRPlayer;
 import com.joshuacc.mrnk.main.MRTeam;
@@ -108,24 +109,34 @@ public abstract class TrapDrop extends MRTraps {
 		EntityItem item = event.getItem();
 		if(item.getItem().getName().equals(getTrapItemName()))
 		{
-			MRTeam team = MRPlayer.getMRPlayer(player).getMapTeam();
-			Player killer = team.getKiller();
-			if((survivorItem() && killer != null && killer.getLevel().equals(team.getMapLevel())) || (!survivorItem() && !player.getName().equals(killer.getName())))
+			doAbility(player, item);
+			event.setCancelled(true);
+		}
+	}
+	
+	public void doAbility(Player player, EntityItem item)
+	{
+		MRTeam team = MRPlayer.getMRPlayer(player).getMapTeam();
+		Player killer = team.getKiller();
+		if((survivorItem() && killer != null && killer.getLevel().equals(team.getMapLevel())) || (!survivorItem() && !player.getName().equals(killer.getName())))
+		{
+		TrapTriggeredEvent trapEvent = new TrapTriggeredEvent(player, this);
+		Server.getInstance().getPluginManager().callEvent(trapEvent);
+		if(!trapEvent.isCancelled())
+		{
+			performDropAbility(player);
+			Player owner = Server.getInstance().getPlayer(item.getItem().getNamedTag().getString("Owner"));
+			if (owner != null && owner.isOnline()) 
 			{
-				performDropAbility(player);
-				Player owner = Server.getInstance().getPlayer(item.getItem().getNamedTag().getString("Owner"));
-				if(owner != null && owner.isOnline())
+				MRPlayer mPlayer = MRPlayer.getMRPlayer(owner);
+				if (mPlayer != null) 
 				{
-					MRPlayer mPlayer = MRPlayer.getMRPlayer(owner);
-					if(mPlayer != null)
-					{
-						ItemParticle.getInstance().removeParticle(item);
-						mPlayer.removeDropItem(item);
-						item.close();
-					}
+					ItemParticle.getInstance().removeParticle(item);
+					mPlayer.removeDropItem(item);
+					item.close();
 				}
 			}
-			event.setCancelled(true);
+		}
 		}
 	}
 }

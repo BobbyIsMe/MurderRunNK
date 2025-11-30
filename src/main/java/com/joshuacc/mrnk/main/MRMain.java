@@ -29,9 +29,11 @@ import com.joshuacc.mrnk.main.MRTeam.MapModes;
 import com.joshuacc.mrnk.scoreboards.PlayScoreboard;
 import com.joshuacc.mrnk.traps.FullCounter;
 import com.joshuacc.mrnk.traps.Nacrotics;
+import com.joshuacc.mrnk.traps.Nightmare;
 import com.joshuacc.mrnk.utils.EmptyGenerator;
 import com.joshuacc.mrnk.utils.FormUtils;
 import com.joshuacc.mrnk.utils.NPCHuman;
+import com.joshuacc.mrnk.utils.GameScheduler.Schedulers;
 
 import cn.nukkit.Server;
 import cn.nukkit.command.CommandMap;
@@ -75,6 +77,7 @@ public class MRMain extends PluginBase {
 		}
 
 		//Always not to forget about new instances prior or it will mess me up
+		Schedulers.values();
 		Generator.addGenerator(EmptyGenerator.class, "emptyworld", Generator.TYPE_INFINITE);
 		Entity.registerEntity(NPCHuman.class.getSimpleName(), NPCHuman.class);
 
@@ -108,6 +111,8 @@ public class MRMain extends PluginBase {
 		
 		MRTraps.addMRTrap(new Nacrotics(), true, this);
 		MRTraps.addMRTrap(new FullCounter(), true, this);
+		
+		MRTraps.addMRTrap(new Nightmare(), false, this);
 		
 		for(MRTraps survTrap : MRTraps.getTraps(true))
 		{

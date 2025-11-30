@@ -470,14 +470,15 @@ public class MRTeam {
 
 	private void startMurdererTimer()
 	{
-		for(Player players : allPlayers)
-			main.getMRPlayerConfig().incrementPoints(players, MRPlayer.getMRPlayer(players).getPlayerQueuedPoints() - mapConfig.getPointsLimit());
+//		for(Player players : allPlayers)
+//			main.getMRPlayerConfig().incrementPoints(players, MRPlayer.getMRPlayer(players).getPlayerQueuedPoints() - mapConfig.getPointsLimit());
 
 		task = Server.getInstance().getScheduler().scheduleDelayedRepeatingTask(new Task() {
 
 			MRPlayer k = MRPlayer.getMRPlayer(killer);
 			int time = mapConfig.getTimeLimit();
 			int y = mapConfig.getYLevelStart();
+			int yEnd = mapConfig.getYLevelEnd();
 
 			@Override
 			public void onRun(int arg0) 
@@ -497,12 +498,13 @@ public class MRTeam {
 
 				updateEntry(playBoard.getInt("Timer"), TextUtils.formatLine(playBoard.getString("Timer-Line"), TextUtils.getTimeFormat(i)));
 				
-				if(i % mapConfig.getYLevelTime() == 0)
+				if(i % mapConfig.getYLevelTime() == 0 && y > yEnd)
 				{
 					y-= mapConfig.getYLevelDecrement();
 					for(Player all : allPlayers)
 					{
 						all.sendMessage(TextUtils.format(ConfigLang.YLEVELANNOUNCE.toString().replace("%n", Integer.toString(y))));
+						all.getLevel().addSound(all, Sound.RANDOM_ANVIL_USE, 1F, 2F);
 					}
 					updateEntry(playBoard.getInt("Y Level Limit"), TextUtils.formatLine(playBoard.getString("Y Level Limit-Line"), Integer.toString(y)));
 				}
@@ -558,7 +560,7 @@ public class MRTeam {
 					playSoundMessage(player, TextUtils.format(TextUtils.formatNumber(announce, i)), Sound.RANDOM_ANVIL_USE);
 				}
 
-				else if(i % 60 == 0 || i == 15 || i == 10 || i <= 5)
+				else if(i % 30 == 0 || i == 15 || i == 10 || i <= 5)
 					playSoundMessage(TextUtils.format(TextUtils.formatNumber(countdown, i)), Sound.RANDOM_CLICK);
 
 				i--;
@@ -585,7 +587,7 @@ public class MRTeam {
 				message = TextFormat.colorize('&', board.getString("Message-1"));
 				sendActionBar();
 				
-				if(playBoard != null)
+				if(playBoard != null || interm)
 				MRPlayer.getMRPlayer(players).queue(true);
 			}
 			
@@ -815,6 +817,7 @@ public class MRTeam {
 		killer = player;
 		allSurvivors.remove(player);
 		player.setNameTag(TextUtils.formatPlayer(ConfigLang.KILLERTAG.toString(), player));
+		player.addEffect(Effect.getEffect(Effect.SPEED).setDuration(Integer.MAX_VALUE).setAmplifier(0).setVisible(false));
 		main.getMRGameConfig().giveItem(player);
 		MRPlayer.getMRPlayer(player).setHasRound(true);
 	}

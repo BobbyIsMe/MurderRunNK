@@ -50,6 +50,7 @@ public enum FormsLang {
 	SNGHIDE("Settings-Texts.Hiding Time", "&6» &a&lHiding Time"),
 	SNGYLEVELTIME("Settings-Texts.Y Level Time", "&6» &a&lY Level Time"),
 	SNGYLEVELSTART("Settings-Texts.Y Level Start", "&6» &a&lY Level Start"),
+	SNGYLEVELEND("Settings-Texts.Y Level End", "&6» &a&lY Level End"),
 	SNGYLEVELDECR("Settings-Texts.Y Level Decrement", "&6» &a&lY Level Decrement"),
 	SNGTIME("Settings-Texts.Time Limit", "&6» &a&lTime Limit"),
 	SNGPOINTS("Settings-Texts.Points Limit", "&6» &a&lPoints Limit"),

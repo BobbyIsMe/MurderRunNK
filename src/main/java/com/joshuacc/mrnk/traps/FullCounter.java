@@ -5,29 +5,27 @@ import java.util.ArrayList;
 import com.joshuacc.mrnk.files.MRTrapsConfig;
 import com.joshuacc.mrnk.main.MRMain;
 import com.joshuacc.mrnk.main.MRPlayer;
+import com.joshuacc.mrnk.utils.GameTask;
 import com.joshuacc.mrnk.utils.ItemParticle;
 
 import cn.nukkit.Player;
-import cn.nukkit.Server;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Sound;
 import cn.nukkit.level.particle.Particle;
-import cn.nukkit.scheduler.Task;
 import cn.nukkit.utils.TextFormat;
 
 public class FullCounter extends TrapClick {
 
 	private ArrayList<String> add = new ArrayList<>();
-	private MRTrapsConfig traps;
 	private String message;
 	
 	public FullCounter()
 	{
-		traps = MRMain.getInstance().getMRTrapsConfig();
+		MRTrapsConfig traps = MRMain.getInstance().getMRTrapsConfig();
 		traps.putDefault(getName(), "Message", "&e&lFULL COUNTER!");
-		message = traps.getString(getName(), "Message");
+		message = TextFormat.colorize(traps.getString(getName(), "Message"));
 	}
 	
 	@Override
@@ -40,15 +38,14 @@ public class FullCounter extends TrapClick {
 	protected boolean performClickAbility(Player player) 
 	{
 		add.add(player.getName());
-		Server.getInstance().getScheduler().scheduleDelayedTask(new Task() {
-
-			@Override
-			public void onRun(int arg0) 
-			{
-				add.remove(player.getName());
-			}
-
-		}, 20 * 10);
+		GameTask task = new GameTask(10);
+		task.addLoopTask(() -> {
+			ItemParticle.getInstance().addParticle(player, Particle.TYPE_FLAME, 20);
+		});
+		task.addEndTask(() -> {
+			add.remove(player.getName());
+		});
+		MRPlayer.getMRPlayer(player).addGameTask(task);
 		return true;
 	}
 	
@@ -61,9 +58,9 @@ public class FullCounter extends TrapClick {
 			if(player.getName().equals(MRPlayer.getMRPlayer(player).getMapTeam().getKiller().getName()))
 			{
 				player.setMotion(player.getDirectionVector().multiply(-4));
-				ItemParticle.getInstance().addParticle(player, Particle.TYPE_FLAME);
+				ItemParticle.getInstance().addParticle(player, Particle.TYPE_HUGE_EXPLODE, 2);
 				player.getLevel().addSound(player, Sound.MOB_GHAST_FIREBALL);
-				player.sendTitle(TextFormat.colorize(message));
+				player.sendTitle(message);
 			}
 			event.setCancelled(true);
 		}
@@ -90,7 +87,7 @@ public class FullCounter extends TrapClick {
 	@Override
 	public String getTrapDesc() 
 	{
-		return "Use the ability to &blaunch the murderer away &ffrom you when they try to attack!";
+		return "Use the ability to &blaunch the murderer away &ffrom you when they try to attack!\n\n&7Cooldown: &a3 minutes";
 	}
 
 	@Override

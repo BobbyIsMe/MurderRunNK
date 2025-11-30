@@ -61,7 +61,7 @@ public class MRGameConfig extends AbstractFiles {
 		
 		for(Item i : player.getInventory().getContents().values()) 
 		{
-		    if (i == null || i.isNull()) 
+		    if (i == null || i.isNull() || i.getNamedTag() == null) 
 		    	continue;
 		    
 		    i.getNamedTag().putBoolean("Droppable", false);
@@ -71,7 +71,7 @@ public class MRGameConfig extends AbstractFiles {
 		
 		for(Item i : player.getInventory().getArmorContents()) 
 		{
-		    if (i == null || i.isNull()) 
+		    if (i == null || i.isNull() || i.getNamedTag() == null) 
 		    	continue;
 		    
 		    i.getNamedTag().putBoolean("Droppable", false);

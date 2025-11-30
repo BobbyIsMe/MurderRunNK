@@ -35,7 +35,7 @@ public class FormUtils {
 	private HashMap<UUID,String> editLevel = new HashMap<>();
 	private HashMap<Integer,String> maps;
 	private HashMap<Player, HashMap<Integer,String>> idMap = new HashMap<>();
-	private static final int CONFIG_OFFSET = 3;
+	private static final int CONFIG_OFFSET = 4;
 
 	public FormUtils(MRMain main)
 	{
@@ -109,6 +109,7 @@ public class FormUtils {
 		editForm.addElement(new ElementInput(FormsLang.SNGHIDE.toString(), "hiding time", config.getInt("Hiding Time")));
 		editForm.addElement(new ElementInput(FormsLang.SNGYLEVELTIME.toString(), "y level time", config.getInt("Y Level Time")));
 		editForm.addElement(new ElementInput(FormsLang.SNGYLEVELSTART.toString(), "y level start", config.getInt("Y Level Start")));
+		editForm.addElement(new ElementInput(FormsLang.SNGYLEVELEND.toString(), "y level end", config.getInt("Y Level End")));
 		editForm.addElement(new ElementInput(FormsLang.SNGYLEVELDECR.toString(), "y level decrement", config.getInt("Y Level Decrement")));
 		editForm.addElement(new ElementInput(FormsLang.SNGTIME.toString(), "time", config.getInt("Time Limit")));
 		editForm.addElement(new ElementInput(FormsLang.SNGPOINTS.toString(), "points", config.getInt("Points Limit")));
@@ -262,6 +263,7 @@ public class FormUtils {
 			config.setValue("Hiding Time", response.getInputResponse(i++));
 			config.setValue("Y Level Time", response.getInputResponse(i++));
 			config.setValue("Y Level Start", response.getInputResponse(i++));
+			config.setValue("Y Level End", response.getInputResponse(i++));
 			config.setValue("Y Level Decrement", response.getInputResponse(i++));
 			config.setValue("Time Limit", response.getInputResponse(i++));
 			config.setValue("Points Limit", response.getInputResponse(i++));
