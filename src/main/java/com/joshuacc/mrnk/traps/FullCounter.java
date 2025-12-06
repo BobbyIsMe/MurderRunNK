@@ -44,6 +44,8 @@ public class FullCounter extends TrapClick {
 		});
 		task.addEndTask(() -> {
 			add.remove(player.getName());
+			if(!task.isCancelled())
+				MRPlayer.getMRPlayer(player).removeGameTask(task);
 		});
 		MRPlayer.getMRPlayer(player).addGameTask(task);
 		return true;
@@ -87,7 +89,7 @@ public class FullCounter extends TrapClick {
 	@Override
 	public String getTrapDesc() 
 	{
-		return "Use the ability to &blaunch the murderer away &ffrom you when they try to attack!\n\n&7Cooldown: &a3 minutes";
+		return "Use the ability to &blaunch the murderer away &ffrom you when they try to attack for &e10 seconds!\n\n&7Cooldown: &a3 minutes";
 	}
 
 	@Override

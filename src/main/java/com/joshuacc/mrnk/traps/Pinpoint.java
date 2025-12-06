@@ -39,6 +39,10 @@ public class Pinpoint extends TrapClick {
 				createBeam(player, survivor);
 			}
 		});
+		task.addEndTask(() -> {
+			if(!task.isCancelled())
+				mPlayer.removeGameTask(task);
+		});
 		mPlayer.addGameTask(task);
 		return true;
 	}
@@ -64,7 +68,7 @@ public class Pinpoint extends TrapClick {
 	@Override
 	public String getTrapDesc() 
 	{
-		return "Search for survivors by &bfollowing the path &fshown to you for &b15 seconds!\n\n&7Cooldown: &a1 minute";
+		return "Search for survivors by &bfollowing the path &fshown to you for &e15 seconds!\n\n&7Cooldown: &a1 minute";
 	}
 
 	@Override

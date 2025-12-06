@@ -25,6 +25,7 @@ import com.joshuacc.mrnk.utils.TextUtils;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
+import cn.nukkit.AdventureSettings.Type;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Sound;
 import cn.nukkit.potion.Effect;
@@ -454,7 +455,7 @@ public class MRTeam {
 			survivor.teleport(mapConfig.getSurvivorLocation(getMapLevel()));
 		}
 
-		Server.getInstance().getPluginManager().callEvent(new GameStartEvent(GameAttribute.STARTED, this));
+		Server.getInstance().getPluginManager().callEvent(new GameStartEvent(GameAttribute.INTERMISSION, this));
 		killer.sendMessage(TextUtils.format(TextUtils.formatNumber(ConfigLang.MURDCOUNT.toString(), mapConfig.getHidingTime())));
 		playSoundPlayer(killer, Sound.NOTE_PLING);
 
@@ -462,6 +463,8 @@ public class MRTeam {
 
 			killer.teleport(mapConfig.getMurdererLocation(getMapLevel()));
 			killer.sendMessage(TextUtils.format(ConfigLang.RELEASEMURD.toString()));
+			killer.getAdventureSettings().set(Type.ALLOW_FLIGHT, true);
+			killer.getAdventureSettings().update();
 			main.getServer().getScheduler().scheduleDelayedTask(main, () -> killer.getLevel().addSound(killer, Sound.BLOCK_END_PORTAL_SPAWN), 5);
 			startMurdererTimer();
 
@@ -472,7 +475,7 @@ public class MRTeam {
 	{
 //		for(Player players : allPlayers)
 //			main.getMRPlayerConfig().incrementPoints(players, MRPlayer.getMRPlayer(players).getPlayerQueuedPoints() - mapConfig.getPointsLimit());
-
+		Server.getInstance().getPluginManager().callEvent(new GameStartEvent(GameAttribute.STARTED, this));
 		task = Server.getInstance().getScheduler().scheduleDelayedRepeatingTask(new Task() {
 
 			MRPlayer k = MRPlayer.getMRPlayer(killer);

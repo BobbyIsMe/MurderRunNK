@@ -27,12 +27,15 @@ import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.listeners.MRGameListener;
 import com.joshuacc.mrnk.main.MRTeam.MapModes;
 import com.joshuacc.mrnk.scoreboards.PlayScoreboard;
+import com.joshuacc.mrnk.traps.FlyHigh;
 import com.joshuacc.mrnk.traps.FullCounter;
 import com.joshuacc.mrnk.traps.Nacrotics;
 import com.joshuacc.mrnk.traps.Nightmare;
 import com.joshuacc.mrnk.traps.Phase;
 import com.joshuacc.mrnk.traps.Pinpoint;
 import com.joshuacc.mrnk.traps.Portal;
+import com.joshuacc.mrnk.traps.RollingThunder;
+import com.joshuacc.mrnk.traps.SpyGlasses;
 import com.joshuacc.mrnk.utils.EmptyGenerator;
 import com.joshuacc.mrnk.utils.FormUtils;
 import com.joshuacc.mrnk.utils.NPCHuman;
@@ -112,13 +115,18 @@ public class MRMain extends PluginBase {
 		areas.setupConfig();
 		traps.addDefaults();
 		
+		//Survivor Traps
 		MRTraps.addMRTrap(new Nacrotics(), true, this);
 		MRTraps.addMRTrap(new FullCounter(), true, this);
 		MRTraps.addMRTrap(new Portal(), true, this);
 		MRTraps.addMRTrap(new Phase(), true, this);
+		MRTraps.addMRTrap(new FlyHigh(), true, this);
 		
+		//Murderer Traps
 		MRTraps.addMRTrap(new Nightmare(), false, this);
 		MRTraps.addMRTrap(new Pinpoint(), false, this);
+		MRTraps.addMRTrap(new SpyGlasses(), false, this);
+		MRTraps.addMRTrap(new RollingThunder(), false, this);
 		
 		for(MRTraps survTrap : MRTraps.getTraps(true))
 		{

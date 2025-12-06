@@ -2,6 +2,7 @@ package com.joshuacc.mrnk.main;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import com.joshuacc.mrnk.events.GameEndEvent;
 import com.joshuacc.mrnk.events.GameStartEvent;
 import com.joshuacc.mrnk.events.GameStartEvent.GameAttribute;
@@ -21,6 +22,7 @@ import com.joshuacc.mrnk.utils.MapState;
 import com.joshuacc.mrnk.utils.TaskAct;
 import com.joshuacc.mrnk.utils.TextUtils;
 
+import cn.nukkit.AdventureSettings.Type;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.entity.item.EntityItem;
@@ -30,7 +32,10 @@ import cn.nukkit.event.player.PlayerFormRespondedEvent;
 import cn.nukkit.event.player.PlayerJoinEvent;
 import cn.nukkit.event.player.PlayerLocallyInitializedEvent;
 import cn.nukkit.event.player.PlayerQuitEvent;
+import cn.nukkit.event.player.PlayerToggleFlightEvent;
+import cn.nukkit.level.Sound;
 import cn.nukkit.level.particle.FloatingTextParticle;
+import cn.nukkit.math.Vector3;
 import cn.nukkit.scheduler.TaskHandler;
 
 public class MRPlayer {
@@ -155,8 +160,14 @@ public class MRPlayer {
 	
 	public void addGameTask(GameTask task)
 	{
+		addGameTask(task, Schedulers.TICK20);
+	}
+	
+	public void addGameTask(GameTask task, Schedulers schedule)
+	{
+		task.setScheduler(schedule);
 		tasks.add(task);
-		Schedulers.TRAPS.getGameScheduler().addTask(task);
+		schedule.getGameScheduler().addTask(task);
 	}
 	
 	public void addDelayedTask(TaskAct task, int delay)
@@ -188,8 +199,11 @@ public class MRPlayer {
 		for(GameTask task : tasks)
 		{
 			if(task.getEndTask() != null)
-			task.getEndTask().doTask();
-			Schedulers.TRAPS.getGameScheduler().removeTask(task);
+			{
+				task.cancel();
+				task.getEndTask().doTask();
+			}
+			task.getScheduler().getGameScheduler().removeTask(task);
 		}
 		
 		delayedTasks.clear();
@@ -287,6 +301,28 @@ public class MRPlayer {
 			player.setMovementSpeed(0.1f);
 			player.setHealth(player.getMaxHealth());
 			player.getFoodData().sendFoodLevel(player.getFoodData().getMaxLevel());
+		}
+		
+		@EventHandler
+		public void onFly(PlayerToggleFlightEvent event)
+		{
+			Player player = event.getPlayer();
+			MRPlayer mPlayer = MRPlayer.getMRPlayer(player);
+			if(mPlayer != null && player.getGamemode() != 1) 
+			{
+				player.getAdventureSettings().set(Type.ALLOW_FLIGHT, false);
+				player.getAdventureSettings().set(Type.FLYING, false);
+				player.getLevel().addSound(player, Sound.MOB_ZOMBIE_UNFECT, 1F, 2F);
+				player.getAdventureSettings().update();
+				event.setCancelled(true);
+				Vector3 vec = player.getDirectionVector().setY(1).multiply(1);
+				player.setMotion(vec);
+				mPlayer.addDelayedTask(() -> {
+					player.getLevel().addSound(player, Sound.MOB_WITHER_SHOOT, 1F, 2F);
+				player.getAdventureSettings().set(Type.ALLOW_FLIGHT, true);
+				player.getAdventureSettings().update();
+				}, 10);
+			}
 		}
 
 		@EventHandler

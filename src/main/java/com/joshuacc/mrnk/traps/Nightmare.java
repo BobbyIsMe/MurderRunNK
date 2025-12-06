@@ -86,7 +86,7 @@ public class Nightmare extends TrapClick {
 	@Override
 	public String getTrapDesc() 
 	{
-		return "&cBlinds and slows&f all of the survivors for &b10 seconds\n\n&7Cooldown: &a1 minute";
+		return "&cBlinds and slows&f all of the survivors for &e10 seconds\n\n&7Cooldown: &a1 minute";
 	}
 
 	@Override

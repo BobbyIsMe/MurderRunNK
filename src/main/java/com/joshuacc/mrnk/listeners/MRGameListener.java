@@ -17,6 +17,7 @@ import com.joshuacc.mrnk.utils.TextUtils;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
+import cn.nukkit.AdventureSettings.Type;
 import cn.nukkit.entity.item.EntityArmorStand;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
@@ -102,13 +103,12 @@ public class MRGameListener implements Listener {
 
 	    Player target = (Player) event.getEntity();
 	    if(event.getCause() == DamageCause.VOID)
-	    {
-	    	event.setCancelled(true);
-	    	
+	    {	
 	    	Location mloc = main.getMRLobbyConfig().getMainLobbyLocation();
 	    	if(mloc.getLevel() != null && target.getLevel().equals(mloc.getLevel()))
 	    	{
 	    		target.teleport(mloc);
+	    		event.setCancelled(true);
 	    		return;
 	    	}
 	    	
@@ -116,6 +116,7 @@ public class MRGameListener implements Listener {
 	    	if(qloc.getLevel() != null && target.getLevel().equals(qloc.getLevel()))
 	    	{
 	    		target.teleport(qloc);
+	    		event.setCancelled(true);
 	    		return;
 	    	}
 	    	
@@ -218,6 +219,24 @@ public class MRGameListener implements Listener {
 		}
 	}
 	
+	@EventHandler
+	public void onFallDamage(EntityDamageEvent event)
+	{
+		if(event.getEntity() instanceof Player)
+		{
+			if(event.getCause() == DamageCause.FALL)
+			{
+				Player player = (Player) event.getEntity();
+				MRPlayer mPlayer = MRPlayer.getMRPlayer(player);
+				if(mPlayer != null)
+				{
+					MRTeam team = mPlayer.getMapTeam();
+					if(!team.timerGoing() && player.getLevel().equals(team.getMapLevel()))
+						event.setCancelled(true);
+				}
+			}
+		}
+	}
 	
 	@EventHandler
 	public void onBreakArena(BlockPlaceEvent event)
@@ -270,7 +289,6 @@ public class MRGameListener implements Listener {
 	public void onHunger(PlayerFoodLevelChangeEvent event)
 	{
 	    try {
-	        // your normal handler code
 			Player player = (Player) event.getPlayer();
 			if(player != null)
 			{
@@ -361,14 +379,13 @@ public class MRGameListener implements Listener {
 		WinType type = event.getWinType();
 		String title = "";
 
-		switch(type)
-		{
+		switch (type) {
 		default:
 		case SURVIVORS_LEAVE:
 		case KILL_ALL:
 			title = ConfigLang.MURDERERWIN.toString();
-			if(killer != null)
-			main.getMRPlayerConfig().incrementPoints(killer, game.getKillPoints());
+			if (killer != null)
+				main.getMRPlayerConfig().incrementPoints(killer, game.getKillPoints());
 			team.addPlayerRankingByTime(killer);
 			break;
 		case KILLER_LEAVE:
@@ -376,37 +393,40 @@ public class MRGameListener implements Listener {
 		case VEHICLE_SUCCESS:
 			title = ConfigLang.SURVIVORWIN.toString();
 
-			for(Player players : team.getSurvivors())
+			for (Player players : team.getSurvivors())
 				main.getMRPlayerConfig().incrementPoints(players, game.getKillPoints());
-			
-			if(killer != null)
-			MRPlayer.getMRPlayer(killer).setTime(team.getMapConfig().getTimeLimit());
+
+			if (killer != null)
+				MRPlayer.getMRPlayer(killer).setTime(team.getMapConfig().getTimeLimit());
 			break;
 		}
-		
-		for(Player player : team.getPlayers())
-		{
+
+		for (Player player : team.getPlayers()) {
 			MRPlayer mPlayer = MRPlayer.getMRPlayer(player);
 			player.sendTitle(title, type.getSubtitle());
 
-			if(type != WinType.KILL_ALL)
+			if (type != WinType.KILL_ALL)
 				player.sendMessage(type.getMessage());
 			else
 				player.sendMessage(type.getMessage(killer));
-			
+
 			mPlayer.removeAllDrops();
 			mPlayer.removeAllGameTasks();
 			ItemDelay.getInstance().removeAllCooldown(player);
 		}
 
-		for(Player players : team.getSurvivors())
+		for (Player players : team.getSurvivors())
 			team.addSpectator(players);
-		
+
 		team.removeAllSurvivors();
-		
-		if(killer != null)
+
+		if (killer != null)
+		{
+			killer.getAdventureSettings().set(Type.ALLOW_FLIGHT, false);
+			killer.getAdventureSettings().update();
 			team.addSpectator(killer);
-		
+		}
+
 		team.cancelTimer();
 	}
 }

@@ -10,7 +10,9 @@ public class GameScheduler {
 	
 	public enum Schedulers 
 	{	
-		TRAPS(20);
+		TICK1(1),
+		TICK5(5),
+		TICK20(20);
 
 		private final GameScheduler scheduler;
 		
@@ -36,12 +38,17 @@ public class GameScheduler {
 			@Override
 			public void onRun(int arg0) 
 			{
+				if(scheduler.isEmpty())
+					return;
+				
 				Iterator<GameTask> tasks = scheduler.iterator();
 				while(tasks.hasNext()) 
 				{
 					GameTask task = tasks.next();
 					if (task.isCancelled()) 
 					{
+						if(task.getEndTask() != null)
+							task.getEndTask().doTask();
 						tasks.remove();
 						continue;
 					}

@@ -14,6 +14,7 @@ public class GameStartEvent extends Event {
 	public enum GameAttribute
 	{
 		STARTING,
+		INTERMISSION,
 		STARTED
 	}
 	

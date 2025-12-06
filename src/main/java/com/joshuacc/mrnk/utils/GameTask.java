@@ -1,10 +1,13 @@
 package com.joshuacc.mrnk.utils;
 
+import com.joshuacc.mrnk.utils.GameScheduler.Schedulers;
+
 public class GameTask {
 	
 	private TaskAct loopTask;
 	private TaskAct endTask;
 	private boolean cancel;
+	private Schedulers scheduler;
 	private int delay;
 	
 	public GameTask(int delay)
@@ -24,6 +27,11 @@ public class GameTask {
 		this.endTask = endTask;
 	}
 	
+	public void setScheduler(Schedulers scheduler)
+	{
+		this.scheduler = scheduler;
+	}
+	
 	public TaskAct getLoopTask()
 	{
 		return loopTask;
@@ -32,6 +40,11 @@ public class GameTask {
 	public TaskAct getEndTask()
 	{
 		return endTask;
+	}
+	
+	public Schedulers getScheduler()
+	{
+		return scheduler;
 	}
 	
 	public void decrement()
