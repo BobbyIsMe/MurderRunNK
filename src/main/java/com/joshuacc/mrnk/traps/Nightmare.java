@@ -1,22 +1,17 @@
 package com.joshuacc.mrnk.traps;
 
-import java.util.ArrayList;
-
 import com.joshuacc.mrnk.files.MRTrapsConfig;
 import com.joshuacc.mrnk.main.MRMain;
 import com.joshuacc.mrnk.main.MRPlayer;
 
 import cn.nukkit.Player;
-import cn.nukkit.Server;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Sound;
 import cn.nukkit.potion.Effect;
-import cn.nukkit.scheduler.Task;
 import cn.nukkit.utils.TextFormat;
 
 public class Nightmare extends TrapClick {
 
-	private ArrayList<String> all = new ArrayList<>();
 	private String message;
 	
 	public Nightmare()
@@ -42,26 +37,14 @@ public class Nightmare extends TrapClick {
 			survivor.setMovementSpeed(0.05F);
 			survivor.getLevel().addSound(survivor, Sound.AMBIENT_CAVE);
 			survivor.sendTitle(message);
-			all.add(survivor.getName());
 		}
-
-		Server.getInstance().getScheduler().scheduleDelayedTask(new Task() {
-
-			@Override
-			public void onRun(int arg0) 
+		
+		MRPlayer.getMRPlayer(player).addDelayedTask(() -> {
+			for(Player all : MRPlayer.getMRPlayer(player).getMapTeam().getPlayers())
 			{
-				for(Player survivor : MRPlayer.getMRPlayer(player).getMapTeam().getSurvivors())
-				{
-					if(all.contains(survivor.getName()))
-					{
-						survivor.setMovementSpeed(0.1F);
-						all.remove(survivor.getName());
-					}
-				}
-				player.setMovementSpeed(0.1F);
+				all.setMovementSpeed(0.1F);
 			}
-
-		}, 20 * 10);
+		}, 10);
 		return true;
 	}
 

@@ -36,6 +36,8 @@ public class FilterItemsMenu extends FormMenu {
 		MRPlayer mPlayer = MRPlayer.getMRPlayer(player);
 		if(mPlayer == null)
 			return null;
+		
+		ItemMenu menu = menus.get(player);
 
 		ArrayList<String> sortPrice = new ArrayList<>();
 		ArrayList<String> sortType = new ArrayList<>();
@@ -44,12 +46,12 @@ public class FilterItemsMenu extends FormMenu {
 		sortPrice.add(FormsLang.HIGHTOLOW.toString());
 		
 		sortType.add(FormsLang.ALLCATEGORY.toString());
-		if (menus.get(player) instanceof SurvivorTrapsMenu) {
+		if (menu instanceof SurvivorTrapsMenu || menu instanceof MurdererTrapsMenu) {
 			sortType.add(FormsLang.TRAPCLICK.toString());
 			sortType.add(FormsLang.TRAPDROP.toString());
 		}
 		
-		MRItemFilters filter = mPlayer.getItemFilter(menus.get(player));
+		MRItemFilters filter = mPlayer.getItemFilter(menu);
 		FormWindowCustom form = new FormWindowCustom(FormsLang.FILTERTITLE.toString());
 		form.addElement(new ElementLabel(FormsLang.FILTERDESC.toString()));
 		form.addElement(new ElementInput(FormsLang.SEARCHKEYWORD.toString(), "", filter.getKeyword()));

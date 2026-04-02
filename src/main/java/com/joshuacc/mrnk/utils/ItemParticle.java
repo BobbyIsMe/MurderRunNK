@@ -2,8 +2,8 @@ package com.joshuacc.mrnk.utils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import com.joshuacc.mrnk.main.MRMain;
-import cn.nukkit.Server;
+import com.joshuacc.mrnk.utils.GameScheduler.Schedulers;
+
 import cn.nukkit.entity.item.EntityItem;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Location;
@@ -21,9 +21,9 @@ public class ItemParticle {
 	private ItemParticle()
 	{
 		 particles = new ArrayList<>();
-		 Server.getInstance().getScheduler().scheduleRepeatingTask(MRMain.getInstance(), () -> {
-
-			    Iterator<EntityItem> iterator = particles.iterator();
+		 GameTask task = new GameTask(5);
+		 task.addLoopTask(() -> {
+			 Iterator<EntityItem> iterator = particles.iterator();
 			    
 			    while(iterator.hasNext())
 			    {
@@ -57,7 +57,8 @@ public class ItemParticle {
 		                tag.putInt("Cooldown", cooldown - 1);
 		            }
 			    }
-		 }, 5);
+		 });
+		 Schedulers.TICK5.getGameScheduler().addTask(task);
 	}
 	
 	public static ItemParticle getInstance() {

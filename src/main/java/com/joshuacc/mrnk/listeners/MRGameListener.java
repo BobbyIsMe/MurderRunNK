@@ -73,6 +73,7 @@ public class MRGameListener implements Listener {
 	    }
 
 	    Player damager = null;
+	    
 	    if(event instanceof EntityDamageByEntityEvent && event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK)
 	    {
 	        EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
@@ -118,6 +119,19 @@ public class MRGameListener implements Listener {
 	    		target.teleport(qloc);
 	    		event.setCancelled(true);
 	    		return;
+	    	}
+	    	
+	    	MRPlayer mPlayer = MRPlayer.getMRPlayer(target);
+	    	if(mPlayer != null)
+	    	{
+	    		MRTeam team = mPlayer.getMapTeam();
+	    		Location loc = team.getMurdererLocation();
+	    		if(team.getKiller() == target && loc.getLevel() != null && target.getLevel().equals(loc.getLevel()))
+		    	{
+		    		target.teleport(loc);
+		    		event.setCancelled(true);
+		    		return;
+		    	}
 	    	}
 	    	
 	    }
@@ -295,7 +309,6 @@ public class MRGameListener implements Listener {
 				ConfigSection section = areas.getArea(player);
 				if(section != null && !section.getBoolean("Hunger") && player.getGamemode() != 3)
 				{
-					player.getFoodData().setLevel(player.getFoodData().getMaxLevel());
 					event.setCancelled(true);
 				}
 			}
@@ -353,7 +366,6 @@ public class MRGameListener implements Listener {
 		Player killer = event.getKiller();
 		String reason = TextUtils.formatPlayer(killer != null ? TextUtils.format(ConfigLang.SURVIVORKILLED.toString().replace("%k", killer.getName())) : TextUtils.format(ConfigLang.SURVIVORDIE.toString()), player);
 
-		
 		team.addSpectator(player);
 		team.removeSurvivor(player);
 		team.updateEntry(team.getPlayBoard().getInt("Survivors Left"), TextUtils.formatLine(team.getPlayBoard().getString("Survivors Left-Line"), Integer.toString(team.getSurvivors().size())));

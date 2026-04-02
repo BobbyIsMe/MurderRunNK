@@ -11,7 +11,7 @@ public class Nacrotics extends TrapDrop {
 	public void performDropAbility(Player player) 
 	{
 		player.addEffect(Effect.getEffect(Effect.BLINDNESS).setDuration(20 * 10).setAmplifier(10).setVisible(false));
-		player.addEffect(Effect.getEffect(Effect.WEAKNESS).setDuration(20 * 10).setAmplifier(4).setVisible(false));
+		player.addEffect(Effect.getEffect(Effect.WEAKNESS).setDuration(20 * 10).setAmplifier(2).setVisible(false));
 	}
 
 	@Override

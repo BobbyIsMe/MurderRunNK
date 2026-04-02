@@ -86,7 +86,7 @@ public class MRArenasConfig extends AbstractFiles {
 			MapModes.loadAllModeMaps(main, mapName, this);
 
 			if(level.getPlayers().values().size() != 0)
-				main.getLogger().warning("§eThere were players in arena "+mapName+" and it got enabled, they are now sent back to lobby level.");
+				main.getLogger().warning("ï¿½eThere were players in arena "+mapName+" and it got enabled, they are now sent back to lobby level.");
 
 			for(Player players : level.getPlayers().values())
 			{

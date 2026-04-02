@@ -25,6 +25,8 @@ import com.joshuacc.mrnk.utils.TextUtils;
 import cn.nukkit.AdventureSettings.Type;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
+import cn.nukkit.entity.Entity;
+import cn.nukkit.entity.data.IntEntityData;
 import cn.nukkit.entity.item.EntityItem;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
@@ -33,6 +35,7 @@ import cn.nukkit.event.player.PlayerJoinEvent;
 import cn.nukkit.event.player.PlayerLocallyInitializedEvent;
 import cn.nukkit.event.player.PlayerQuitEvent;
 import cn.nukkit.event.player.PlayerToggleFlightEvent;
+import cn.nukkit.event.player.PlayerToggleSneakEvent;
 import cn.nukkit.level.Sound;
 import cn.nukkit.level.particle.FloatingTextParticle;
 import cn.nukkit.math.Vector3;
@@ -304,11 +307,23 @@ public class MRPlayer {
 		}
 		
 		@EventHandler
+		public void onSneak(PlayerToggleSneakEvent event) 
+		{
+			Player player = event.getPlayer();
+			if(event.isSneaking())
+			{
+				player.setDataProperty(new IntEntityData(Entity.DATA_VARIANT, 2));
+			} else {
+				player.setDataProperty(new IntEntityData(Entity.DATA_VARIANT, 0));
+			}
+		}
+		
+		@EventHandler
 		public void onFly(PlayerToggleFlightEvent event)
 		{
 			Player player = event.getPlayer();
 			MRPlayer mPlayer = MRPlayer.getMRPlayer(player);
-			if(mPlayer != null && player.getGamemode() != 1) 
+			if(mPlayer != null && player.getGamemode() == 0 && mPlayer.getMapTeam().getKiller() == player) 
 			{
 				player.getAdventureSettings().set(Type.ALLOW_FLIGHT, false);
 				player.getAdventureSettings().set(Type.FLYING, false);
@@ -319,8 +334,8 @@ public class MRPlayer {
 				player.setMotion(vec);
 				mPlayer.addDelayedTask(() -> {
 					player.getLevel().addSound(player, Sound.MOB_WITHER_SHOOT, 1F, 2F);
-				player.getAdventureSettings().set(Type.ALLOW_FLIGHT, true);
-				player.getAdventureSettings().update();
+					player.getAdventureSettings().set(Type.ALLOW_FLIGHT, true);
+					player.getAdventureSettings().update();
 				}, 10);
 			}
 		}

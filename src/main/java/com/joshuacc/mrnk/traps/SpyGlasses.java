@@ -56,7 +56,7 @@ public class SpyGlasses extends TrapClick {
 			all.sendTitle(messageSurvivor);
 		}
 		
-		GameTask task = new GameTask(40);
+		GameTask task = new GameTask(20);
 		task.addLoopTask(() -> {
 			if(target.isOnline() || target.getGamemode() == 3)
 				player.teleport(target);
@@ -104,7 +104,7 @@ public class SpyGlasses extends TrapClick {
 	@Override
 	public String getTrapDesc() 
 	{
-		return "Spy a random survivor to find where they are by &blooking at their perspective &ffor &e10 seconds!\n\n&7Cooldown: &a1 minute";
+		return "Spy a random survivor to find where they are by &blooking at their perspective &ffor &e5 seconds!\n\n&7Cooldown: &a1 minute";
 	}
 
 	@Override

@@ -27,6 +27,7 @@ import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.AdventureSettings.Type;
 import cn.nukkit.level.Level;
+import cn.nukkit.level.Location;
 import cn.nukkit.level.Sound;
 import cn.nukkit.potion.Effect;
 import cn.nukkit.scheduler.Task;
@@ -37,8 +38,8 @@ public class MRTeam {
 
 	public enum MapModes
 	{
-		NORMAL("Normal", "Kill all players before the time limit reaches to win your round!", "&6» &a&lNormal Mode Maps", 103),
-		ESCAPE("Escape", "Kill all players before they fix the vehicle for their escape to win your round!", "&6» &a&lEscape Mode Maps", 104);
+		NORMAL("Normal", "Kill all players before the time limit reaches to win your round!", "&6ï¿½ &a&lNormal Mode Maps", 103),
+		ESCAPE("Escape", "Kill all players before they fix the vehicle for their escape to win your round!", "&6ï¿½ &a&lEscape Mode Maps", 104);
 
 		private static MRFormsTextsConfig FORM;
 		private static MRLanguagesConfig LANG;
@@ -430,7 +431,7 @@ public class MRTeam {
 
 		for(Player players : allPlayers)
 		{
-			players.sendTitle("§4§l"+select.getName()+"§r", ConfigLang.MAPRANDFIN.toString(), 0, 60, 0);
+			players.sendTitle("ï¿½4ï¿½l"+select.getName()+"ï¿½r", ConfigLang.MAPRANDFIN.toString(), 0, 60, 0);
 			playSoundPlayer(players, Sound.MOB_ENDERDRAGON_GROWL);
 		}
 		intermissionCount(40, mapConfig.getPreparingTime(), () -> releaseMurderer(), allPlayers, ConfigLang.INTERMISSION.toString(), ConfigLang.INTERCOUNT.toString());
@@ -825,7 +826,7 @@ public class MRTeam {
 		killer = player;
 		allSurvivors.remove(player);
 		player.setNameTag(TextUtils.formatPlayer(ConfigLang.KILLERTAG.toString(), player));
-		player.addEffect(Effect.getEffect(Effect.SPEED).setDuration(Integer.MAX_VALUE).setAmplifier(0).setVisible(false));
+		player.addEffect(Effect.getEffect(Effect.SPEED).setDuration(Integer.MAX_VALUE).setAmplifier(1).setVisible(false));
 		MRPlayer.getMRPlayer(player).setHasRound(true);
 	}
 
@@ -903,5 +904,25 @@ public class MRTeam {
 	private interface FinishTask {
 
 		void finish();
+	}
+	
+	public Location getSurvivorLocation()
+	{
+		return mapConfig.getSurvivorLocation(getMapLevel());
+	}
+
+	public Location getMurdererLocation()
+	{
+		return mapConfig.getMurdererLocation(getMapLevel());
+	}
+
+	public Location getGameEndLocation()
+	{
+		return mapConfig.getGameEndLocation(getMapLevel());
+	}
+
+	public Location getVehicleLocation()
+	{
+		return mapConfig.getVehicleLocation(getMapLevel());
 	}
 }

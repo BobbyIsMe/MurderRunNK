@@ -153,7 +153,7 @@ public class RollingThunder extends TrapClick {
 					for(int i = y; i < (y+50); i++)
 					{
 						loc.setY(i);
-						if(loc.getLevelBlock().getItemId() == Block.AIR)
+						if(loc.getLevelBlock().getItemId() == Block.AIR && loc.clone().add(0, 1, 0).getLevelBlock().getItemId() == Block.AIR)
 							break;
 					}
 					
