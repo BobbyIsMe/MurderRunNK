@@ -25,8 +25,6 @@ import com.joshuacc.mrnk.utils.TextUtils;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
-import cn.nukkit.entity.Entity;
-import cn.nukkit.entity.data.IntEntityData;
 import cn.nukkit.entity.item.EntityItem;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
@@ -34,7 +32,6 @@ import cn.nukkit.event.player.PlayerFormRespondedEvent;
 import cn.nukkit.event.player.PlayerJoinEvent;
 import cn.nukkit.event.player.PlayerLocallyInitializedEvent;
 import cn.nukkit.event.player.PlayerQuitEvent;
-import cn.nukkit.event.player.PlayerToggleSneakEvent;
 import cn.nukkit.level.particle.FloatingTextParticle;
 import cn.nukkit.scheduler.TaskHandler;
 
@@ -76,6 +73,7 @@ public class MRPlayer {
 		
 		itemFilters.put((ItemMenu) GameMenus.MURDTRAPSMENU.getFormMenu(), new MRItemFilters("", FormsLang.LOWTOHIGH.toString(), FormsLang.ALLCATEGORY.toString(), 1));
 		itemFilters.put((ItemMenu) GameMenus.SURVTRAPSMENU.getFormMenu(), new MRItemFilters("", FormsLang.LOWTOHIGH.toString(), FormsLang.ALLCATEGORY.toString(), 1));
+		itemFilters.put((ItemMenu) GameMenus.MURDPERKSMENU.getFormMenu(), new MRItemFilters("", FormsLang.LOWTOHIGH.toString(), FormsLang.ALLCATEGORY.toString(), 1));
 		itemFilters.put((ItemMenu) GameMenus.ARMORMENU.getFormMenu(), new MRItemFilters("", FormsLang.LOWTOHIGH.toString(), FormsLang.ALLCATEGORY.toString(), 1));
 		itemFilters.put((ItemMenu) GameMenus.UTILMENU.getFormMenu(), new MRItemFilters("", FormsLang.LOWTOHIGH.toString(), FormsLang.ALLCATEGORY.toString(), 1));
 
@@ -323,17 +321,10 @@ public class MRPlayer {
 			player.setMovementSpeed(0.1f);
 			player.setHealth(player.getMaxHealth());
 			player.getFoodData().sendFoodLevel(player.getFoodData().getMaxLevel());
-		}
-		
-		@EventHandler
-		public void onSneak(PlayerToggleSneakEvent event) 
-		{
-			Player player = event.getPlayer();
-			if(event.isSneaking())
+			
+			if(player.getSkin().isPersona())
 			{
-				player.setDataProperty(new IntEntityData(Entity.DATA_VARIANT, 2));
-			} else {
-				player.setDataProperty(new IntEntityData(Entity.DATA_VARIANT, 0));
+				player.kick("persona skin");
 			}
 		}
 

@@ -430,7 +430,7 @@ public class MRTeam {
 
 		for(Player players : allPlayers)
 		{
-			players.sendTitle("�4�l"+select.getName()+"�r", ConfigLang.MAPRANDFIN.toString(), 0, 60, 0);
+			players.sendTitle(TextFormat.colorize('&', "&4&l"+select.getName()+"&r"), ConfigLang.MAPRANDFIN.toString(), 0, 60, 0);
 			playSoundPlayer(players, Sound.MOB_ENDERDRAGON_GROWL);
 		}
 		intermissionCount(40, mapConfig.getPreparingTime(), () -> releaseMurderer(), allPlayers, ConfigLang.INTERMISSION.toString(), ConfigLang.INTERCOUNT.toString());
@@ -575,7 +575,7 @@ public class MRTeam {
 	
 	private boolean enoughPlayers()
 	{
-		if(allPlayers.size() <= 1) //TODO: Remember to change the value to 1
+		if(allPlayers.size() <= 0) //TODO: Remember to change the value to 1
 		{
 			allSurvivors.clear();
 			

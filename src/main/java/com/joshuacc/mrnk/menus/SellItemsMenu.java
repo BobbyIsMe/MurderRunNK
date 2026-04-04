@@ -16,6 +16,7 @@ import cn.nukkit.form.response.FormResponseSimple;
 import cn.nukkit.form.window.FormWindow;
 import cn.nukkit.form.window.FormWindowSimple;
 import cn.nukkit.item.Item;
+import cn.nukkit.level.Sound;
 
 public class SellItemsMenu extends FormMenu 
 {
@@ -54,13 +55,14 @@ public class SellItemsMenu extends FormMenu
 			ShopItem shopItem = (ShopItem) button;
 			int price = shopItem.getPrice();
 			
+			player.getLevel().addSound(player, Sound.RANDOM_ORB);
 			player.sendMessage(TextUtils.format(ConfigLang.SELLITEMSUCESS.toString().replace("%s", shopItem.getName()).replace("%n", Integer.toString(price))));
 			for(Entry<Integer, Item> entry : player.getInventory().getContents().entrySet()) 
 			{
 		        int slot = entry.getKey();
 		        Item item = entry.getValue();
 		        
-		        if(item != null && item.getId() != 0 && item.getName().contains(shopItem.getName())) 
+		        if(item != null && item.getId() != 0 && item.getName().contains(shopItem.getItem().getName())) 
 				{
 					player.getInventory().decreaseCount(slot);
 					break;
@@ -74,6 +76,8 @@ public class SellItemsMenu extends FormMenu
 			{
 				((PerkItem) shopItem).removePlayer(player);
 			}
+			
+			this.open(player);
 		}
 	}
 

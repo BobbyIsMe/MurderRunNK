@@ -96,9 +96,18 @@ public class SelectItemMenu extends FormMenu {
 					if(item instanceof PerkItem)
 					{
 						((PerkItem) item).addPlayer(player);
+						for (int slot = 9; slot < player.getInventory().getSize(); slot++) {
+					        Item current = player.getInventory().getItem(slot);
+
+					        if (current == null || current.getId() == 0) {
+					            player.getInventory().setItem(slot, item.getItem());
+					            break;
+					        }
+						}
+					} else {
+						player.getInventory().addItem(it);
 					}
 					
-					player.getInventory().addItem(it);
 					player.getLevel().addSound(player, Sound.RANDOM_ORB);
 					mPlayer.addPoints(-item.getPrice());
 					player.sendMessage(TextUtils.format(ConfigLang.BUYITEMSUCCESS.toString().replace("%s", item.getName()).replace("%n", Integer.toString(item.getPrice()))));

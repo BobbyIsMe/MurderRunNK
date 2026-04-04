@@ -27,6 +27,7 @@ import com.joshuacc.mrnk.files.MRTrapsConfig;
 import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.listeners.MRGameListener;
 import com.joshuacc.mrnk.main.MRTeam.MapModes;
+import com.joshuacc.mrnk.perks.DoubleJump;
 import com.joshuacc.mrnk.scoreboards.PlayScoreboard;
 import com.joshuacc.mrnk.traps.FlyHigh;
 import com.joshuacc.mrnk.traps.FullCounter;
@@ -131,6 +132,9 @@ public class MRMain extends PluginBase {
 		MRTraps.addMRTrap(new Pinpoint(), false, this);
 		MRTraps.addMRTrap(new SpyGlasses(), false, this);
 		MRTraps.addMRTrap(new RollingThunder(), false, this);
+		
+		//Murderer Perks
+		MRPerks.addMRPerk(new DoubleJump(), false, this);
 		
 		for(MRTraps survTrap : MRTraps.getTraps(true))
 		{

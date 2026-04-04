@@ -3,6 +3,7 @@ package com.joshuacc.mrnk.traps;
 import com.joshuacc.mrnk.main.MRPlayer;
 import com.joshuacc.mrnk.main.MRTeam;
 import com.joshuacc.mrnk.utils.GameTask;
+import com.joshuacc.mrnk.utils.GlowEffect;
 
 import cn.nukkit.Player;
 import cn.nukkit.item.Item;
@@ -44,6 +45,10 @@ public class Pinpoint extends TrapClick {
 				mPlayer.removeGameTask(task);
 		});
 		mPlayer.addGameTask(task);
+		for(Player survivor : team.getSurvivors())
+		{
+			GlowEffect.addGlowingEffect(survivor, 15, 2);
+		}
 		return true;
 	}
 
