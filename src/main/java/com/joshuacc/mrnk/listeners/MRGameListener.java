@@ -17,7 +17,6 @@ import com.joshuacc.mrnk.utils.TextUtils;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
-import cn.nukkit.AdventureSettings.Type;
 import cn.nukkit.entity.item.EntityArmorStand;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
@@ -431,14 +430,12 @@ public class MRGameListener implements Listener {
 			team.addSpectator(players);
 
 		team.removeAllSurvivors();
-
+		
 		if (killer != null)
 		{
-			killer.getAdventureSettings().set(Type.ALLOW_FLIGHT, false);
-			killer.getAdventureSettings().update();
 			team.addSpectator(killer);
 		}
-
+		
 		team.cancelTimer();
 	}
 }

@@ -10,6 +10,7 @@ import com.joshuacc.mrnk.events.PlayerJoinGameEvent;
 import com.joshuacc.mrnk.events.GameEndEvent.WinType;
 import com.joshuacc.mrnk.files.MRArenasConfig;
 import com.joshuacc.mrnk.files.MRLobbyConfig;
+import com.joshuacc.mrnk.items.ShopItem;
 import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.lang.FormsLang;
 import com.joshuacc.mrnk.menus.ItemMenu;
@@ -22,7 +23,6 @@ import com.joshuacc.mrnk.utils.MapState;
 import com.joshuacc.mrnk.utils.TaskAct;
 import com.joshuacc.mrnk.utils.TextUtils;
 
-import cn.nukkit.AdventureSettings.Type;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.entity.Entity;
@@ -34,11 +34,8 @@ import cn.nukkit.event.player.PlayerFormRespondedEvent;
 import cn.nukkit.event.player.PlayerJoinEvent;
 import cn.nukkit.event.player.PlayerLocallyInitializedEvent;
 import cn.nukkit.event.player.PlayerQuitEvent;
-import cn.nukkit.event.player.PlayerToggleFlightEvent;
 import cn.nukkit.event.player.PlayerToggleSneakEvent;
-import cn.nukkit.level.Sound;
 import cn.nukkit.level.particle.FloatingTextParticle;
-import cn.nukkit.math.Vector3;
 import cn.nukkit.scheduler.TaskHandler;
 
 public class MRPlayer {
@@ -51,6 +48,7 @@ public class MRPlayer {
 	private MRLobbyConfig lobby;
 	private ScoreboardAbstract board;
 
+	private ArrayList<ShopItem> shopItems;
 	private ArrayList<EntityItem> itemDrops;
 	private ArrayList<GameTask> tasks;
 	private ArrayList<TaskReference> delayedTasks;
@@ -70,6 +68,7 @@ public class MRPlayer {
 		this.board = null;
 		this.time = 0;
 
+		this.shopItems = new ArrayList<>();
 		this.itemDrops = new ArrayList<>();
 		this.tasks = new ArrayList<>();
 		this.delayedTasks = new ArrayList<>();
@@ -154,6 +153,26 @@ public class MRPlayer {
 	{
 		itemDrops.forEach((e) -> e.close());
 		itemDrops.clear();
+	}
+	
+	public void addShopItem(ShopItem item)
+	{
+		shopItems.add(item);
+	}
+
+	public void removeShopItem(ShopItem item)
+	{
+		shopItems.remove(item);
+	}
+
+	public void removeAllShopItems()
+	{
+		shopItems.clear();
+	}
+	
+	public ArrayList<ShopItem> getShopItems()
+	{
+		return shopItems;
 	}
 	
 	public MRItemFilters getItemFilter(ItemMenu menu)
@@ -317,28 +336,6 @@ public class MRPlayer {
 				player.setDataProperty(new IntEntityData(Entity.DATA_VARIANT, 0));
 			}
 		}
-		
-		@EventHandler
-		public void onFly(PlayerToggleFlightEvent event)
-		{
-			Player player = event.getPlayer();
-			MRPlayer mPlayer = MRPlayer.getMRPlayer(player);
-			if(mPlayer != null && player.getGamemode() == 0 && mPlayer.getMapTeam().getKiller() == player) 
-			{
-				player.getAdventureSettings().set(Type.ALLOW_FLIGHT, false);
-				player.getAdventureSettings().set(Type.FLYING, false);
-				player.getLevel().addSound(player, Sound.MOB_ZOMBIE_UNFECT, 1F, 2F);
-				player.getAdventureSettings().update();
-				event.setCancelled(true);
-				Vector3 vec = player.getDirectionVector().setY(1).multiply(1);
-				player.setMotion(vec);
-				mPlayer.addDelayedTask(() -> {
-					player.getLevel().addSound(player, Sound.MOB_WITHER_SHOOT, 1F, 2F);
-					player.getAdventureSettings().set(Type.ALLOW_FLIGHT, true);
-					player.getAdventureSettings().update();
-				}, 10);
-			}
-		}
 
 		@EventHandler
 		public void onRespond(PlayerFormRespondedEvent event)
@@ -365,6 +362,18 @@ public class MRPlayer {
 
 			if(team.getPlayers().size() == config.getMinimumPlayers())
 				Server.getInstance().getPluginManager().callEvent(new GameStartEvent(GameAttribute.STARTING, team));
+		}
+		
+		@EventHandler
+		public void onGameStart(GameStartEvent event)
+		{
+			if(event.getGameAttribute() == GameAttribute.ROUND)
+			{
+				for(Player player : event.getTeam().getPlayers())
+				{
+					getMRPlayer(player).removeAllShopItems();
+				}
+			}
 		}
 
 		@EventHandler

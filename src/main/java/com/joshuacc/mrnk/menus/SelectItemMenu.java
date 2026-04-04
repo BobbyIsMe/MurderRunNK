@@ -2,6 +2,7 @@ package com.joshuacc.mrnk.menus;
 
 import java.util.HashMap;
 
+import com.joshuacc.mrnk.items.PerkItem;
 import com.joshuacc.mrnk.items.ShopItem;
 import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.lang.FormsLang;
@@ -89,6 +90,14 @@ public class SelectItemMenu extends FormMenu {
 						it.getNamedTag().putBoolean("Droppable", true);
 						it.setNamedTag(it.getNamedTag());
 					}
+					
+					mPlayer.addShopItem(item);
+					
+					if(item instanceof PerkItem)
+					{
+						((PerkItem) item).addPlayer(player);
+					}
+					
 					player.getInventory().addItem(it);
 					player.getLevel().addSound(player, Sound.RANDOM_ORB);
 					mPlayer.addPoints(-item.getPrice());

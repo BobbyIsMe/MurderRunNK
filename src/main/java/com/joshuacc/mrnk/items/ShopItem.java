@@ -93,7 +93,7 @@ public abstract class ShopItem extends ItemHelper {
 	@Override
 	public void itemResponse(Player player) 
 	{
-		SelectItemMenu menu = (SelectItemMenu) GameMenus.SELITEMMENU.getFormMenu();
+		SelectItemMenu menu = (SelectItemMenu) GameMenus.SELECTITEMMENU.getFormMenu();
 		menu.addItemToPlayer(player, this);
 		menu.open(player);
 	}

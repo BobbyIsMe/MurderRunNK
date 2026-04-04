@@ -13,6 +13,7 @@ import cn.nukkit.form.window.FormWindowSimple;
 public class MurdererItemsMenu extends FormMenu {
 
 	private ItemHelper traps = new CategoryItem(FormsLang.MURDITEMSTRAPS.toString(), GameMenus.MURDTRAPSMENU.getFormMenu());
+	private ItemHelper perks = new CategoryItem(FormsLang.MURDITEMSPERKS.toString(), GameMenus.MURDPERKSMENU.getFormMenu());
 	
 	public MurdererItemsMenu(int id) {
 		super(id);
@@ -23,6 +24,7 @@ public class MurdererItemsMenu extends FormMenu {
 	{
 		FormWindowSimple menu = new FormWindowSimple(FormsLang.MURDITEMSTITLE.toString(), FormsLang.MURDITEMSDESC.toString());
 		menu.addElement(traps);
+		menu.addElement(perks);
 		return menu;
 	}
 

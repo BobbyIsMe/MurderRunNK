@@ -15,6 +15,7 @@ public class GameStartEvent extends Event {
 	{
 		STARTING,
 		INTERMISSION,
+		ROUND,
 		STARTED
 	}
 	

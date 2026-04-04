@@ -1,15 +1,12 @@
 package com.joshuacc.mrnk.commands;
 
-import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.main.MRPlayer;
 import com.joshuacc.mrnk.main.MRTeam;
-import com.joshuacc.mrnk.utils.TextUtils;
-
+import com.joshuacc.mrnk.menus.FormMenu.GameMenus;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
-import cn.nukkit.item.Item;
 
 public class SellCommand extends Command {
 
@@ -38,17 +35,7 @@ public class SellCommand extends Command {
 				MRTeam team = mPlayer.getMapTeam();
 				if(team.onIntermission() && team.getKiller() != null) 
 				{
-					Item item = target.getInventory().getItemInHand();
-					if(item == null || item.getNamedTag() == null)
-						return false;
-					
-					int price = item.getNamedTag().getInt("Price");
-					if (price != 0)
-					{
-						target.sendMessage(TextUtils.format(ConfigLang.SELLITEMSUCESS.toString().replace("%s", item.getName()).replace("%n", Integer.toString(price))));
-						target.getInventory().decreaseCount(target.getInventory().getHeldItemIndex());
-						mPlayer.addPoints(price);
-					}
+					GameMenus.SELLITEMSMENU.getFormMenu().open(target);
 				}
 			}
 			

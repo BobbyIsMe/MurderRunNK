@@ -121,7 +121,7 @@ public abstract class TrapDrop extends MRTraps {
 	{
 		Player player = (Player) event.getInventory().getHolder();
 		EntityItem item = event.getItem();
-		if(item.getItem().getName().equals(getTrapItemName()))
+		if(item.getItem().getName().equals(getTrapItemName()) && player.getGamemode() != 3)
 		{
 			doAbility(player, item);
 			event.setCancelled(true);

@@ -20,6 +20,7 @@ import com.joshuacc.mrnk.files.MRGameConfig;
 import com.joshuacc.mrnk.files.MRItemShopConfig;
 import com.joshuacc.mrnk.files.MRLanguagesConfig;
 import com.joshuacc.mrnk.files.MRLobbyConfig;
+import com.joshuacc.mrnk.files.MRPerksConfig;
 import com.joshuacc.mrnk.files.MRPlayerConfig;
 import com.joshuacc.mrnk.files.MRScoreboardConfig;
 import com.joshuacc.mrnk.files.MRTrapsConfig;
@@ -55,6 +56,7 @@ public class MRMain extends PluginBase {
 	private MRPlayerConfig players;
 	private MRItemShopConfig itemShop;
 	private MRTrapsConfig traps;
+	private MRPerksConfig perks;
 	private MRGameConfig game;
 	private MRAreasConfig areas;
 	private FormUtils formUtil;
@@ -74,10 +76,10 @@ public class MRMain extends PluginBase {
 		try {
 			Class.forName("de.lucgameshd.scoreboard.api.ScoreboardAPI");
 		} catch (ClassNotFoundException e) {
-			getLogger().critical("§cMissing dependency: ScoreboardAPI-1.0 by LucGamesHD");
+			getLogger().critical("ï¿½cMissing dependency: ScoreboardAPI-1.0 by LucGamesHD");
 			getLogger().info("");
-			getLogger().info("§cDownload Link:");
-			getLogger().info("§chttps://github.com/LucGamesYT/ScoreboardAPI/releases/tag/1.0.0");
+			getLogger().info("ï¿½cDownload Link:");
+			getLogger().info("ï¿½chttps://github.com/LucGamesYT/ScoreboardAPI/releases/tag/1.0.0");
 			getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
@@ -103,6 +105,7 @@ public class MRMain extends PluginBase {
 		lobby = new MRLobbyConfig(this);
 		game = new MRGameConfig(this);
 		traps = new MRTrapsConfig(this);
+		perks = new MRPerksConfig(this);
 		areas = new MRAreasConfig(this);
 		
 		this.empty = "@".repeat(board.getMaxLength());
@@ -114,6 +117,7 @@ public class MRMain extends PluginBase {
 		game.setupConfig();
 		areas.setupConfig();
 		traps.addDefaults();
+		perks.addDefaults();
 		
 		//Survivor Traps
 		MRTraps.addMRTrap(new Nacrotics(), true, this);
@@ -140,7 +144,19 @@ public class MRMain extends PluginBase {
 			murdTrap.setTrapName();
 		}
 		
-		traps.getConfig().save();
+		for(MRPerks survPerk : MRPerks.getPerks(true))
+		{
+			perks.addPerk(survPerk.getName(), "path", survPerk.getIcon(), survPerk.getPerkName(), survPerk.getPerkDesc(), survPerk.getPrice());
+			survPerk.setPerkName();
+		}
+		
+		for(MRPerks murdPerk : MRPerks.getPerks(false))
+		{
+			perks.addPerk(murdPerk.getName(), "path", murdPerk.getIcon(), murdPerk.getPerkName(), murdPerk.getPerkDesc(), murdPerk.getPrice());
+			murdPerk.setPerkName();
+		}
+		
+		perks.getConfig().save();
 		
 		formUtil = new FormUtils(this);
 
@@ -170,7 +186,7 @@ public class MRMain extends PluginBase {
 		{
 			int enable = 0;
 			int disable = 0;
-			getLogger().info("§b>>");
+			getLogger().info("ï¿½b>>");
 			getLogger().info("Loading "+getMaps().length+" maps found, this might take a while...");
 			getLogger().info("[===== MINIGAME MAP LOADER =====]");
 			getLogger().info("");
@@ -206,7 +222,7 @@ public class MRMain extends PluginBase {
 			getLogger().info("All maps have been loaded.");
 			getLogger().info("Enabled Maps Count: "+enable);
 			getLogger().info("Disabled Maps Count: "+disable);
-			getLogger().info("§b>>");
+			getLogger().info("ï¿½b>>");
 		} else
 			getLogger().warning("No available maps were found!");
 	}
@@ -354,6 +370,11 @@ public class MRMain extends PluginBase {
 		return traps;
 	}
 	
+	public MRPerksConfig getMRPerksConfig() 
+	{
+		return perks;
+	}
+	
 	public MRAreasConfig getMRAreasConfig()
 	{
 		return areas;
@@ -368,4 +389,5 @@ public class MRMain extends PluginBase {
 	{
 		return prefix;
 	}
+
 }
