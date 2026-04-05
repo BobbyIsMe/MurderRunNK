@@ -28,6 +28,7 @@ import cn.nukkit.form.window.FormWindow;
 import cn.nukkit.form.window.FormWindowCustom;
 import cn.nukkit.form.window.FormWindowSimple;
 import cn.nukkit.level.Position;
+import cn.nukkit.utils.TextFormat;
 
 public class FormUtils {
 
@@ -89,9 +90,9 @@ public class FormUtils {
 		configForm.addButton(new ElementButton(FormsLang.EDITVLOC.toString()));
 
 		if(main.getMapConfigs().get(level).isMapEnabled())
-			configForm.addButton(new ElementButton("§4§l"+FormsLang.EDITENABLE.toString(), new ElementButtonImageData("url", "https://icons.iconarchive.com/icons/paomedia/small-n-flat/128/sign-error-icon.png")));
+			configForm.addButton(new ElementButton(TextFormat.colorize("&4&l"+FormsLang.EDITENABLE.toString()), new ElementButtonImageData("url", "https://icons.iconarchive.com/icons/paomedia/small-n-flat/128/sign-error-icon.png")));
 		else
-			configForm.addButton(new ElementButton("§2§l"+FormsLang.EDITENABLE.toString(), new ElementButtonImageData("url", "https://icons.iconarchive.com/icons/paomedia/small-n-flat/128/sign-check-icon.png")));
+			configForm.addButton(new ElementButton(TextFormat.colorize("&2&l"+FormsLang.EDITENABLE.toString()), new ElementButtonImageData("url", "https://icons.iconarchive.com/icons/paomedia/small-n-flat/128/sign-check-icon.png")));
 
 		player.showFormWindow(configForm);
 	}

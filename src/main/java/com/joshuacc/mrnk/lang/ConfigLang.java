@@ -13,7 +13,7 @@ public enum ConfigLang {
 	//%m - Second number
 
 	//Prefix for some messages in-game to be shown
-	PREFIXMESSAGE("Prefix Message", "&4&lMurder Run &6»&r"),
+	PREFIXMESSAGE("Prefix Message", "&4&lMurder Run &6Â»&r"),
 
 	//Nametags for the player to be changed
 	LOBBYTAG("Player-Lobby-Tag", "&e%p"),
@@ -25,7 +25,7 @@ public enum ConfigLang {
 	//NPC names
 	NPCUNQUEUE("NPC-Unqueue Name", "&eClick to &c&lunqueue!"),
 	NPCSHOP("NPC-Shop", "&eClick to &bbuy items!"),
-	NPCSELL("NPC-Sell", "&eClick to &bsell held item!"),
+	NPCSELL("NPC-Sell", "&eClick to &bsell owned items!"),
 	NPCJOINLIST("NPC-Join.List Name", "&eClick to Join a &6&lMap!"),
 	NPCJOINPLAYERS("Npc-Join.Players Tag", "&a&l%n PLAYERS"),
 	NPCNORMAL("Npc-Join.Normal", "&cNormal Mode"),
@@ -79,6 +79,7 @@ public enum ConfigLang {
 	RELEASEMURD("Release-Mur Message", "&eThe &c&lMURDERER &r&ehas been &areleased.."),
 	SURVIVORKILLED("Surv-Killed Message", "&a%p &ehas been killed by &c&l%k!"),
 	SURVIVORDIE("Surv-Die Message", "&a%p &ehas died!"),
+	BORDERHURT("Border-Hurt Message", "&cYou are beyond the y limit, you will be hurt!"),
 	SURVIVORWIN("Survivor-Win", "&a&lSURVIVORS WIN!"),
 	MURDERERWIN("Murderer-Win", "&c&lMURDERER WINS!"),
 	REASON1("Reason.1", "&eThe murderer ran out of time!"),

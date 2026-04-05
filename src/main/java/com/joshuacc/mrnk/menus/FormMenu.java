@@ -21,7 +21,8 @@ public abstract class FormMenu {
 		UTILMENU(null),
 		SURVITEMSMENU(new SurvivorItemsMenu(304)),
 		MURDITEMSMENU(new MurdererItemsMenu(321)),
-		FILTERITEMSMENU(new FilterItemsMenu(305));
+		FILTERITEMSMENU(new FilterItemsMenu(305)),
+		SPECTATORMENU(new SpectatorMenu(306));
 		
 		private FormMenu menu;
 		

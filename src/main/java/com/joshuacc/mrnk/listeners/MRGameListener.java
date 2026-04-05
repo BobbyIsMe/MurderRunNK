@@ -7,10 +7,12 @@ import com.joshuacc.mrnk.events.GameStartEvent.GameAttribute;
 import com.joshuacc.mrnk.events.PlayerKilledEvent;
 import com.joshuacc.mrnk.files.MRAreasConfig;
 import com.joshuacc.mrnk.files.MRGameConfig;
+import com.joshuacc.mrnk.itemAbility.ItemBuilder.CustomItems;
 import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.main.MRMain;
 import com.joshuacc.mrnk.main.MRPlayer;
 import com.joshuacc.mrnk.main.MRTeam;
+import com.joshuacc.mrnk.utils.GlowEffect;
 import com.joshuacc.mrnk.utils.ItemDelay;
 import com.joshuacc.mrnk.utils.NPCHuman;
 import com.joshuacc.mrnk.utils.TextUtils;
@@ -38,6 +40,7 @@ import cn.nukkit.inventory.transaction.action.InventoryAction;
 import cn.nukkit.inventory.transaction.action.SlotChangeAction;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Location;
+import cn.nukkit.level.Sound;
 import cn.nukkit.utils.ConfigSection;
 
 public class MRGameListener implements Listener {
@@ -365,6 +368,9 @@ public class MRGameListener implements Listener {
 		Player killer = event.getKiller();
 		String reason = TextUtils.formatPlayer(killer != null ? TextUtils.format(ConfigLang.SURVIVORKILLED.toString().replace("%k", killer.getName())) : TextUtils.format(ConfigLang.SURVIVORDIE.toString()), player);
 
+		player.getInventory().clearAll();
+		CustomItems.SPECTATORCOMPASS.giveItem(player);
+		
 		team.addSpectator(player);
 		team.removeSurvivor(player);
 		team.updateEntry(team.getPlayBoard().getInt("Survivors Left"), TextUtils.formatLine(team.getPlayBoard().getString("Survivors Left-Line"), Integer.toString(team.getSurvivors().size())));
@@ -376,7 +382,10 @@ public class MRGameListener implements Listener {
 		}
 
 		for(Player players : team.getPlayers())
+		{
+			players.getLevel().addSound(players, Sound.MOB_VILLAGER_DEATH, 1F, 2F, players);
 			players.sendMessage(reason);
+		}
 
 		if(team.getSurvivors().size() == 0)
 			Server.getInstance().getPluginManager().callEvent(new GameEndEvent(team, WinType.KILL_ALL));
@@ -423,7 +432,11 @@ public class MRGameListener implements Listener {
 
 			mPlayer.removeAllDrops();
 			mPlayer.removeAllGameTasks();
+			
 			ItemDelay.getInstance().removeAllCooldown(player);
+			
+			if(GlowEffect.isGlowing(player))
+				GlowEffect.removeGlowingEffect(player);
 		}
 
 		for (Player players : team.getSurvivors())

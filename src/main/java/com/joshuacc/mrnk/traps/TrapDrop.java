@@ -99,7 +99,7 @@ public abstract class TrapDrop extends MRTraps {
 			{
 				TrapPlacedEvent trapEvent = new TrapPlacedEvent(player, this);
 				Server.getInstance().getPluginManager().callEvent(trapEvent);
-				if(!trapEvent.isCancelled())
+				if(!trapEvent.isCancelled() && !mPlayer.hasDropDelay())
 				{
 					Item it = item.clone();
 					it.setCount(1);
@@ -109,6 +109,7 @@ public abstract class TrapDrop extends MRTraps {
 					it.setNamedTag(it.getNamedTag());
 					player.dropItem(it);
 					player.getInventory().decreaseCount(player.getInventory().getHeldItemIndex());
+					mPlayer.addDropDelay();
 				}
 			}
 			

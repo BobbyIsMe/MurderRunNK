@@ -2,6 +2,7 @@ package com.joshuacc.mrnk.main;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 import com.joshuacc.mrnk.events.GameEndEvent;
 import com.joshuacc.mrnk.events.GameStartEvent;
@@ -45,14 +46,15 @@ public class MRPlayer {
 	private MRLobbyConfig lobby;
 	private ScoreboardAbstract board;
 
-	private ArrayList<ShopItem> shopItems;
 	private ArrayList<EntityItem> itemDrops;
 	private ArrayList<GameTask> tasks;
 	private ArrayList<TaskReference> delayedTasks;
 	private HashMap<ItemMenu, MRItemFilters> itemFilters;
+	private HashMap<ShopItem, Integer> shopItems;
 
 	private int time;
 	private int qPts;
+	private long dropDelay;
 
 	private boolean hasRound;
 
@@ -64,12 +66,14 @@ public class MRPlayer {
 		this.mapTeam = mapTeam;
 		this.board = null;
 		this.time = 0;
+		this.dropDelay = 0;
 
-		this.shopItems = new ArrayList<>();
 		this.itemDrops = new ArrayList<>();
 		this.tasks = new ArrayList<>();
 		this.delayedTasks = new ArrayList<>();
 		this.itemFilters = new HashMap<>();
+
+		this.shopItems = new HashMap<>();
 		
 		itemFilters.put((ItemMenu) GameMenus.MURDTRAPSMENU.getFormMenu(), new MRItemFilters("", FormsLang.LOWTOHIGH.toString(), FormsLang.ALLCATEGORY.toString(), 1));
 		itemFilters.put((ItemMenu) GameMenus.SURVTRAPSMENU.getFormMenu(), new MRItemFilters("", FormsLang.LOWTOHIGH.toString(), FormsLang.ALLCATEGORY.toString(), 1));
@@ -124,7 +128,7 @@ public class MRPlayer {
 	{
 		this.time = time;
 	}
-
+	
 	public void setScoreboard(ScoreboardAbstract board)
 	{
 		this.board = board;
@@ -153,14 +157,30 @@ public class MRPlayer {
 		itemDrops.clear();
 	}
 	
+	public void addDropDelay()
+	{
+		dropDelay = System.currentTimeMillis()+(500);
+	}
+	
+	public boolean hasDropDelay()
+	{
+		return dropDelay != 0 || dropDelay > System.currentTimeMillis();
+	}
+	
 	public void addShopItem(ShopItem item)
 	{
-		shopItems.add(item);
+		shopItems.put(item, shopItems.get(item) != null ? shopItems.get(item) + 1 : 1);
 	}
 
 	public void removeShopItem(ShopItem item)
 	{
-		shopItems.remove(item);
+		if(shopItems.containsKey(item))
+		{
+			if(shopItems.get(item) > 0)
+				shopItems.put(item, shopItems.get(item) - 1);
+			else
+				shopItems.remove(item);
+		}
 	}
 
 	public void removeAllShopItems()
@@ -168,9 +188,9 @@ public class MRPlayer {
 		shopItems.clear();
 	}
 	
-	public ArrayList<ShopItem> getShopItems()
+	public Set<ShopItem> getShopItems()
 	{
-		return shopItems;
+		return shopItems.keySet();
 	}
 	
 	public MRItemFilters getItemFilter(ItemMenu menu)

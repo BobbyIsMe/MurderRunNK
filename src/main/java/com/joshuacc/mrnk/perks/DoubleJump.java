@@ -49,7 +49,7 @@ public class DoubleJump extends PerkBase
 	public void onGameStart(GameStartEvent event)
 	{
 		Player killer = event.getTeam().getKiller();
-		if(killer != null && event.getGameAttribute() == GameAttribute.ROUND)
+		if(killer != null && event.getGameAttribute() == GameAttribute.ROUND && this.containsPlayer(killer))
 		{
 			killer.getAdventureSettings().set(Type.ALLOW_FLIGHT, true);
 			killer.getAdventureSettings().update();

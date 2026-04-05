@@ -24,6 +24,7 @@ import com.joshuacc.mrnk.files.MRPerksConfig;
 import com.joshuacc.mrnk.files.MRPlayerConfig;
 import com.joshuacc.mrnk.files.MRScoreboardConfig;
 import com.joshuacc.mrnk.files.MRTrapsConfig;
+import com.joshuacc.mrnk.itemAbility.ItemBuilder;
 import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.listeners.MRGameListener;
 import com.joshuacc.mrnk.main.MRTeam.MapModes;
@@ -148,6 +149,8 @@ public class MRMain extends PluginBase {
 			murdTrap.setTrapName();
 		}
 		
+		traps.getConfig().save();
+		
 		for(MRPerks survPerk : MRPerks.getPerks(true))
 		{
 			perks.addPerk(survPerk.getName(), "path", survPerk.getIcon(), survPerk.getPerkName(), survPerk.getPerkDesc(), survPerk.getPrice());
@@ -166,6 +169,8 @@ public class MRMain extends PluginBase {
 
 		registerCommands();
 		registerListeners();
+		
+		ItemBuilder.registerItems(lobby);
 
 		newFile("Maps");
 		newFile("Normal");
@@ -254,6 +259,7 @@ public class MRMain extends PluginBase {
 	private void registerListeners()
 	{
 		getServer().getPluginManager().registerEvents(new MRGameListener(this), this);
+		getServer().getPluginManager().registerEvents(new ItemBuilder(), this);
 		MRPlayer.registerListener(this);
 	}
 

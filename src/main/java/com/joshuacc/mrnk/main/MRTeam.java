@@ -491,10 +491,14 @@ public class MRTeam {
 
 				int i = k.getPlayerTime();
 				
-				for(Player surv : allSurvivors)
+				for(Player surv : new ArrayList<>(allSurvivors)) 
 				{
-					if(surv.getY() >= y)
-						surv.attack(2);
+				    if(surv.getY() >= y) 
+				    {
+				        surv.attack(2);
+				        surv.getLevel().addSound(surv, Sound.MOB_BLAZE_HIT, 1F, 2F, surv);
+				        surv.sendMessage(TextFormat.colorize(ConfigLang.BORDERHURT.toString()));
+				    }
 				}
 
 				updateEntry(playBoard.getInt("Timer"), TextUtils.formatLine(playBoard.getString("Timer-Line"), TextUtils.getTimeFormat(i)));
@@ -575,7 +579,7 @@ public class MRTeam {
 	
 	private boolean enoughPlayers()
 	{
-		if(allPlayers.size() <= 0) //TODO: Remember to change the value to 1
+		if(allPlayers.size() <= 1) //TODO: Remember to change the value to 1
 		{
 			allSurvivors.clear();
 			

@@ -34,6 +34,7 @@ public class MRLobbyConfig extends AbstractFiles {
 	@Override
 	public void addDefaults() 
 	{
+		addDefault("Spectator-Compass Name", "&r&f&lSpectate players");
 		for(MapModes mode : MapModes.values())
 			addDefault(mode.getMode()+"-id", 0);
 		config.save();

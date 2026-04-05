@@ -44,11 +44,11 @@ public class SellItemsMenu extends FormMenu
 	public void response(Player player, FormResponse response) 
 	{
 		FormResponseSimple r = (FormResponseSimple) response;
-		if(r == null)
+		MRPlayer mPlayer = MRPlayer.getMRPlayer(player);
+		if(r == null || mPlayer == null)
 			return;
 		
 		ElementButton button = r.getClickedButton();
-		MRPlayer mPlayer = MRPlayer.getMRPlayer(player);
 		
 		if(button instanceof ShopItem)
 		{

@@ -28,12 +28,16 @@ public class GlowEffect {
 				public void doTask() 
 				{
 					
-					if(!glowPlayers.containsKey(player) || glowPlayers.get(player) == 0)
+					if(glowPlayers.get(player) == 0)
 					{
-						glowPlayers.remove(player);
+						if(glowPlayers.containsKey(player))
+							glowPlayers.remove(player);
 						player.setDataProperty(new IntEntityData(Entity.DATA_VARIANT, 0));
 						if(!task.isCancelled())
+						{
 							MRPlayer.getMRPlayer(player).removeGameTask(task);
+							task.cancel();
+						}
 						return;
 					}
 					
