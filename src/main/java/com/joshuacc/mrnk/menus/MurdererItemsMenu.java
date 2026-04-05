@@ -13,7 +13,7 @@ import cn.nukkit.form.window.FormWindowSimple;
 public class MurdererItemsMenu extends FormMenu {
 
 	private ItemHelper traps = new CategoryItem(FormsLang.MURDITEMSTRAPS.toString(), GameMenus.MURDTRAPSMENU.getFormMenu());
-	private ItemHelper perks = new CategoryItem(FormsLang.MURDITEMSPERKS.toString(), GameMenus.MURDPERKSMENU.getFormMenu());
+	private ItemHelper perks = new CategoryItem(FormsLang.ITEMSPERKS.toString(), GameMenus.MURDPERKSMENU.getFormMenu());
 	
 	public MurdererItemsMenu(int id) {
 		super(id);

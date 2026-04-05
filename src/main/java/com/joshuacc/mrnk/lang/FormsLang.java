@@ -103,6 +103,7 @@ public enum FormsLang {
 	//Perks Menu
 	PERKSTITLE("Perks.Title", "Perk Shop"),
 	PERKSDESC("Perks.Desc", "Buy perks to have a passive ability!"),
+	ITEMSPERKS("Killer-Items.Perks", "&6» &bPerks"), 
 	PERKNAME("Perks.Perk Name", "%s1 - %s2"),
 	
 	//Select Item Menu
@@ -113,7 +114,6 @@ public enum FormsLang {
 	MURDITEMSTITLE("Killer-Items.Title", "Murderer Items Category"),
 	MURDITEMSDESC("Killer-Items.Description", "Choose an item category"),
 	MURDITEMSTRAPS("Killer-Items.Traps", "&6» &bTraps"),
-	MURDITEMSPERKS("Killer-Items.Perks", "&6» &bPerks"), 
 	
 	//Sell Items Menu
 	SELLITEMSTITLE("Sell-Items.Title", "Sell Item"),

@@ -28,20 +28,25 @@ import com.joshuacc.mrnk.itemAbility.ItemBuilder;
 import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.listeners.MRGameListener;
 import com.joshuacc.mrnk.main.MRTeam.MapModes;
+import com.joshuacc.mrnk.npc.NPCLobby;
+import com.joshuacc.mrnk.perks.Adrenaline;
+import com.joshuacc.mrnk.perks.Claymore;
 import com.joshuacc.mrnk.perks.DoubleJump;
 import com.joshuacc.mrnk.scoreboards.PlayScoreboard;
+import com.joshuacc.mrnk.traps.BearTrap;
 import com.joshuacc.mrnk.traps.FlyHigh;
 import com.joshuacc.mrnk.traps.FullCounter;
 import com.joshuacc.mrnk.traps.Nacrotics;
 import com.joshuacc.mrnk.traps.Nightmare;
+import com.joshuacc.mrnk.traps.PanicSwap;
 import com.joshuacc.mrnk.traps.Phase;
 import com.joshuacc.mrnk.traps.Pinpoint;
 import com.joshuacc.mrnk.traps.Portal;
+import com.joshuacc.mrnk.traps.Revive;
 import com.joshuacc.mrnk.traps.RollingThunder;
 import com.joshuacc.mrnk.traps.SpyGlasses;
 import com.joshuacc.mrnk.utils.EmptyGenerator;
 import com.joshuacc.mrnk.utils.FormUtils;
-import com.joshuacc.mrnk.utils.NPCHuman;
 import com.joshuacc.mrnk.utils.GameScheduler.Schedulers;
 
 import cn.nukkit.Server;
@@ -89,7 +94,7 @@ public class MRMain extends PluginBase {
 		//Always not to forget about new instances prior or it will mess me up
 		Schedulers.values();
 		Generator.addGenerator(EmptyGenerator.class, "emptyworld", Generator.TYPE_INFINITE);
-		Entity.registerEntity(NPCHuman.class.getSimpleName(), NPCHuman.class);
+		Entity.registerEntity(NPCLobby.class.getSimpleName(), NPCLobby.class);
 
 		MRLanguagesConfig language = new MRLanguagesConfig(this);
 		MRFormsTextsConfig forms = new MRFormsTextsConfig(this);
@@ -127,15 +132,22 @@ public class MRMain extends PluginBase {
 		MRTraps.addMRTrap(new Portal(), true, this);
 		MRTraps.addMRTrap(new Phase(), true, this);
 		MRTraps.addMRTrap(new FlyHigh(), true, this);
+		MRTraps.addMRTrap(new PanicSwap(), true, this);
+		MRTraps.addMRTrap(new Revive(), false, this);
 		
 		//Murderer Traps
 		MRTraps.addMRTrap(new Nightmare(), false, this);
 		MRTraps.addMRTrap(new Pinpoint(), false, this);
 		MRTraps.addMRTrap(new SpyGlasses(), false, this);
 		MRTraps.addMRTrap(new RollingThunder(), false, this);
+		MRTraps.addMRTrap(new BearTrap(), false, this);
 		
+		//Survivor Perks
+		MRPerks.addMRPerk(new Adrenaline(), true, this);
+				
 		//Murderer Perks
 		MRPerks.addMRPerk(new DoubleJump(), false, this);
+		MRPerks.addMRPerk(new Claymore(), false, this);
 		
 		for(MRTraps survTrap : MRTraps.getTraps(true))
 		{

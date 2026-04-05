@@ -36,7 +36,7 @@ public class DoubleJump extends PerkBase
 	@Override
 	public String getPerkDesc() 
 	{
-		return "Press jump twice to &bdouble jump&f to catch your prey from above!";
+		return "Press jump twice to &bdouble jump&f to catch your prey from above!\\n\\n&7Cooldown: &a10 seconds";
 	}
 
 	@Override

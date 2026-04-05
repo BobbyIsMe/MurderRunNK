@@ -33,6 +33,7 @@ import cn.nukkit.event.player.PlayerFormRespondedEvent;
 import cn.nukkit.event.player.PlayerJoinEvent;
 import cn.nukkit.event.player.PlayerLocallyInitializedEvent;
 import cn.nukkit.event.player.PlayerQuitEvent;
+import cn.nukkit.item.Item;
 import cn.nukkit.level.particle.FloatingTextParticle;
 import cn.nukkit.scheduler.TaskHandler;
 
@@ -41,12 +42,14 @@ public class MRPlayer {
 	private static final HashMap<Player,MRPlayer> addPlayer = new HashMap<>();
 
 	private Player player;
+	
 	private MRMain main;
 	private MRTeam mapTeam;
 	private MRLobbyConfig lobby;
 	private ScoreboardAbstract board;
 
 	private ArrayList<EntityItem> itemDrops;
+	private ArrayList<Item> items;
 	private ArrayList<GameTask> tasks;
 	private ArrayList<TaskReference> delayedTasks;
 	private HashMap<ItemMenu, MRItemFilters> itemFilters;
@@ -69,6 +72,7 @@ public class MRPlayer {
 		this.dropDelay = 0;
 
 		this.itemDrops = new ArrayList<>();
+		this.items = new ArrayList<>();
 		this.tasks = new ArrayList<>();
 		this.delayedTasks = new ArrayList<>();
 		this.itemFilters = new HashMap<>();
@@ -155,6 +159,29 @@ public class MRPlayer {
 	{
 		itemDrops.forEach((e) -> e.close());
 		itemDrops.clear();
+	}
+	
+	public void addInventoryItems()
+	{
+		for(Item item : player.getInventory().getContents().values())
+		{
+			items.add(item);
+		}
+	}
+
+	public void removeInventoryItem(Item item)
+	{
+		items.remove(item);
+	}
+
+	public void removeAllItems()
+	{
+		items.clear();
+	}
+	
+	public ArrayList<Item> getInventoryItems()
+	{
+		return items;
 	}
 	
 	public void addDropDelay()

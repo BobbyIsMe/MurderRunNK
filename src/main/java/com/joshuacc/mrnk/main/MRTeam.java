@@ -16,6 +16,7 @@ import com.joshuacc.mrnk.files.MRFormsTextsConfig;
 import com.joshuacc.mrnk.files.MRLanguagesConfig;
 import com.joshuacc.mrnk.files.MRScoreboardConfig;
 import com.joshuacc.mrnk.lang.ConfigLang;
+import com.joshuacc.mrnk.npc.NPCCorpse;
 import com.joshuacc.mrnk.scoreboards.PlayScoreboard;
 import com.joshuacc.mrnk.utils.BackupWorlds;
 import com.joshuacc.mrnk.utils.MapState;
@@ -131,6 +132,7 @@ public class MRTeam {
 	private ArrayList<Player> allSurvivors;
 	private ArrayList<Player> allSpectators;
 	private ArrayList<Player> rankings;
+	private ArrayList<NPCCorpse> corpses;
 
 	private Player killer;
 	private MRArenasConfig mapConfig;
@@ -174,6 +176,7 @@ public class MRTeam {
 		allSurvivors = new ArrayList<>();
 		allSpectators = new ArrayList<>();
 		rankings = new ArrayList<>();
+		corpses = new ArrayList<>();
 	}
 
 	public static void registerMapModes(MRFormsTextsConfig form, MRLanguagesConfig lang)
@@ -192,7 +195,32 @@ public class MRTeam {
 	{
 		mapMode.get(mode).remove(getMapId());
 	}
+	
+	public void addCorpse(Player player)
+	{
+		
+		NPCCorpse corpse = (NPCCorpse) NPCCorpse.createEntity("NPCCorpse", player.getName(), player, "", 1F);
+		corpse.sleep(player);
+		
+		corpses.add(corpse);
+	}
+	
+	public void removeCorpse(NPCCorpse corpse)
+	{
+		corpse.close();
+		corpses.remove(corpse);
+	}
 
+	public void removeAllCorpses()
+	{
+		for(NPCCorpse corpse : corpses)
+		{
+			corpse.close();
+		}
+		
+		corpses.clear();
+	}
+	
 	public void cancelTimer()
 	{
 		if(task != null)
@@ -836,6 +864,11 @@ public class MRTeam {
 		player.setGamemode(3);
 		allSpectators.add(player);
 		player.setNameTag(TextUtils.formatPlayer(ConfigLang.SPECTATORTAG.toString(), player));
+	}
+	
+	public void removeSpectator(Player player)
+	{
+		allSpectators.remove(player);
 	}
 	
 	public void removeSurvivor(Player player)

@@ -12,9 +12,9 @@ import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.main.MRMain;
 import com.joshuacc.mrnk.main.MRPlayer;
 import com.joshuacc.mrnk.main.MRTeam;
+import com.joshuacc.mrnk.npc.NPCHuman;
 import com.joshuacc.mrnk.utils.GlowEffect;
 import com.joshuacc.mrnk.utils.ItemDelay;
-import com.joshuacc.mrnk.utils.NPCHuman;
 import com.joshuacc.mrnk.utils.TextUtils;
 
 import cn.nukkit.Player;
@@ -142,19 +142,10 @@ public class MRGameListener implements Listener {
 	@EventHandler
 	public void onDamageNPC(EntityDamageByEntityEvent event)
 	{
-		if(event.getEntity() instanceof NPCHuman)
+		if(event.getEntity() instanceof NPCHuman && event.getDamager() instanceof Player)
 		{
-			Player player = (Player) event.getDamager();
-			if(player.getInventory().getItemInHand().getId() == Item.GOLD_AXE)
-			{
-				main.getMRLobbyConfig().removePlayer(event.getEntity());
-				return;
-			}
-
-			String name = event.getEntity().namedTag.getString("Command");
-			name = name.replaceAll("%p", player.getName());
-			Server.getInstance().dispatchCommand(Server.getInstance().getConsoleSender(), name);
-
+			NPCHuman npc = (NPCHuman) event.getEntity();
+			npc.onInteract((Player) event.getDamager());
 			event.setCancelled(true);
 		}
 	}
@@ -371,6 +362,8 @@ public class MRGameListener implements Listener {
 		player.getInventory().clearAll();
 		CustomItems.SPECTATORCOMPASS.giveItem(player);
 		
+		MRPlayer.getMRPlayer(player).addInventoryItems();
+		team.addCorpse(player);
 		team.addSpectator(player);
 		team.removeSurvivor(player);
 		team.updateEntry(team.getPlayBoard().getInt("Survivors Left"), TextUtils.formatLine(team.getPlayBoard().getString("Survivors Left-Line"), Integer.toString(team.getSurvivors().size())));
@@ -443,6 +436,7 @@ public class MRGameListener implements Listener {
 			team.addSpectator(players);
 
 		team.removeAllSurvivors();
+		team.removeAllCorpses();
 		
 		if (killer != null)
 		{
