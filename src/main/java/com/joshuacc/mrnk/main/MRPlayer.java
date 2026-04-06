@@ -81,6 +81,7 @@ public class MRPlayer {
 		
 		itemFilters.put((ItemMenu) GameMenus.MURDTRAPSMENU.getFormMenu(), new MRItemFilters("", FormsLang.LOWTOHIGH.toString(), FormsLang.ALLCATEGORY.toString(), 1));
 		itemFilters.put((ItemMenu) GameMenus.SURVTRAPSMENU.getFormMenu(), new MRItemFilters("", FormsLang.LOWTOHIGH.toString(), FormsLang.ALLCATEGORY.toString(), 1));
+		itemFilters.put((ItemMenu) GameMenus.SURVPERKSMENU.getFormMenu(), new MRItemFilters("", FormsLang.LOWTOHIGH.toString(), FormsLang.ALLCATEGORY.toString(), 1));
 		itemFilters.put((ItemMenu) GameMenus.MURDPERKSMENU.getFormMenu(), new MRItemFilters("", FormsLang.LOWTOHIGH.toString(), FormsLang.ALLCATEGORY.toString(), 1));
 		itemFilters.put((ItemMenu) GameMenus.ARMORMENU.getFormMenu(), new MRItemFilters("", FormsLang.LOWTOHIGH.toString(), FormsLang.ALLCATEGORY.toString(), 1));
 		itemFilters.put((ItemMenu) GameMenus.UTILMENU.getFormMenu(), new MRItemFilters("", FormsLang.LOWTOHIGH.toString(), FormsLang.ALLCATEGORY.toString(), 1));
@@ -102,6 +103,8 @@ public class MRPlayer {
 			player.removeAllEffects();
 			player.getInventory().clearAll();
 		}
+		
+		removeAllItems();
 
 		int max = mapTeam.getMapConfig().getPointsLimit();
 		int i = main.getMRPlayerConfig().getPoints(player);

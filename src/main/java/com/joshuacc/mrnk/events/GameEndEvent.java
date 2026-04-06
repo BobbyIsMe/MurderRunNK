@@ -12,8 +12,8 @@ import cn.nukkit.utils.TextFormat;
 public class GameEndEvent extends Event {
 
 	private static final HandlerList list = new HandlerList();
-	private MRTeam team;
-	private WinType type;
+	private final MRTeam team;
+	private final WinType type;
 
 	public enum WinType
 	{

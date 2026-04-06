@@ -2,6 +2,7 @@ package com.joshuacc.mrnk.menus;
 
 import com.joshuacc.mrnk.files.MRPerksConfig;
 import com.joshuacc.mrnk.items.MurdererPerkItem;
+import com.joshuacc.mrnk.items.SurvivorPerkItem;
 import com.joshuacc.mrnk.lang.FormsLang;
 import com.joshuacc.mrnk.main.MRMain;
 import com.joshuacc.mrnk.main.MRPerks;
@@ -24,7 +25,7 @@ public class SurvivorPerksMenu extends ItemMenu {
 			String name = perk.getName();
 			String perkName = config.getString(name, "Name");
 			int price = config.getInt(name, "Price");
-			registerItem(new MurdererPerkItem(i,
+			registerItem(new SurvivorPerkItem(i,
 					TextFormat.colorize(FormsLang.ITEMNAME.toString().replace("%s1", perkName).replace("%s2", TextFormat.colorize(FormsLang.ITEMPRICE.toString().replace("%n", Integer.toString(price))))),
 					new ElementButtonImageData(config.getString(name, "Path"), config.getString(name, "Image")),
 			        perkName,

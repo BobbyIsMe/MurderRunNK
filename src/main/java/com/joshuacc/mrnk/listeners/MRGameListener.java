@@ -19,6 +19,7 @@ import com.joshuacc.mrnk.utils.TextUtils;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
+import cn.nukkit.block.Block;
 import cn.nukkit.entity.item.EntityArmorStand;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
@@ -35,12 +36,14 @@ import cn.nukkit.event.player.PlayerFoodLevelChangeEvent;
 import cn.nukkit.event.player.PlayerInteractEntityEvent;
 import cn.nukkit.event.player.PlayerInteractEvent;
 import cn.nukkit.event.player.PlayerInteractEvent.Action;
+import cn.nukkit.event.player.PlayerMoveEvent;
 import cn.nukkit.inventory.PlayerInventory;
 import cn.nukkit.inventory.transaction.action.InventoryAction;
 import cn.nukkit.inventory.transaction.action.SlotChangeAction;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Location;
 import cn.nukkit.level.Sound;
+import cn.nukkit.network.protocol.UpdateBlockPacket;
 import cn.nukkit.utils.ConfigSection;
 
 public class MRGameListener implements Listener {
@@ -67,6 +70,12 @@ public class MRGameListener implements Listener {
 	    
 	    MRTeam team = mPlayer.getMapTeam();
 	    Player killer = team.getKiller();
+	    
+	    if(team.getSpectators().contains(target))
+	    {
+	    	event.setCancelled(true);
+	    	return;
+	    }
 
 	    if(killer != null && target.getName().equals(mPlayer.getMapTeam().getKiller().getName())) 
 	    {
@@ -82,13 +91,13 @@ public class MRGameListener implements Listener {
 
 	        if(e.getDamager() instanceof Player) 
 	        {
-	        	if(team.getSurvivors().contains(damager) && team.getSurvivors().contains(target))
+	        	damager = (Player) e.getDamager();
+	        	
+	        	if((team.getSurvivors().contains(damager) && team.getSurvivors().contains(target)) || team.getSpectators().contains(damager))
 	        	{
 	        		event.setCancelled(true);
 	        		return;
 	        	}
-	        	
-	            damager = (Player) e.getDamager();
 	        }
 	    }
 
@@ -253,6 +262,13 @@ public class MRGameListener implements Listener {
 		if(section != null && !section.getBoolean("Break Blocks") && player.getGamemode() != 1)
 		{
 			event.setCancelled(true);
+			
+			Block block = event.getBlock();
+			player.getLevel().sendBlocks(
+		            new Player[]{player},
+		            new Block[]{block},
+		            UpdateBlockPacket.FLAG_ALL
+		        );
 		}
 	}
 	
@@ -264,8 +280,23 @@ public class MRGameListener implements Listener {
 		if(section != null && !section.getBoolean("Break Blocks") && player.getGamemode() != 1)
 		{
 			event.setCancelled(true);
+			Block block = event.getBlock();
+			player.getLevel().sendBlocks(
+		            new Player[]{player},
+		            new Block[]{block},
+		            UpdateBlockPacket.FLAG_ALL
+		        );
 		}
 	}
+	
+//	@EventHandler
+//	public void onBreakBlock(PlayerMoveEvent event)
+//	{
+//		if(event.getTo().getLevelBlock().getId() != Block.AIR)
+//		{
+//			event.getPlayer().teleport(event.getFrom());
+//		}
+//	}
 	
 	@EventHandler
 	public void onClickBlocks(PlayerInteractEvent event)
@@ -359,10 +390,11 @@ public class MRGameListener implements Listener {
 		Player killer = event.getKiller();
 		String reason = TextUtils.formatPlayer(killer != null ? TextUtils.format(ConfigLang.SURVIVORKILLED.toString().replace("%k", killer.getName())) : TextUtils.format(ConfigLang.SURVIVORDIE.toString()), player);
 
+		MRPlayer.getMRPlayer(player).addInventoryItems();
+		
 		player.getInventory().clearAll();
 		CustomItems.SPECTATORCOMPASS.giveItem(player);
 		
-		MRPlayer.getMRPlayer(player).addInventoryItems();
 		team.addCorpse(player);
 		team.addSpectator(player);
 		team.removeSurvivor(player);
@@ -376,7 +408,7 @@ public class MRGameListener implements Listener {
 
 		for(Player players : team.getPlayers())
 		{
-			players.getLevel().addSound(players, Sound.MOB_VILLAGER_DEATH, 1F, 2F, players);
+			players.getLevel().addSound(players, Sound.MOB_VILLAGER_DEATH, 1F, 1F, players);
 			players.sendMessage(reason);
 		}
 
@@ -428,8 +460,8 @@ public class MRGameListener implements Listener {
 			
 			ItemDelay.getInstance().removeAllCooldown(player);
 			
-			if(GlowEffect.isGlowing(player))
-				GlowEffect.removeGlowingEffect(player);
+			if(GlowEffect.getInstance().isGlowing(player))
+				GlowEffect.getInstance().removeGlowingEffect(player);
 		}
 
 		for (Player players : team.getSurvivors())

@@ -1,5 +1,7 @@
 package com.joshuacc.mrnk.npc;
 
+import com.joshuacc.mrnk.main.MRPlayer;
+
 import cn.nukkit.Player;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.nbt.tag.CompoundTag;
@@ -14,8 +16,12 @@ public class NPCClone extends NPCHuman {
 	@Override
 	public void onInteract(Player player) 
 	{
-		player.addEffect(Effect.getEffect(Effect.BLINDNESS).setDuration(3 * 20).setAmplifier(10));
-		this.close();
+		MRPlayer mPlayer = MRPlayer.getMRPlayer(player);
+		if(mPlayer != null && mPlayer.getMapTeam().getKiller() == player)
+		{
+			player.addEffect(Effect.getEffect(Effect.BLINDNESS).setDuration(3 * 20).setAmplifier(10));
+			this.close();
+		}
 	}
 
 }

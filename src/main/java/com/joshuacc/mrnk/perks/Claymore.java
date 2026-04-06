@@ -1,8 +1,5 @@
 package com.joshuacc.mrnk.perks;
 
-import java.util.HashMap;
-import java.util.UUID;
-
 import com.joshuacc.mrnk.events.GameEndEvent;
 import com.joshuacc.mrnk.events.GameStartEvent;
 import com.joshuacc.mrnk.events.GameStartEvent.GameAttribute;
@@ -14,16 +11,15 @@ import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.entity.EntityPotionEffectEvent;
-import cn.nukkit.event.player.PlayerInteractEvent;
-import cn.nukkit.event.player.PlayerInteractEvent.Action;
+import cn.nukkit.event.player.PlayerToggleSneakEvent;
+import cn.nukkit.event.server.DataPacketReceiveEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Sound;
 import cn.nukkit.math.Vector3;
+import cn.nukkit.network.protocol.AnimatePacket;
 import cn.nukkit.potion.Effect;
 
 public class Claymore extends PerkBase {
-
-	private HashMap<UUID, Long> hitDelay = new HashMap<>();
 	
 	@Override
 	public String getName() 
@@ -76,7 +72,7 @@ public class Claymore extends PerkBase {
 		if(event.getEntity() instanceof Player)
 		{
 			Player player = (Player) event.getEntity();
-			if(this.containsPlayer(player) && event.getNewEffect().getId() == Effect.WEAKNESS)
+			if(this.containsPlayer(player) && player.hasEffect(Effect.WEAKNESS))
 			{
 				event.setCancelled(true);
 			}
@@ -88,32 +84,56 @@ public class Claymore extends PerkBase {
 	{
 		for(Player player : event.getTeam().getPlayers())
 		{
-			if(hitDelay.containsKey(player.getUniqueId()))
-				hitDelay.remove(player.getUniqueId());
+			if(PerkDelay.getInstance().hasDelay(this, player))
+				PerkDelay.getInstance().removeDelay(this, player);
 		}
 	}
 
 	@EventHandler
-	public void onHit(PlayerInteractEvent event)
+	public void onHit(PlayerToggleSneakEvent event)
 	{
 		Player player = event.getPlayer();
-		if(event.getAction() == Action.LEFT_CLICK_AIR)
+		if (event.isSneaking())
+			simulateAttack(player);
+	}
+	
+	@EventHandler
+	public void onPacketReceive(DataPacketReceiveEvent event) {
+	    if (!(event.getPacket() instanceof AnimatePacket)) return;
+
+	    AnimatePacket packet = (AnimatePacket) event.getPacket();
+
+	    if (packet.action == AnimatePacket.Action.SWING_ARM) {
+	        Player player = event.getPlayer();
+	        
+	        simulateAttack(player);
+	    }
+	}
+	
+	public void simulateAttack(Player player)
+	{
+		if(this.containsPlayer(player) && !PerkDelay.getInstance().hasDelay(this, player))
 		{
-			if(this.containsPlayer(player) && !hasHitDelay(player))
+			player.getLevel().addSound(player, Sound.MOB_GHAST_FIREBALL, 1F, 1F);
+			PerkDelay.getInstance().putDelay(this, player, 1, () -> {
+				player.getLevel().addSound(player, Sound.RANDOM_FIZZ, 1F, 1F);
+			});
+			EntityCreature entity = getEntityInSight(player, 4.2);
+			if(entity != null && entity instanceof Player)
 			{
-				hitDelay.put(player.getUniqueId(), System.currentTimeMillis()+1000);
-				EntityCreature entity = getEntityInSight(player, 5);
-				if(entity instanceof Player)
-				{
-					Player target = (Player) entity;
-					Item item = player.getInventory().getItemInHand();
-					float damage = item.getAttackDamage();
+				player.sendMessage("test"); //TODO: DEBUG
+				Player target = (Player) entity;
+				Item item = player.getInventory().getItemInHand();
+				
+				if(item == null)
+					return;
 					
-					EntityDamageByEntityEvent e =
-						    new EntityDamageByEntityEvent(player, target,
-						        EntityDamageEvent.DamageCause.ENTITY_ATTACK, damage);
-					target.attack(e);
-				}
+				float damage = item.getAttackDamage();
+				
+				EntityDamageByEntityEvent e =
+					    new EntityDamageByEntityEvent(player, target,
+					        EntityDamageEvent.DamageCause.ENTITY_ATTACK, damage);
+				target.attack(e);
 			}
 		}
 	}
@@ -126,11 +146,13 @@ public class Claymore extends PerkBase {
 			Player killer = (Player) event.getDamager();
 			if(this.containsPlayer(killer))
 			{
-				if(!hasHitDelay(killer))
+				if(!PerkDelay.getInstance().hasDelay(this, killer))
 				{
 					Player target = (Player) event.getEntity();
-					hitDelay.put(killer.getUniqueId(), System.currentTimeMillis()+1000);
-					target.getLevel().addSound(killer, Sound.RANDOM_ANVIL_LAND, 1F, 2F, target);
+					PerkDelay.getInstance().putDelay(this, killer, 1, () -> {
+						killer.getLevel().addSound(killer, Sound.RANDOM_FIZZ, 1F, 1F);
+					});
+					target.getLevel().addSound(target, Sound.RANDOM_ANVIL_LAND, 1F, 1F);
 				} else {
 					event.setCancelled(true);
 				}
@@ -138,13 +160,7 @@ public class Claymore extends PerkBase {
 		}
 	}
 	
-	public boolean hasHitDelay(Player player)
-	{
-		long delay = hitDelay.get(player.getUniqueId());
-		return hitDelay.containsKey(player.getUniqueId()) && System.currentTimeMillis() < delay;
-	}
-	
-	private EntityCreature getEntityInSight(Player player, int distance)
+	private EntityCreature getEntityInSight(Player player, double distance)
 	{
 		EntityCreature inSight = null;
 		for(Entity nearbyEntity : player.getLevel().getNearbyEntities(player.getBoundingBox().grow(distance, distance, distance), player))

@@ -38,6 +38,12 @@ public class Revive extends TrapDrop {
 	{
 		
 	}
+	
+	@Override
+	public boolean isStackable()
+	{
+		return false;
+	}
 
 	@Override
 	protected boolean survivorItem() 
@@ -93,10 +99,10 @@ public class Revive extends TrapDrop {
 		EntityItem item = event.getEntity();
 		if(item.getItem().getName().equals(getTrapItemName()))
 		{
-			Player owner = Server.getInstance().getPlayer(item.getItem().getNamedTag().getString("Owner"));
-			MRPlayer mPlayer = MRPlayer.getMRPlayer(owner);
+			Player player = Server.getInstance().getPlayer(item.getItem().getNamedTag().getString("Owner"));
+			MRPlayer mPlayer = MRPlayer.getMRPlayer(player);
 			MRTeam team = mPlayer.getMapTeam();
-			if(owner != null && mPlayer != null) {
+			if(player != null && mPlayer != null) {
 				GameTask task = new GameTask(-1);
 				task.addLoopTask(new TaskAct() 
 				{
@@ -111,13 +117,12 @@ public class Revive extends TrapDrop {
 								NPCCorpse corpse = (NPCCorpse) ent;
 								Player owner = corpse.getOwner();
 
-								if(owner.isOnline())
+								if(owner.isOnline() && team.timerGoing())
 								{
 									MRPlayer mOwner = MRPlayer.getMRPlayer(owner);
 									owner.teleport(corpse.getLocation());
 									owner.addEffect(Effect.getEffect(Effect.BLINDNESS).setDuration(2 * 10).setAmplifier(10));
 									owner.addEffect(Effect.getEffect(Effect.SLOWNESS).setDuration(2 * 10).setAmplifier(10));
-									owner.setGamemode(0);
 									owner.getInventory().clearAll();
 									
 									for(Item item : mOwner.getInventoryItems())
@@ -137,7 +142,7 @@ public class Revive extends TrapDrop {
 									
 									for(Player players : team.getPlayers())
 									{
-										String reviveMessage = message.replace("%s1", owner.getName()).replace("%s2", owner.getName());
+										String reviveMessage = message.replace("%s1", player.getName()).replace("%s2", owner.getName());
 										players.sendMessage(reviveMessage);
 										players.getLevel().addSound(players, Sound.MOB_ZOMBIE_UNFECT, 1F, 1F, players);
 									}
@@ -145,8 +150,8 @@ public class Revive extends TrapDrop {
 									item.close();
 									task.cancel();
 									mPlayer.removeGameTask(task);
-									break;
 								}
+								break;
 							}
 						}
 					}

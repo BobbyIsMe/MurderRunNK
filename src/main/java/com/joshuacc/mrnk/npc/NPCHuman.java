@@ -68,6 +68,7 @@ public abstract class NPCHuman extends EntityHuman {
 		Entity ent = Entity.createEntity(type, player.chunk, nbt);
 		ent.setNameTag(name);
 		ent.setNameTagAlwaysVisible(true);
+		ent.setSneaking(player.isSneaking());
 		ent.spawnToAll();
 		return ent;
 	}

@@ -122,9 +122,19 @@ public abstract class TrapDrop extends MRTraps {
 	{
 		Player player = (Player) event.getInventory().getHolder();
 		EntityItem item = event.getItem();
-		if(item.getItem().getName().equals(getTrapItemName()) && player.getGamemode() != 3)
+		if(item.getItem().getName().equals(getTrapItemName()))
 		{
 			doAbility(player, item);
+			event.setCancelled(true);
+		}
+	}
+	
+	@EventHandler
+	public void onTrapTriggerSpectators(TrapTriggeredEvent event)
+	{
+		MRPlayer mPlayer = MRPlayer.getMRPlayer(event.getOwner());
+		if(mPlayer != null && mPlayer.getMapTeam().getSpectators().contains(event.getOwner()))
+		{
 			event.setCancelled(true);
 		}
 	}

@@ -52,6 +52,7 @@ public class PlayerCommand extends Command {
 			case "normal":
 				lobby.addJoinNPCDetails(MapModes.NORMAL, createEntityMode(player, "openlist %p normal"));
 				break;
+				
 			case "escape":
 				lobby.addJoinNPCDetails(MapModes.ESCAPE, createEntityMode(player, "openlist %p escape"));
 				break;

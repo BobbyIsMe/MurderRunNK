@@ -10,6 +10,7 @@ import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.player.PlayerInteractEvent;
 import cn.nukkit.item.Item;
+import cn.nukkit.utils.TextFormat;
 
 public class ItemBuilder implements Listener {
 
@@ -43,7 +44,7 @@ public class ItemBuilder implements Listener {
 		
 		public void registerItem(MRLobbyConfig config)
 		{
-			item.setCustomName(config.getConfig().getString(itemName));
+			item.setCustomName(TextFormat.colorize(config.getConfig().getString(itemName)));
 			item.getNamedTag().putString("CustomItem", tag);
 			item.getNamedTag().putBoolean("Droppable", false);
 			item.setNamedTag(item.getNamedTag());
@@ -69,7 +70,14 @@ public class ItemBuilder implements Listener {
 	public void onInteract(PlayerInteractEvent event)
 	{
 		Player player = event.getPlayer();
+
+		if(event.getItem() == null || event.getItem().getNamedTag() == null)
+			return;
+		
 		String tag = event.getItem().getNamedTag().getString("CustomItem");
+		if(tag != null)
+			player.sendMessage(tag);
+		
 		if(customItems.containsKey(tag))
 		{
 			customItems.get(tag).itemAbility(player);

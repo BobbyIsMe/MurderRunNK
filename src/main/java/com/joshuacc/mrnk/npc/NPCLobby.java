@@ -11,10 +11,10 @@ import cn.nukkit.nbt.tag.CompoundTag;
 public class NPCLobby extends NPCHuman {
 
 	private final MRMain main;
-	public NPCLobby(MRMain main, FullChunk chunk, CompoundTag nbt) 
+	public NPCLobby(FullChunk chunk, CompoundTag nbt) 
 	{
 		super(chunk, nbt);
-		this.main = main;
+		this.main = MRMain.getInstance();
 	}
 
 	@Override

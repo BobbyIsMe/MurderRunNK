@@ -50,8 +50,8 @@ public class PanicSwap extends TrapClick
 		target.teleport(loc);
 		killer.sendMessage(message.replace("%s", target.getName()));
 		target.sendMessage(message.replace("%s", killer.getName()));
-		killer.getLevel().addSound(killer, Sound.MOB_ENDERMEN_PORTAL, 1F, 1F, killer);
-		target.getLevel().addSound(target, Sound.MOB_ENDERMEN_PORTAL, 1F, 1F, target);
+		killer.getLevel().addSound(killer, Sound.MOB_ENDERMEN_PORTAL, 1F, 1F);
+		target.getLevel().addSound(target, Sound.MOB_ENDERMEN_PORTAL, 1F, 1F);
 		
 		return true;
 	}

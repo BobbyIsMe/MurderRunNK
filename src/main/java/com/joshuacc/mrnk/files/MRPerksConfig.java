@@ -3,6 +3,7 @@ package com.joshuacc.mrnk.files;
 import com.joshuacc.mrnk.main.MRMain;
 
 import cn.nukkit.item.Item;
+import cn.nukkit.utils.TextFormat;
 
 public class MRPerksConfig extends AbstractFiles {
 
@@ -16,6 +17,8 @@ public class MRPerksConfig extends AbstractFiles {
 	{
 		addDefault("Item", Item.WHITE_WOOL);
 		addDefault("Meta", 0);
+		addDefault("Cooldown Message", "%s &cis on cooldown for &4%n&c seconds!");
+		addDefault("Delay Indicator Message", "%s &ais ready!");
 	}
 	
 	public void addPerk(String perk, String path, String image, String name, String description, int price)
@@ -40,6 +43,16 @@ public class MRPerksConfig extends AbstractFiles {
 	public int getMeta()
 	{
 		return config.getInt("Meta");
+	}
+	
+	public String getCooldownMessage(String perkName, long seconds)
+	{
+		return TextFormat.colorize(config.getString("Delay Message").replace("%s", perkName).replace("%n", Long.toString(seconds)));
+	}
+	
+	public String getDelayIndicatorMessage(String perkName)
+	{
+		return TextFormat.colorize(config.getString("Delay Indicator Message").replace("%s", perkName));
 	}
 	
 	public String getString(String perk, String key)

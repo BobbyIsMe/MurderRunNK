@@ -58,7 +58,7 @@ public class SpyGlasses extends TrapClick {
 		
 		GameTask task = new GameTask(20);
 		task.addLoopTask(() -> {
-			if(target.isOnline() || target.getGamemode() == 3)
+			if(target.isOnline() && !team.getSurvivors().contains(target))
 				player.teleport(target);
 			else
 			{

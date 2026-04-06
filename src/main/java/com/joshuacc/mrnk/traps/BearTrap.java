@@ -15,7 +15,7 @@ public class BearTrap extends TrapDrop
 	{
 		player.addEffect(Effect.getEffect(Effect.SLOWNESS).setDuration(20 * 5).setAmplifier(10).setVisible(false));
 		player.addEffect(Effect.getEffect(Effect.JUMP_BOOST).setDuration(20 * 5).setAmplifier(150).setVisible(false));
-		GlowEffect.addGlowingEffect(player, 5, 2);
+		GlowEffect.getInstance().addGlowingEffect(player, 5, 2);
 	}
 
 	@Override

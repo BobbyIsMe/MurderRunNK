@@ -26,6 +26,8 @@ import com.joshuacc.mrnk.utils.TextUtils;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
+import cn.nukkit.AdventureSettings.Type;
+import cn.nukkit.block.Block;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Location;
 import cn.nukkit.level.Sound;
@@ -200,6 +202,22 @@ public class MRTeam {
 	{
 		
 		NPCCorpse corpse = (NPCCorpse) NPCCorpse.createEntity("NPCCorpse", player.getName(), player, "", 1F);
+		double y = Math.floor(corpse.getY());
+		if(!corpse.isOnGround())
+		{
+			for(double i = y; i > -320; i--)
+			{
+				Location loc = player.clone();
+				loc.setY(i);
+				loc.setPitch(0);
+				Location below = loc.clone().add(0, -1, 0);
+				if(below.getLevelBlock().getId() != Block.AIR && below.getLevelBlock().isSolid())
+				{
+					corpse.teleport(loc);
+					break;
+				}
+			}
+		}
 		corpse.sleep(player);
 		
 		corpses.add(corpse);
@@ -207,8 +225,8 @@ public class MRTeam {
 	
 	public void removeCorpse(NPCCorpse corpse)
 	{
-		corpse.close();
 		corpses.remove(corpse);
+		corpse.close();
 	}
 
 	public void removeAllCorpses()
@@ -846,6 +864,18 @@ public class MRTeam {
 
 	public void addSurvivor(Player player)
 	{
+		if(allSpectators.contains(player))
+		{
+			for(Player all : allPlayers)
+			{
+				all.showPlayer(player);
+			}
+		}
+		
+		player.getAdventureSettings().set(Type.ALLOW_FLIGHT, false);
+		player.getAdventureSettings().set(Type.FLYING, false);
+		player.getAdventureSettings().update();
+		
 		allSurvivors.add(player);
 		player.setNameTag(TextUtils.formatPlayer(ConfigLang.SURVIVORTAG.toString(), player));
 	}
@@ -861,7 +891,16 @@ public class MRTeam {
 
 	public void addSpectator(Player player)
 	{
-		player.setGamemode(3);
+		player.getAdventureSettings().set(Type.ALLOW_FLIGHT, true);
+		player.getAdventureSettings().set(Type.FLYING, true);
+		player.getAdventureSettings().update();
+		
+		for(Player survivor : allSurvivors)
+		{
+			survivor.hidePlayer(player);
+		}
+		
+		killer.hidePlayer(player);
 		allSpectators.add(player);
 		player.setNameTag(TextUtils.formatPlayer(ConfigLang.SPECTATORTAG.toString(), player));
 	}

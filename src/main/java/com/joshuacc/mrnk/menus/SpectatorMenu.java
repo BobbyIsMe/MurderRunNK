@@ -25,9 +25,9 @@ public class SpectatorMenu extends FormMenu {
 		FormWindowSimple menu = new FormWindowSimple(FormsLang.SPECTATORTITLE.toString(), FormsLang.SPECTATORDESC.toString());
 		if(mPlayer != null)
 		{
-			for(Player players : mPlayer.getMapTeam().getPlayers())
+			for(Player survivor : mPlayer.getMapTeam().getSurvivors())
 			{
-				menu.addButton(new SpectatorItem(players.getName()));
+				menu.addButton(new SpectatorItem(survivor.getName()));
 			}
 		}
 		return menu;

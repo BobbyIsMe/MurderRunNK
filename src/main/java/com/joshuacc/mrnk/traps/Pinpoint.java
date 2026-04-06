@@ -47,7 +47,7 @@ public class Pinpoint extends TrapClick {
 		mPlayer.addGameTask(task);
 		for(Player survivor : team.getSurvivors())
 		{
-			GlowEffect.addGlowingEffect(survivor, 15, 2);
+			GlowEffect.getInstance().addGlowingEffect(survivor, 15, 2);
 		}
 		return true;
 	}
