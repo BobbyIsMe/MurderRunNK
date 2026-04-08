@@ -10,7 +10,7 @@ import cn.nukkit.level.Sound;
 import cn.nukkit.potion.Effect;
 import cn.nukkit.utils.TextFormat;
 
-public class Nightmare extends TrapClick {
+public class Nightmare extends TrapClick implements Debuff {
 
 	private String message;
 	
@@ -30,21 +30,7 @@ public class Nightmare extends TrapClick {
 	@Override
 	protected boolean performClickAbility(Player player) 
 	{
-		player.setMovementSpeed(0.2F);
-		for(Player survivor : MRPlayer.getMRPlayer(player).getMapTeam().getSurvivors())
-		{
-			survivor.addEffect(Effect.getEffect(Effect.BLINDNESS).setDuration(20 * 10).setAmplifier(10));
-			survivor.setMovementSpeed(0.05F);
-			survivor.getLevel().addSound(survivor, Sound.AMBIENT_CAVE);
-			survivor.sendTitle(message);
-		}
-		
-		MRPlayer.getMRPlayer(player).addDelayedTask(() -> {
-			for(Player all : MRPlayer.getMRPlayer(player).getMapTeam().getPlayers())
-			{
-				all.setMovementSpeed(0.1F);
-			}
-		}, 10);
+		getTrapDebuff().applyDebuff(player);
 		return true;
 	}
 
@@ -88,5 +74,33 @@ public class Nightmare extends TrapClick {
 	public String getTrapName() 
 	{
 		return "&0&lNightmare";
+	}
+
+	@Override
+	public TrapDebuff getTrapDebuff() 
+	{
+		return new TrapDebuff(new int[] {10}) {
+
+			@Override
+			public void applyDebuff(Player player) 
+			{
+				player.setMovementSpeed(0.2F);
+				for(Player survivor : MRPlayer.getMRPlayer(player).getMapTeam().getSurvivors())
+				{
+					survivor.addEffect(Effect.getEffect(Effect.BLINDNESS).setDuration(20 * amplifiers[0]).setAmplifier(10));
+					survivor.setMovementSpeed(0.05F);
+					survivor.getLevel().addSound(survivor, Sound.AMBIENT_CAVE);
+					survivor.sendTitle(message);
+				}
+				
+				MRPlayer.getMRPlayer(player).addDelayedTask(() -> {
+					for(Player all : MRPlayer.getMRPlayer(player).getMapTeam().getPlayers())
+					{
+						all.setMovementSpeed(0.1F);
+					}
+				}, amplifiers[0]);
+			}
+			
+		};
 	}
 }

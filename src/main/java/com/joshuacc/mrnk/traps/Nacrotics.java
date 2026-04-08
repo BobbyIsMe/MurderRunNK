@@ -5,13 +5,12 @@ import cn.nukkit.item.Item;
 import cn.nukkit.level.particle.Particle;
 import cn.nukkit.potion.Effect;
 
-public class Nacrotics extends TrapDrop {
+public class Nacrotics extends TrapDrop implements Debuff {
 
 	@Override
 	public void performDropAbility(Player player) 
 	{
-		player.addEffect(Effect.getEffect(Effect.BLINDNESS).setDuration(20 * 10).setAmplifier(10).setVisible(false));
-		player.addEffect(Effect.getEffect(Effect.WEAKNESS).setDuration(20 * 10).setAmplifier(2).setVisible(false));
+		getTrapDebuff().applyDebuff(player);
 	}
 
 	@Override
@@ -60,6 +59,21 @@ public class Nacrotics extends TrapDrop {
 	public String getTrapDesc() 
 	{
 		return "Give the murderer &bblindness and weakness&f for &e10 seconds";
+	}
+
+	@Override
+	public TrapDebuff getTrapDebuff() 
+	{
+		return new TrapDebuff(new int[] {10, 2}) {
+
+			@Override
+			public void applyDebuff(Player player) 
+			{
+				player.addEffect(Effect.getEffect(Effect.BLINDNESS).setDuration(20 * amplifiers[0]).setAmplifier(10).setVisible(false));
+				player.addEffect(Effect.getEffect(Effect.WEAKNESS).setDuration(20 * amplifiers[0]).setAmplifier(amplifiers[1]).setVisible(false));
+			}
+			
+		};
 	}
 
 }

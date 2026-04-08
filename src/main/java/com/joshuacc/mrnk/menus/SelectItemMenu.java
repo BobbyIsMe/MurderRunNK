@@ -76,47 +76,63 @@ public class SelectItemMenu extends FormMenu {
 			item.getCategory().open(player);
 			playerItem.remove(player);
 		} else {
-			if(!player.getInventory().isFull())
-				if(!item.isStackable() && player.getInventory().contains(item.getItem()))
-				{
-					player.getLevel().addSound(player, Sound.MOB_VILLAGER_NO);
-					player.sendMessage((TextUtils.format(TextFormat.colorize(ConfigLang.BUYITEMSTACK.toString().replace("%s", item.getName())))));
-				}
-				else if(mPlayer.getPlayerQueuedPoints() >= item.getPrice())
-				{
-					Item it = item.getItem();
-					if(item.getType().equals(FormsLang.TRAPDROP.toString()))
-					{
-						it.getNamedTag().putBoolean("Droppable", true);
-						it.setNamedTag(it.getNamedTag());
-					}
-					
-					mPlayer.addShopItem(item);
-					
-					if(item instanceof PerkItem)
-					{
-						((PerkItem) item).addPlayer(player);
-						for (int slot = 9; slot < player.getInventory().getSize(); slot++) {
-					        Item current = player.getInventory().getItem(slot);
-
-					        if (current == null || current.getId() == 0) {
-					            player.getInventory().setItem(slot, item.getItem());
-					            break;
-					        }
-						}
-					} else {
-						player.getInventory().addItem(it);
-					}
-					
-					player.getLevel().addSound(player, Sound.RANDOM_ORB);
-					mPlayer.addPoints(-item.getPrice());
-					player.sendMessage(TextUtils.format(ConfigLang.BUYITEMSUCCESS.toString().replace("%s", item.getName()).replace("%n", Integer.toString(item.getPrice()))));
-				} else
-				{
-					player.getLevel().addSound(player, Sound.RANDOM_ANVIL_LAND);
-					player.sendMessage(TextUtils.format(ConfigLang.BUYITEMFAIL.toString().replace("%s", item.getName()).replace("%n", Integer.toString(item.getPrice() - mPlayer.getPlayerQueuedPoints()))));
-				}
+			buyItem(player, item);
 			this.open(player);
 		}
+	}
+	
+	public void buyItem(Player player, ShopItem item)
+	{
+		MRPlayer mPlayer = MRPlayer.getMRPlayer(player);
+
+		if(mPlayer == null) 
+		{
+			return;
+		}
+
+		if(!player.getInventory().isFull())
+			if(!item.isStackable() && player.getInventory().contains(item.getItem())) 
+			{
+				player.getLevel().addSound(player, Sound.MOB_VILLAGER_NO);
+				player.sendMessage((TextUtils.format(
+						TextFormat.colorize(ConfigLang.BUYITEMSTACK.toString().replace("%s", item.getName())))));
+			} else if(mPlayer.getPlayerQueuedPoints() >= item.getPrice()) 
+			{
+				Item it = item.getItem();
+				if (item.getType().equals(FormsLang.TRAPDROP.toString())) 
+				{
+					it.getNamedTag().putBoolean("Droppable", true);
+					it.setNamedTag(it.getNamedTag());
+				}
+
+				mPlayer.addShopItem(item);
+
+				if(item instanceof PerkItem) 
+				{
+					((PerkItem) item).addPlayer(player);
+					for(int slot = 9; slot < player.getInventory().getSize(); slot++) 
+					{
+						Item current = player.getInventory().getItem(slot);
+
+						if (current == null || current.getId() == 0) {
+							player.getInventory().setItem(slot, item.getItem());
+							break;
+						}
+					}
+				} else 
+				{
+					player.getInventory().addItem(it);
+				}
+
+				player.getLevel().addSound(player, Sound.RANDOM_ORB);
+				mPlayer.addPoints(-item.getPrice());
+				player.sendMessage(TextUtils.format(ConfigLang.BUYITEMSUCCESS.toString().replace("%s", item.getName())
+						.replace("%n", Integer.toString(item.getPrice()))));
+			} else 
+			{
+				player.getLevel().addSound(player, Sound.RANDOM_ANVIL_LAND);
+				player.sendMessage(TextUtils.format(ConfigLang.BUYITEMFAIL.toString().replace("%s", item.getName())
+						.replace("%n", Integer.toString(item.getPrice() - mPlayer.getPlayerQueuedPoints()))));
+			}
 	}
 }

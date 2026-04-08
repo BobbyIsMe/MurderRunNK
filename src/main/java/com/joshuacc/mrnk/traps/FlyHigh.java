@@ -11,7 +11,7 @@ import cn.nukkit.level.particle.Particle;
 import cn.nukkit.potion.Effect;
 import cn.nukkit.utils.TextFormat;
 
-public class FlyHigh extends TrapDrop {
+public class FlyHigh extends TrapDrop implements Debuff {
 
 	private String message;
 	
@@ -25,15 +25,7 @@ public class FlyHigh extends TrapDrop {
 	@Override
 	public void performDropAbility(Player player) 
 	{
-		player.addEffect(Effect.getEffect(Effect.LEVITATION).setDuration(20 * 3).setAmplifier(20).setVisible(false));
-		player.sendTitle(message);
-		player.getLevel().addSound(player, Sound.MOB_BAT_TAKEOFF);
-		
-		MRPlayer.getMRPlayer(player).addDelayedTask(() -> 
-		{
-			player.setMotion(player.getDirectionVector().multiply(-2));
-			player.addEffect(Effect.getEffect(Effect.BLINDNESS).setDuration(20 * 3).setAmplifier(10).setVisible(false));
-		}, 3);
+		getTrapDebuff().applyDebuff(player);
 	}
 
 	@Override
@@ -82,6 +74,28 @@ public class FlyHigh extends TrapDrop {
 	public String getTrapName() 
 	{
 		return "&lFly High";
+	}
+
+	@Override
+	public TrapDebuff getTrapDebuff() 
+	{
+		return new TrapDebuff(new int[] {20}) {
+			
+			@Override
+			public void applyDebuff(Player player) 
+			{
+				player.addEffect(Effect.getEffect(Effect.LEVITATION).setDuration(20 * amplifiers[0]).setAmplifier(20).setVisible(false));
+				player.sendTitle(message);
+				player.getLevel().addSound(player, Sound.MOB_BAT_TAKEOFF);
+				
+				MRPlayer.getMRPlayer(player).addDelayedTask(() -> 
+				{
+					player.setMotion(player.getDirectionVector().multiply(-2));
+					player.addEffect(Effect.getEffect(Effect.BLINDNESS).setDuration(20 * amplifiers[0]).setAmplifier(10).setVisible(false));
+				}, 3);
+			}
+			
+		};
 	}
 
 }

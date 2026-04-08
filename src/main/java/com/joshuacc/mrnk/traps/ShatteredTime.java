@@ -4,7 +4,9 @@ import java.util.HashMap;
 
 import com.joshuacc.mrnk.events.GameStartEvent;
 import com.joshuacc.mrnk.events.GameStartEvent.GameAttribute;
+import com.joshuacc.mrnk.files.MRTrapsConfig;
 import com.joshuacc.mrnk.items.ShopItem;
+import com.joshuacc.mrnk.main.MRMain;
 import com.joshuacc.mrnk.main.MRPlayer;
 import com.joshuacc.mrnk.main.MRTeam;
 import com.joshuacc.mrnk.utils.GameTask;
@@ -15,14 +17,24 @@ import cn.nukkit.event.EventHandler;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Location;
 import cn.nukkit.level.particle.Particle;
+import cn.nukkit.utils.TextFormat;
 
 public class ShatteredTime extends TrapDrop {
 	
 	private final HashMap<Player, Location> positions = new HashMap<>();
+	private String message;
+	
+	public ShatteredTime()
+	{
+		MRTrapsConfig traps = MRMain.getInstance().getMRTrapsConfig();
+		traps.putDefault(getName(), "Message", "&bYou were sent back in time!");
+		message = TextFormat.colorize(traps.getString(getName(), "Message"));
+	}
 	
 	@Override
 	public void performDropAbility(Player player) 
 	{
+		player.sendMessage(message);
 		player.teleport(positions.get(player));
 	}
 
@@ -88,13 +100,19 @@ public class ShatteredTime extends TrapDrop {
 						MRTeam team = event.getTeam();
 						Player killer = team.getKiller();
 						positions.put(killer, team.getMurdererLocation());
-						GameTask task = new GameTask(2);
+						GameTask task = new GameTask(0);
 						task.addLoopTask(new TaskAct() {
 
+							int i = 2;
 							@Override
 							public void doTask() 
 							{
-								positions.put(killer, killer.getLocation());
+								if(i == 0)
+								{
+									positions.put(killer, killer.getLocation());
+									i = 2;
+								}
+								i--;
 							}
 						});
 						task.addEndTask(new TaskAct() {

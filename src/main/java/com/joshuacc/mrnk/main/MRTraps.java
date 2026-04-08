@@ -54,6 +54,11 @@ public abstract class MRTraps implements Comparable<MRTraps>, Listener {
 			return killerTrap.get(name);
 	}
 	
+	public static boolean isSurvivorTrap(String name)
+	{
+		return survTrap.containsKey(name);
+	}
+	
 	public int getMeta()
 	{
 		return 0;

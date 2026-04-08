@@ -12,11 +12,13 @@ public class TrapTriggeredEvent extends Event implements Cancellable {
 	private static final HandlerList list = new HandlerList();
 	private final Player owner;
 	private final MRTraps trap;
+	private int delay;
 	
-	public TrapTriggeredEvent(Player owner, MRTraps trap)
+	public TrapTriggeredEvent(Player owner, MRTraps trap, int delay)
 	{
 		this.owner = owner;
 		this.trap = trap;
+		this.delay = delay;
 	}
 	
 	public Player getOwner()
@@ -27,6 +29,16 @@ public class TrapTriggeredEvent extends Event implements Cancellable {
 	public MRTraps getTrap()
 	{
 		return trap;
+	}
+	
+	public int getDelay()
+	{
+		return delay;
+	}
+	
+	public void setDelay(int delay)
+	{
+		this.delay = delay;
 	}
 	
 	public static HandlerList getHandlers()

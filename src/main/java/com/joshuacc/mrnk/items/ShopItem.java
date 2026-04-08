@@ -12,12 +12,12 @@ import cn.nukkit.utils.TextFormat;
 public abstract class ShopItem extends ItemHelper {
 
 	private final int index;
-	private final String name;
-	private final String description;
+	protected final String name;
+	protected final String description;
 	private final String category;
 	private final int price;
-	private final int item;
-	private final int meta;
+	protected final int item;
+	protected final int meta;
 	private final boolean stackable;
 	
 	public ShopItem(int index, String text, String name, String description, int price, int item, int meta, String category, boolean stackable) 

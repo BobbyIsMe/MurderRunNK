@@ -55,7 +55,7 @@ public abstract class TrapClick extends MRTraps {
 			Player killer = team.getKiller();
 			if(killer != null && killer.getLevel().equals(team.getMapLevel())) 
 			{
-				TrapTriggeredEvent trapEvent = new TrapTriggeredEvent(player, this);
+				TrapTriggeredEvent trapEvent = new TrapTriggeredEvent(player, this, getDelay());
 				Server.getInstance().getPluginManager().callEvent(trapEvent);
 				if(!trapEvent.isCancelled())
 				{
@@ -67,7 +67,7 @@ public abstract class TrapClick extends MRTraps {
 					if (!ItemDelay.getInstance().onCooldown(player, this)) 
 					{
 						if(performClickAbility(player))
-							ItemDelay.getInstance().addCooldown(player, this);
+							ItemDelay.getInstance().addCooldown(player, this, trapEvent.getDelay());
 					}
 				}
 			} else

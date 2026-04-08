@@ -11,7 +11,7 @@ import cn.nukkit.level.particle.GenericParticle;
 import cn.nukkit.level.particle.Particle;
 import cn.nukkit.math.Vector3;
 
-public class Pinpoint extends TrapClick {
+public class Pinpoint extends TrapClick implements Debuff {
 
 	@Override
 	public int getDelay() 
@@ -27,28 +27,7 @@ public class Pinpoint extends TrapClick {
 		if(team.getSurvivors().isEmpty())
 			return false;
 		
-		GameTask task = new GameTask(15);
-		task.addLoopTask(() -> {
-			if(team.getSurvivors().isEmpty())
-			{
-				task.cancel();
-				mPlayer.removeGameTask(task);
-				return;
-			}
-			for(Player survivor : team.getSurvivors())
-			{
-				createBeam(player, survivor);
-			}
-		});
-		task.addEndTask(() -> {
-			if(!task.isCancelled())
-				mPlayer.removeGameTask(task);
-		});
-		mPlayer.addGameTask(task);
-		for(Player survivor : team.getSurvivors())
-		{
-			GlowEffect.getInstance().addGlowingEffect(survivor, 15, 2);
-		}
+		getTrapDebuff().applyDebuff(player);
 		return true;
 	}
 
@@ -104,6 +83,43 @@ public class Pinpoint extends TrapClick {
 			particle.setComponents(point.x, point.y, point.z);
 			loc.getLevel().addParticle(particle);
 	    }
+	}
+
+	@Override
+	public TrapDebuff getTrapDebuff() 
+	{
+		return new TrapDebuff(new int[] {15}) {
+
+			@Override
+			public void applyDebuff(Player player) 
+			{
+				MRPlayer mPlayer = MRPlayer.getMRPlayer(player);
+				MRTeam team = mPlayer.getMapTeam();
+				GameTask task = new GameTask(amplifiers[0]);
+				task.addLoopTask(() -> {
+					if(team.getSurvivors().isEmpty())
+					{
+						task.cancel();
+						mPlayer.removeGameTask(task);
+						return;
+					}
+					for(Player survivor : team.getSurvivors())
+					{
+						createBeam(player, survivor);
+					}
+				});
+				task.addEndTask(() -> {
+					if(!task.isCancelled())
+						mPlayer.removeGameTask(task);
+				});
+				mPlayer.addGameTask(task);
+				for(Player survivor : team.getSurvivors())
+				{
+					GlowEffect.getInstance().addGlowingEffect(survivor, amplifiers[0], 2);
+				}
+			}
+			
+		};
 	}
 
 }

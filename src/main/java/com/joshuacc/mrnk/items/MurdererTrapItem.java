@@ -5,11 +5,12 @@ import com.joshuacc.mrnk.menus.FormMenu.GameMenus;
 
 import cn.nukkit.form.element.ElementButtonImageData;
 
-public class MurdererTrapItem extends ShopItem {
+public class MurdererTrapItem extends TrapItem {
 
+	
 	public MurdererTrapItem(int index, String text, ElementButtonImageData image, String name, String description, int price,
-			int item, int meta, String category, boolean stackable) {
-		super(index, text, image, name, description, price, item, meta, category, stackable);
+			int item, int meta, String category, boolean stackable, String trapName) {
+		super(index, text, image, name, description, price, item, meta, category, stackable, trapName);
 	}
 
 	@Override

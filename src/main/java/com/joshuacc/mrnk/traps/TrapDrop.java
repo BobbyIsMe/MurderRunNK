@@ -145,7 +145,7 @@ public abstract class TrapDrop extends MRTraps {
 		Player killer = team.getKiller();
 		if((survivorItem() && killer != null && killer.getLevel().equals(team.getMapLevel()) && player.getName().equals(killer.getName())) || (!survivorItem() && !player.getName().equals(killer.getName())))
 		{
-		TrapTriggeredEvent trapEvent = new TrapTriggeredEvent(player, this);
+		TrapTriggeredEvent trapEvent = new TrapTriggeredEvent(player, this, 0);
 		Server.getInstance().getPluginManager().callEvent(trapEvent);
 		if(!trapEvent.isCancelled())
 		{

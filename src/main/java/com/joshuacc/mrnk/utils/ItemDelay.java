@@ -67,13 +67,13 @@ public class ItemDelay {
         return instance;
     }
 	
-	public void addCooldown(Player player, TrapClick trap)
+	public void addCooldown(Player player, TrapClick trap, int seconds)
 	{
-		if(trap.oneTimeUse())
+		if(trap.oneTimeUse() || seconds < 0)
 			return;
 		
 		delay.putIfAbsent(player, new HashMap<>());
-		delay.get(player).put(trap, new Delay(trap.getDelay()));
+		delay.get(player).put(trap, new Delay(seconds));
 	}
 	
 	public boolean onCooldown(Player player, TrapClick trap)

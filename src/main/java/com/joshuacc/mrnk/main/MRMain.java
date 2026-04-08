@@ -34,7 +34,9 @@ import com.joshuacc.mrnk.npc.NPCLobby;
 import com.joshuacc.mrnk.perks.Adrenaline;
 import com.joshuacc.mrnk.perks.Claymore;
 import com.joshuacc.mrnk.perks.DoubleJump;
+import com.joshuacc.mrnk.perks.LastResort;
 import com.joshuacc.mrnk.perks.MysteriousHeadband;
+import com.joshuacc.mrnk.perks.WhateverItTakes;
 import com.joshuacc.mrnk.scoreboards.PlayScoreboard;
 import com.joshuacc.mrnk.traps.BearTrap;
 import com.joshuacc.mrnk.traps.Clones;
@@ -49,6 +51,7 @@ import com.joshuacc.mrnk.traps.Pinpoint;
 import com.joshuacc.mrnk.traps.Portal;
 import com.joshuacc.mrnk.traps.Revive;
 import com.joshuacc.mrnk.traps.RollingThunder;
+import com.joshuacc.mrnk.traps.RuneOfEscape;
 import com.joshuacc.mrnk.traps.ShatteredTime;
 import com.joshuacc.mrnk.traps.SpyGlasses;
 import com.joshuacc.mrnk.utils.EmptyGenerator;
@@ -152,14 +155,17 @@ public class MRMain extends PluginBase {
 		MRTraps.addMRTrap(new RollingThunder(), false, this);
 		MRTraps.addMRTrap(new BearTrap(), false, this);
 		MRTraps.addMRTrap(new Necromancy(), false, this);
+		MRTraps.addMRTrap(new RuneOfEscape(), false, this);
 		
 		//Survivor Perks
 		MRPerks.addMRPerk(new Adrenaline(), true, this);
 		MRPerks.addMRPerk(new MysteriousHeadband(), true, this);
+		MRPerks.addMRPerk(new LastResort(), true, this);
 		
 		//Murderer Perks
 		MRPerks.addMRPerk(new DoubleJump(), false, this);
 		MRPerks.addMRPerk(new Claymore(), false, this);
+		MRPerks.addMRPerk(new WhateverItTakes(), false, this);
 		
 		for(MRTraps survTrap : MRTraps.getTraps(true))
 		{

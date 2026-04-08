@@ -16,7 +16,7 @@ import cn.nukkit.level.Sound;
 import cn.nukkit.level.particle.Particle;
 import cn.nukkit.utils.TextFormat;
 
-public class FullCounter extends TrapClick {
+public class FullCounter extends TrapClick implements Debuff {
 
 	private ArrayList<String> add = new ArrayList<>();
 	private String message;
@@ -59,10 +59,7 @@ public class FullCounter extends TrapClick {
 			Player player = (Player) event.getDamager();
 			if(player.getName().equals(MRPlayer.getMRPlayer(player).getMapTeam().getKiller().getName()))
 			{
-				player.setMotion(player.getDirectionVector().multiply(-2));
-				ItemParticle.getInstance().addParticle(player, Particle.TYPE_HUGE_EXPLODE, 2);
-				player.getLevel().addSound(player, Sound.MOB_GHAST_FIREBALL);
-				player.sendTitle(message);
+				getTrapDebuff().applyDebuff(player);
 			}
 			event.setCancelled(true);
 		}
@@ -102,6 +99,23 @@ public class FullCounter extends TrapClick {
 	public String getTrapName() 
 	{
 		return "&eFull Counter";
+	}
+
+	@Override
+	public TrapDebuff getTrapDebuff() {
+
+		return new TrapDebuff(new int[] {2}) {
+
+			@Override
+			public void applyDebuff(Player player) 
+			{
+				player.setMotion(player.getDirectionVector().multiply(-amplifiers[0]));
+				ItemParticle.getInstance().addParticle(player, Particle.TYPE_HUGE_EXPLODE, 2);
+				player.getLevel().addSound(player, Sound.MOB_GHAST_FIREBALL);
+				player.sendTitle(message);
+			}
+			
+		};
 	}
 
 }
