@@ -1,7 +1,6 @@
 package com.joshuacc.mrnk.menus;
 
 import com.joshuacc.mrnk.files.MRPerksConfig;
-import com.joshuacc.mrnk.items.MurdererPerkItem;
 import com.joshuacc.mrnk.items.SurvivorPerkItem;
 import com.joshuacc.mrnk.lang.FormsLang;
 import com.joshuacc.mrnk.main.MRMain;

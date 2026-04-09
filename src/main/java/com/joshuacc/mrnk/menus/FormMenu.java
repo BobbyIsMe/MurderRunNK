@@ -3,6 +3,11 @@ package com.joshuacc.mrnk.menus;
 import java.util.HashMap;
 
 import com.joshuacc.mrnk.lang.FormsLang;
+import com.joshuacc.mrnk.main.MRTeam.MapModes;
+import com.joshuacc.mrnk.menus.config.ConfigMapMenu;
+import com.joshuacc.mrnk.menus.config.ConfigMapNormalModeMenu;
+import com.joshuacc.mrnk.menus.config.ConfigMapNormalSettingsMenu;
+import com.joshuacc.mrnk.menus.config.ConfigMenu;
 
 import cn.nukkit.Player;
 import cn.nukkit.form.element.ElementButton;
@@ -12,6 +17,8 @@ import cn.nukkit.form.window.FormWindow;
 public abstract class FormMenu {
 	
 	public enum GameMenus {
+		SELECTMAPNORMALMENU(new SelectMapMenu(MapModes.NORMAL)),
+		SELECTMAPESCAPEMENU(new SelectMapMenu(MapModes.ESCAPE)),
 		SELECTITEMMENU(new SelectItemMenu(300)),
 		SELLITEMSMENU(new SellItemsMenu(307)),
 		SURVTRAPSMENU(new SurvivorTrapsMenu(301)),
@@ -23,7 +30,12 @@ public abstract class FormMenu {
 		SURVITEMSMENU(new SurvivorItemsMenu(304)),
 		MURDITEMSMENU(new MurdererItemsMenu(321)),
 		FILTERITEMSMENU(new FilterItemsMenu(305)),
-		SPECTATORMENU(new SpectatorMenu(306));
+		SPECTATORMENU(new SpectatorMenu(306)),
+		CONFIGMENU(new ConfigMenu(400)),
+		CONFIGMAPMENU(new ConfigMapMenu(401)),
+		CONFIGMODESMENU(new ConfigMapMenu(402)),
+		CONFIGMAPNORMALMODEMENU(new ConfigMapNormalModeMenu(403, MapModes.NORMAL)),
+		CONFIGMAPNORMALSETTINGSMENU(new ConfigMapNormalSettingsMenu(404)),;
 		
 		private FormMenu menu;
 		

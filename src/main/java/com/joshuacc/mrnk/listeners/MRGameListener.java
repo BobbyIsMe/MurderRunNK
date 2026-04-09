@@ -36,7 +36,6 @@ import cn.nukkit.event.player.PlayerFoodLevelChangeEvent;
 import cn.nukkit.event.player.PlayerInteractEntityEvent;
 import cn.nukkit.event.player.PlayerInteractEvent;
 import cn.nukkit.event.player.PlayerInteractEvent.Action;
-import cn.nukkit.event.player.PlayerMoveEvent;
 import cn.nukkit.inventory.PlayerInventory;
 import cn.nukkit.inventory.transaction.action.InventoryAction;
 import cn.nukkit.inventory.transaction.action.SlotChangeAction;
@@ -442,7 +441,7 @@ public class MRGameListener implements Listener {
 				main.getMRPlayerConfig().incrementPoints(players, game.getKillPoints());
 
 			if (killer != null)
-				MRPlayer.getMRPlayer(killer).setTime(team.getMapConfig().getTimeLimit());
+				MRPlayer.getMRPlayer(killer).setTime(team.getMapConfig().getTimeLimit(team.getMode()));
 			break;
 		}
 

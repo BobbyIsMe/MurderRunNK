@@ -50,8 +50,8 @@ public class WaitScoreboard extends ScoreboardAbstract {
 		String na = board.getString("NA-Translation");
 		addTip(map, new TipBuilder(mapPrefix, board.getTip(mapPrefix, TextUtils.formatLine(getString("Map-Line"),  team.getMapOrigin()))));
 		addTip(mode,  new TipBuilder(modePrefix, board.getTip(modePrefix, TextUtils.formatLine(getString("Mode-Line"), team.getMode()))));
-		addTip(players, new TipBuilder(playersPrefix, board.getTip(playersPrefix, TextUtils.formatLine(getString("Players-Line"), Integer.toString(team.getPlayers().size()), Integer.toString(config.getMaximumPlayers())))));
-		addTip(timeLimit,  new TipBuilder(timeLimitPrefix, board.getTip(timeLimitPrefix, TextUtils.formatLine(getString("Time Limit-Line"), format.format(1000 * config.getTimeLimit())))));
+		addTip(players, new TipBuilder(playersPrefix, board.getTip(playersPrefix, TextUtils.formatLine(getString("Players-Line"), Integer.toString(team.getPlayers().size()), Integer.toString(config.getMaximumPlayers(team.getMode()))))));
+		addTip(timeLimit,  new TipBuilder(timeLimitPrefix, board.getTip(timeLimitPrefix, TextUtils.formatLine(getString("Time Limit-Line"), format.format(1000 * config.getTimeLimit(team.getMode()))))));
 		addTip(round, new TipBuilder(roundPrefix, board.getTip(roundPrefix, TextUtils.formatLine(getString("Round-Line"), Integer.toString(team.getRound()), Integer.toString(team.getPlayers().size())))));
 		addTip(points, new TipBuilder(pointsPrefix, board.getTip(pointsPrefix, TextUtils.formatLine(getString("Points-Line"), Integer.toString(mPlayer.getPlayerQueuedPoints())))));
 		addTip(rank1, new TipBuilder(rank1Prefix, board.getTip(rank1Prefix, na)));

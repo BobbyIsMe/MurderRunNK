@@ -3,10 +3,7 @@ package com.joshuacc.mrnk.commands;
 import com.joshuacc.mrnk.main.MRMain;
 import com.joshuacc.mrnk.main.MRPlayer;
 import com.joshuacc.mrnk.main.MRTeam;
-import com.joshuacc.mrnk.main.MRTeam.MapModes;
 import com.joshuacc.mrnk.menus.FormMenu.GameMenus;
-import com.joshuacc.mrnk.utils.FormUtils;
-
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.command.Command;
@@ -14,12 +11,9 @@ import cn.nukkit.command.CommandSender;
 
 public class OpenListCommand extends Command {
 
-	private FormUtils forms;
-
 	public OpenListCommand(MRMain main) {
 		super("openlist");
 		this.setPermission("mr.openlist");
-		this.forms = main.getFormUtil();
 	}
 
 	@Override
@@ -41,10 +35,10 @@ public class OpenListCommand extends Command {
 			switch(args[1])
 			{
 			case "normal":
-				forms.addMapsSelector(target, MapModes.NORMAL);
+				GameMenus.SELECTMAPNORMALMENU.getFormMenu().open(target);
 				break;
 			case "escape":
-				forms.addMapsSelector(target, MapModes.ESCAPE);
+				GameMenus.SELECTMAPESCAPEMENU.getFormMenu().open(target);
 				break;
 			case "shop":
 			{

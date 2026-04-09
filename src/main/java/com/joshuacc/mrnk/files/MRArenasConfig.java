@@ -33,20 +33,24 @@ public class MRArenasConfig extends AbstractFiles {
 		String mLocation = "Murderer Location.";
 		String sLocation = "Survivor Location.";
 		String eLocation = "Game End Location.";
+		
 		addDefault(prefix+"Enabled", false);
-		addDefault(prefix+"Preparing Time", 60);
-		addDefault(prefix+"Hiding Time", 30);
-		addDefault(prefix+"Y Level Time", 60);
-		addDefault(prefix+"Y Level Start", 150);
-		addDefault(prefix+"Y Level End", 100);
-		addDefault(prefix+"Y Level Decrement", 10);
-		addDefault(prefix+"Time Limit", 480);
-		addDefault(prefix+"Points Limit", 500);
-		addDefault(prefix+"Minimum Players", 3);
-		addDefault(prefix+"Maximum Players", 4);
-		addDefault(prefix+"Normal Multiples", 1);
-		addDefault(prefix+"Escape Multiples", 0);
-
+		for(MapModes mode : MapModes.values())
+		{
+			String type = "."+mode.getMode();
+			addDefault(prefix+"Preparing Time"+type, 60);
+			addDefault(prefix+"Hiding Time"+type, 30);
+			addDefault(prefix+"Y Level Time"+type, 60);
+			addDefault(prefix+"Y Level Start"+type, 150);
+			addDefault(prefix+"Y Level End"+type, 100);
+			addDefault(prefix+"Y Level Decrement"+type, 10);
+			addDefault(prefix+"Time Limit"+type, 480);
+			addDefault(prefix+"Points Limit"+type, 500);
+			addDefault(prefix+"Minimum Players"+type, 3);
+			addDefault(prefix+"Maximum Players"+type, 4);
+			addDefault(prefix+"Multiples"+type, 0);
+		}
+		
 		addDefault(prefix+mLocation+"X", 0);
 		addDefault(prefix+mLocation+"Y", 0);
 		addDefault(prefix+mLocation+"Z", 0);
@@ -70,6 +74,11 @@ public class MRArenasConfig extends AbstractFiles {
 	{
 		config.set(mapName+"."+key, Integer.parseInt(value));
 	}
+	
+	public void setModeConfigValue(String mode, String key, Object value)
+	{
+		config.set(mapName+"."+mode+"."+key, value);
+	}
 
 	public void toggleMapEnabled()
 	{	
@@ -78,7 +87,7 @@ public class MRArenasConfig extends AbstractFiles {
 			config.set(mapName+".Enabled", false);
 
 			for(MapModes modes : MapModes.values())
-				main.removeMapTeam(mapName, getMultiples(modes), modes);
+				main.removeMapTeam(mapName, getMultiples(modes.getMode()), modes);
 
 			loadOriginMap();
 		} else {
@@ -204,54 +213,54 @@ public class MRArenasConfig extends AbstractFiles {
 				config.getDouble(prefix+"Pitch"), level);
 	}
 
-	public int getMinimumPlayers()
+	public int getMinimumPlayers(String mode)
 	{
-		return config.getInt(mapName+".Minimum Players");
+		return config.getInt(mapName+".Minimum Players."+mode);
 	}
 
-	public int getMaximumPlayers()
+	public int getMaximumPlayers(String mode)
 	{
-		return config.getInt(mapName+".Maximum Players");
+		return config.getInt(mapName+".Maximum Players."+mode);
 	}
 
-	public int getPreparingTime()
+	public int getPreparingTime(String mode)
 	{
-		return config.getInt(mapName+".Preparing Time");
+		return config.getInt(mapName+".Preparing Time"+mode);
 	}
 	
-	public int getHidingTime()
+	public int getHidingTime(String mode)
 	{
-		return config.getInt(mapName+".Hiding Time");
+		return config.getInt(mapName+".Hiding Time"+mode);
 	}
 
-	public int getYLevelTime()
+	public int getYLevelTime(String mode)
 	{
-		return config.getInt(mapName+".Y Level Time");
+		return config.getInt(mapName+".Y Level Time"+mode);
 	}
 
-	public int getYLevelStart()
+	public int getYLevelStart(String mode)
 	{
-		return config.getInt(mapName+".Y Level Start");
+		return config.getInt(mapName+".Y Level Start"+mode);
 	}
 	
-	public int getYLevelEnd()
+	public int getYLevelEnd(String mode)
 	{
-		return config.getInt(mapName+".Y Level End");
+		return config.getInt(mapName+".Y Level End"+mode);
 	}
 
-	public int getYLevelDecrement()
+	public int getYLevelDecrement(String mode)
 	{
-		return config.getInt(mapName+".Y Level Decrement");
+		return config.getInt(mapName+".Y Level Decrement"+mode);
 	}
 
-	public int getPointsLimit()
+	public int getPointsLimit(String mode)
 	{
-		return config.getInt(mapName+".Points Limit");
+		return config.getInt(mapName+".Points Limit"+mode);
 	}
 
-	public int getTimeLimit()
+	public int getTimeLimit(String mode)
 	{
-		return config.getInt(mapName+".Time Limit");
+		return config.getInt(mapName+".Time Limit"+mode);
 	}
 
 	public Level getOriginalMapLevel()
@@ -268,10 +277,20 @@ public class MRArenasConfig extends AbstractFiles {
 	{
 		return String.valueOf(config.getInt(mapName+"."+val));
 	}
-
-	public int getMultiples(MapModes mode)
+	
+	public String getIntFromMode(String mode, String val)
 	{
-		return config.getInt(mapName+"."+mode.getMode()+" Multiples");
+		return String.valueOf(config.getInt(mapName+"."+val+"."+mode));
+	}
+	
+	public String getIntFromSection(String mode, String val)
+	{
+		return String.valueOf(config.getInt(mapName+"."+mode+"."+val));
+	}
+
+	public int getMultiples(String mode)
+	{
+		return config.getInt(mapName+".Multiples."+mode);
 	}
 
 	public boolean isMapEnabled()

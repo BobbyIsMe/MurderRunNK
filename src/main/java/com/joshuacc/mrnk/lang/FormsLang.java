@@ -20,6 +20,15 @@ public enum FormsLang {
 	//Map Selector
 	SELMAPNAME("Map-Selector.Map Name", "&6» &2%l"),
 	SELMAPNUM("Map-Selector.Available Maps", "&8Available Maps: %n"),
+	
+	//Map Mode Selector
+	LISTMODESTITLE("List-Map-Modes.Title", "Select Mode to Edit for %l"),
+	LISTMODESDESC("List-Map-Modes.Description", "Available Modes"),
+	LISTMODES("List-Map-Modes.Map Mode", "&6» &a%s"),
+	
+	//Map Mode Configurations Menu
+	CONMAPMODETITLE("Config-Map-Modes.Title", "Map Mode Config for %l | %s"),
+	CONMAPMODEDESC("Config-Map-Modes.Description", "Here are available configurations for %s!"),
 
 	//Config both maps and lobbies
 	CONNOMAPS("Config-Texts.NoMaps", "&4No maps to configure."),
@@ -38,6 +47,7 @@ public enum FormsLang {
 	EDITEXIT("Edit-Texts.Exit", "&6» &4Exit Config"),
 	EDITTEL("Edit-Texts.Teleport Map", "&6» &aTeleport to Map"),
 	EDITMAP("Edit-Texts.Config Map", "&6» &eConfig Map Settings"),
+	EDITMODES("Edit-Texts.Config Modes", "&6» &eConfig Modes"),
 	EDITSLOC("Edit-Texts.S Location", "&6» &fSet Survivor Location"),
 	EDITMLOC("Edit-Texts.M Location", "&6» &fSet Murderer Location"),
 	EDITGLOC("Edit-Texts.G Location", "&6» &fSet Game End Location"),
@@ -45,7 +55,7 @@ public enum FormsLang {
 	EDITENABLE("Edit-Texts.Enable", "Enable"),
 
 	//Settings Map Menu
-	SNGTITLE("Settings-Texts.Title", "Settings For - %l"),
+	SNGTITLE("Settings-Texts.Title", "Settings For - %l | %s"),
 	SNGDESC("Settings-Texts.Description", "Here you can change settings for the arena it has to function properly!"),
 	SNGPREP("Settings-Texts.Preparing Time", "&6» &a&lPreparing Time"),
 	SNGHIDE("Settings-Texts.Hiding Time", "&6» &a&lHiding Time"),

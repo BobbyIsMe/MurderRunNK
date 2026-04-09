@@ -15,6 +15,7 @@ import com.joshuacc.mrnk.items.ShopItem;
 import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.lang.FormsLang;
 import com.joshuacc.mrnk.menus.ItemMenu;
+import com.joshuacc.mrnk.menus.FormMenu;
 import com.joshuacc.mrnk.menus.FormMenu.GameMenus;
 import com.joshuacc.mrnk.scoreboards.ScoreboardAbstract;
 import com.joshuacc.mrnk.scoreboards.WaitScoreboard;
@@ -106,7 +107,7 @@ public class MRPlayer {
 		
 		removeAllItems();
 
-		int max = mapTeam.getMapConfig().getPointsLimit();
+		int max = mapTeam.getMapConfig().getPointsLimit(mapTeam.getMode());
 		int i = main.getMRPlayerConfig().getPoints(player);
 
 		this.qPts = i >= max ? max : i;
@@ -381,7 +382,12 @@ public class MRPlayer {
 		@EventHandler
 		public void onRespond(PlayerFormRespondedEvent event)
 		{	
-			main.getFormUtil().handleAllResponse(event.getPlayer(), event.getFormID(), event.getWindow(), event.getResponse());
+			FormMenu menu = FormMenu.getFormMenu(event.getFormID());
+			if(menu != null)
+			{
+				menu.response(event.getPlayer(), event.getResponse());
+				return;
+			}
 		}
 
 		@EventHandler
@@ -401,7 +407,7 @@ public class MRPlayer {
 			team.sendActionBar();
 			team.messageAllPlayers(TextUtils.format(TextUtils.formatPlayer(ConfigLang.MAPNOTIFYQUEUE.toString(), player)));
 
-			if(team.getPlayers().size() == config.getMinimumPlayers())
+			if(team.getPlayers().size() == config.getMinimumPlayers(team.getMode()))
 				Server.getInstance().getPluginManager().callEvent(new GameStartEvent(GameAttribute.STARTING, team));
 		}
 		

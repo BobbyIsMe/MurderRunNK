@@ -285,7 +285,7 @@ public class MRTeam {
 			@Override
 			public void onRun(int arg0) 
 			{
-				if(allPlayers.size() >= mapConfig.getMinimumPlayers())
+				if(allPlayers.size() >= mapConfig.getMinimumPlayers(getMode()))
 				{
 //					updateEntry("Message", board.getString("Message-2"), i+"");
 					message = TextFormat.colorize('&', board.getString("Message-2").replace("%n", i+""));
@@ -479,7 +479,7 @@ public class MRTeam {
 			players.sendTitle(TextFormat.colorize('&', "&4&l"+select.getName()+"&r"), ConfigLang.MAPRANDFIN.toString(), 0, 60, 0);
 			playSoundPlayer(players, Sound.MOB_ENDERDRAGON_GROWL);
 		}
-		intermissionCount(40, mapConfig.getPreparingTime(), () -> releaseMurderer(), allPlayers, ConfigLang.INTERMISSION.toString(), ConfigLang.INTERCOUNT.toString());
+		intermissionCount(40, mapConfig.getPreparingTime(getMode()), () -> releaseMurderer(), allPlayers, ConfigLang.INTERMISSION.toString(), ConfigLang.INTERCOUNT.toString());
 	}
 
 	private void releaseMurderer()
@@ -502,10 +502,10 @@ public class MRTeam {
 		}
 
 		Server.getInstance().getPluginManager().callEvent(new GameStartEvent(GameAttribute.ROUND, this));
-		killer.sendMessage(TextUtils.format(TextUtils.formatNumber(ConfigLang.MURDCOUNT.toString(), mapConfig.getHidingTime())));
+		killer.sendMessage(TextUtils.format(TextUtils.formatNumber(ConfigLang.MURDCOUNT.toString(), mapConfig.getHidingTime(getMode()))));
 		playSoundPlayer(killer, Sound.NOTE_PLING);
 
-		intermissionCount(20, mapConfig.getHidingTime(), () -> {
+		intermissionCount(20, mapConfig.getHidingTime(getMode()), () -> {
 
 			killer.teleport(mapConfig.getMurdererLocation(getMapLevel()));
 			killer.sendMessage(TextUtils.format(ConfigLang.RELEASEMURD.toString()));
@@ -523,9 +523,9 @@ public class MRTeam {
 		task = Server.getInstance().getScheduler().scheduleDelayedRepeatingTask(new Task() {
 
 			MRPlayer k = MRPlayer.getMRPlayer(killer);
-			int time = mapConfig.getTimeLimit();
-			int y = mapConfig.getYLevelStart();
-			int yEnd = mapConfig.getYLevelEnd();
+			int time = mapConfig.getTimeLimit(getMode());
+			int y = mapConfig.getYLevelStart(getMode());
+			int yEnd = mapConfig.getYLevelEnd(getMode());
 
 			@Override
 			public void onRun(int arg0) 
@@ -549,9 +549,9 @@ public class MRTeam {
 
 				updateEntry(playBoard.getInt("Timer"), TextUtils.formatLine(playBoard.getString("Timer-Line"), TextUtils.getTimeFormat(i)));
 				
-				if(i % mapConfig.getYLevelTime() == 0 && y > yEnd)
+				if(i % mapConfig.getYLevelTime(getMode()) == 0 && y > yEnd)
 				{
-					y-= mapConfig.getYLevelDecrement();
+					y-= mapConfig.getYLevelDecrement(getMode());
 					for(Player all : allPlayers)
 					{
 						all.sendMessage(TextUtils.format(ConfigLang.YLEVELANNOUNCE.toString().replace("%n", Integer.toString(y))));
@@ -746,7 +746,7 @@ public class MRTeam {
 		Player rank1 = size > 0 ? rankings.get(0) : null;
 		Player rank2 = size > 1 ? rankings.get(1) : null;
 		Player rank3 = size > 2 ? rankings.get(2) : null;
-		updateEntry(board.getInt("Queue.Players"), TextUtils.formatLine(board.getString("Queue.Players-Line"), Integer.toString(getPlayers().size()), Integer.toString(mapConfig.getMaximumPlayers())));
+		updateEntry(board.getInt("Queue.Players"), TextUtils.formatLine(board.getString("Queue.Players-Line"), Integer.toString(getPlayers().size()), Integer.toString(mapConfig.getMaximumPlayers(getMode()))));
 		updateEntry(board.getInt("Queue.Round"), TextUtils.formatLine(board.getString("Queue.Round-Line"), Integer.toString(getRound()), Integer.toString(getPlayers().size())));
 		updateEntry(board.getInt("Queue.Rank-1"), rank1 != null ? TextUtils.formatLine(board.getString("Queue.Rank-Line"), rank1.getName(), TextUtils.getTimeFormat(MRPlayer.getMRPlayer(rank1).getPlayerTime())) : na);
 		updateEntry(board.getInt("Queue.Rank-2"), rank2 != null ? TextUtils.formatLine(board.getString("Queue.Rank-Line"), rank2.getName(), TextUtils.getTimeFormat(MRPlayer.getMRPlayer(rank2).getPlayerTime())) : na);
@@ -838,11 +838,11 @@ public class MRTeam {
 		if(started != true)
 		{
 			int size = getPlayers().size();
-			if(size == mapConfig.getMaximumPlayers())
+			if(size == mapConfig.getMaximumPlayers(getMode()))
 				return MapState.FULL;
-			else if(size < mapConfig.getMinimumPlayers())
+			else if(size < mapConfig.getMinimumPlayers(getMode()))
 				return MapState.READY;
-			else if(size >= mapConfig.getMinimumPlayers())
+			else if(size >= mapConfig.getMinimumPlayers(getMode()))
 				return MapState.STARTING;
 		} else
 			return MapState.STARTED;

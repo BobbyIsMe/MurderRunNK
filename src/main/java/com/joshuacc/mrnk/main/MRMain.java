@@ -55,7 +55,6 @@ import com.joshuacc.mrnk.traps.RuneOfEscape;
 import com.joshuacc.mrnk.traps.ShatteredTime;
 import com.joshuacc.mrnk.traps.SpyGlasses;
 import com.joshuacc.mrnk.utils.EmptyGenerator;
-import com.joshuacc.mrnk.utils.FormUtils;
 import com.joshuacc.mrnk.utils.GameScheduler.Schedulers;
 
 import cn.nukkit.Server;
@@ -75,7 +74,6 @@ public class MRMain extends PluginBase {
 	private MRPerksConfig perks;
 	private MRGameConfig game;
 	private MRAreasConfig areas;
-	private FormUtils formUtil;
 
 	private HashMap<String,MRArenasConfig> mapConfigs = new HashMap<>();
 	private HashMap<MapModes,Integer> playerCount = new HashMap<>(); 
@@ -194,8 +192,6 @@ public class MRMain extends PluginBase {
 		}
 		
 		perks.getConfig().save();
-		
-		formUtil = new FormUtils(this);
 
 		registerCommands();
 		registerListeners();
@@ -418,11 +414,6 @@ public class MRMain extends PluginBase {
 	public MRAreasConfig getMRAreasConfig()
 	{
 		return areas;
-	}
-
-	public FormUtils getFormUtil()
-	{
-		return formUtil;
 	}
 	
 	public String getPrefix()

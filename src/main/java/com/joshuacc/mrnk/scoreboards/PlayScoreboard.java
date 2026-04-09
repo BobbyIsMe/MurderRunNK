@@ -33,6 +33,6 @@ public class PlayScoreboard extends ScoreboardAbstract {
 		addTip(mode, new TipBuilder(modePrefix, board.getTip(modePrefix, TextUtils.formatLine(getString("Mode-Line"), team.getMode().toString()))));
 		addTip(killer, new TipBuilder(killerPrefix, board.getTip(killerPrefix, TextUtils.formatLine(getString("Killer-Line"), team.getKiller().getName()))));
 		addTip(sL, new TipBuilder(sLPrefix, board.getTip(sLPrefix, TextUtils.formatLine(getString("Survivors Left-Line"), Integer.toString(team.getSurvivors().size())))));
-		addTip(y, new TipBuilder(yPrefix, board.getTip(yPrefix, TextUtils.formatLine(getString("Y Level Limit-Line"), Integer.toString(team.getMapConfig().getYLevelStart())))));
+		addTip(y, new TipBuilder(yPrefix, board.getTip(yPrefix, TextUtils.formatLine(getString("Y Level Limit-Line"), Integer.toString(team.getMapConfig().getYLevelStart(team.getMode()))))));
 	}
 }

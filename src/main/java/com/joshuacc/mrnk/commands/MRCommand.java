@@ -1,9 +1,8 @@
 package com.joshuacc.mrnk.commands;
 
 import com.joshuacc.mrnk.lang.ConfigLang;
-import com.joshuacc.mrnk.lang.FormsLang;
 import com.joshuacc.mrnk.main.MRMain;
-import com.joshuacc.mrnk.utils.FormUtils;
+import com.joshuacc.mrnk.menus.FormMenu.GameMenus;
 import com.joshuacc.mrnk.utils.TextUtils;
 
 import cn.nukkit.Player;
@@ -12,8 +11,6 @@ import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.data.CommandParameter;
 
 public class MRCommand extends Command {
-
-	private FormUtils formUtil;
 
 	public MRCommand(MRMain main) {
 		super("mr", "Sets up the entire minigame!");
@@ -24,8 +21,6 @@ public class MRCommand extends Command {
 						"config", "traps"
 				})
 		});
-		
-		this.formUtil = main.getFormUtil();
 	}
 
 	@Override
@@ -50,15 +45,15 @@ public class MRCommand extends Command {
 			switch(type)
 			{
 			case "config":
-				formUtil.addConfigMenu(player);
+				GameMenus.CONFIGMENU.getFormMenu().open(player);
 				break;
 			case "traps":
 				
 				break;
-			case "reload":
-				formUtil.initializeMaps();
-				player.sendMessage(FormsLang.CONRELOADMAPS.toString());
-				break;
+//			case "reload":
+//				formUtil.initializeMaps();
+//				player.sendMessage(FormsLang.CONRELOADMAPS.toString());
+//				break;
 			}
 			break;
 		}
