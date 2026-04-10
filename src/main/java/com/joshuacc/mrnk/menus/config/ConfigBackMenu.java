@@ -13,20 +13,12 @@ import cn.nukkit.form.window.FormWindowSimple;
 
 public abstract class ConfigBackMenu extends FormMenu {
 
-	protected final ItemHelper backButton = new ItemHelper(FormsLang.EDITEXIT.toString()) {
-
-		@Override
-		public void itemResponse(Player player) {
-			backMenu(player);
-		}
-		
-	};
+	private static final ElementButton backButton = new ElementButton(FormsLang.EDITEXIT.toString());
 	
 	public ConfigBackMenu(int id) 
 	{
 		super(id);
 	}
-	
 	
 	@Override
 	public FormWindow createForm(Player player) 
@@ -45,6 +37,13 @@ public abstract class ConfigBackMenu extends FormMenu {
 			return;
 		
 		ElementButton button = r.getClickedButton();
+		
+		if(button.getText().equals(backButton.getText()))
+		{
+			backMenu(player);
+			return;
+		}
+		
 		if(button instanceof ItemHelper)
 		{
 			((ItemHelper) button).itemResponse(player);

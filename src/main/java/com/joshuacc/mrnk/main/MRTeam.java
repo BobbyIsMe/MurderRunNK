@@ -40,34 +40,45 @@ public class MRTeam {
 
 	public enum MapModes
 	{
-		NORMAL("Normal", "Kill all players before the time limit reaches to win your round!", "&6� &a&lNormal Mode Maps", 103),
-		ESCAPE("Escape", "Kill all players before they fix the vehicle for their escape to win your round!", "&6� &a&lEscape Mode Maps", 104);
+		NORMAL("Normal", "Kill all players before the time limit reaches to win your round!", "&6� &a&lNormal Mode Maps", 103, MRTeamNormal.class),
+		ESCAPE("Escape", "Kill all players before they fix the vehicle for their escape to win your round!", "&6� &a&lEscape Mode Maps", 104, MRTeamEscape.class);
 
 		private static MRFormsTextsConfig FORM;
 		private static MRLanguagesConfig LANG;
 
-		private String mode;
-		private String desc;
-		private String set;
+		private final String mode;
+		private final String desc;
+		private final String set;
+		private final Class<? extends MRTeam> clazz;
 
 		private int id;
 
-		MapModes(String mode, String desc, String set, int id)
+		MapModes(String mode, String desc, String set, int id, Class<? extends MRTeam> clazz)
 		{
 			this.mode = mode;
 			this.desc = desc;
 			this.set = set;
 			this.id = id;
+			this.clazz = clazz;
 		}
 
 		public static void loadAllModeMaps(MRMain main, String maps, MRArenasConfig config)
 		{
-			if(config.isMapEnabled())
+			for(MapModes mode : MapModes.values())
 			{
-				for(int i = 1; i <= config.getConfig().getInt(maps+".Normal Multiples"); i++)
-					new MRTeamNormal(main, maps, config, i);
-				for(int i = 1; i <= config.getConfig().getInt(maps+".Escape Multiples"); i++)
-					new MRTeamEscape(main, maps, config, i);
+				if(config.isMapEnabled())
+				{
+					for(int i = 1; i <= config.getMultiples(mode.getMode()); i++)
+					{
+						try {
+							mode.getClazz()
+							.getDeclaredConstructor(MRMain.class, String.class, MRArenasConfig.class, int.class)
+							.newInstance(main, maps, config, i);
+					    } catch (Exception e) {
+					        e.printStackTrace();
+					    }
+					}
+				}
 			}
 		}
 
@@ -77,6 +88,11 @@ public class MRTeam {
 			LANG = lang;
 		}
 
+		public Class<? extends MRTeam> getClazz() 
+		{
+	        return clazz;
+	    }
+		
 		public String getMode()
 		{
 			return mode;

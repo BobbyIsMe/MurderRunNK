@@ -3,7 +3,6 @@ package com.joshuacc.mrnk.menus.config;
 import java.util.ArrayList;
 
 import com.joshuacc.mrnk.files.MRArenasConfig;
-import com.joshuacc.mrnk.items.ItemHelper;
 import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.lang.FormsLang;
 import com.joshuacc.mrnk.main.MRMain;
@@ -22,17 +21,17 @@ import cn.nukkit.form.window.FormWindowCustom;
 public abstract class ConfigMapSettingsMenu extends FormMenu
 {
 
-	private ArrayList<ItemHelper> items;
+	private ArrayList<ConfigItem> items;
 	private MRMain main;
 	
 	public ConfigMapSettingsMenu(int id) 
 	{
 		super(id);
-		items = new ArrayList<ItemHelper>();
+		items = new ArrayList<>();
 		main = MRMain.getInstance();
 	}
 	
-	public void registerItem(ItemHelper item)
+	public void registerItem(ConfigItem item)
 	{
 		items.add(item);
 	}
@@ -100,7 +99,7 @@ public abstract class ConfigMapSettingsMenu extends FormMenu
 			player.sendMessage(ConfigLang.NOTNUMBER.toString());
 		}
 		
-		this.open(player);
+		((ConfigMenu) GameMenus.CONFIGMENU.getFormMenu()).getMapModeMenu(player).open(player);
 	}
 
 }

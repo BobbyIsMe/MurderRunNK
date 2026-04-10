@@ -3,6 +3,7 @@ package com.joshuacc.mrnk.menus.config;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import com.joshuacc.mrnk.files.MRLobbyConfig;
 import com.joshuacc.mrnk.items.ItemHelper;
@@ -15,6 +16,7 @@ import com.joshuacc.mrnk.menus.FormMenu;
 import com.joshuacc.mrnk.utils.TextUtils;
 
 import cn.nukkit.Player;
+import cn.nukkit.form.element.ElementButtonImageData;
 import cn.nukkit.form.response.FormResponse;
 import cn.nukkit.form.response.FormResponseSimple;
 import cn.nukkit.form.window.FormWindow;
@@ -37,44 +39,24 @@ public class ConfigMenu extends FormMenu {
 		super(id);
 		main = MRMain.getInstance();
 		MRLobbyConfig lobby = main.getMRLobbyConfig();
-		tpLobbyButton = new ItemHelper(FormsLang.CONTPLOBBY.toString()) {
-
-			@Override
-			public void itemResponse(Player player) {
-				player.teleport(main.getMRLobbyConfig().getMainLobbyLocation());
-			}
-
-		};
-		tpQLobbyButton = new ItemHelper(FormsLang.CONTPQLOBBY.toString()) {
-
-			@Override
-			public void itemResponse(Player player) {
-				player.teleport(main.getMRLobbyConfig().getQueueLobbyLocation());
-			}
-
-		};
-		lobbyButton = new ItemHelper(FormsLang.CONLOBBY.toString()) {
-
-			@Override
-			public void itemResponse(Player player) 
-			{
-				lobby.setupLobbyLocation(player, true);
-				player.sendMessage(ConfigLang.SUCCESSLOBBY.toString());
-			}
-			
-		};
-		winLobbyButton = new ItemHelper(FormsLang.CONWLOBBY.toString()) {
-
-			@Override
-			public void itemResponse(Player player) 
-			{
-				lobby.setupLobbyLocation(player, false);
-				player.sendMessage(ConfigLang.SUCCESSWLOBBY.toString());
-			}
-			
-		};
+		tpLobbyButton = new ConfigItem(FormsLang.CONTPLOBBY.toString(), player -> {
+			player.teleport(main.getMRLobbyConfig().getMainLobbyLocation());
+		});
 		
-			
+		tpQLobbyButton = new ConfigItem(FormsLang.CONTPQLOBBY.toString(), player -> {
+			player.teleport(main.getMRLobbyConfig().getQueueLobbyLocation());
+		});
+		
+		lobbyButton = new ConfigItem(FormsLang.CONLOBBY.toString(), player -> {
+			lobby.setupLobbyLocation(player, true);
+			player.sendMessage(ConfigLang.SUCCESSLOBBY.toString());
+		});
+		
+		winLobbyButton = new ConfigItem(FormsLang.CONWLOBBY.toString(), player -> {
+			lobby.setupLobbyLocation(player, false);
+			player.sendMessage(ConfigLang.SUCCESSWLOBBY.toString());
+		});
+		
 		editLevel = new HashMap<>();
 		mapItems = new ArrayList<>();
 		String[] maps = MRMain.getInstance().getMaps();
@@ -99,6 +81,11 @@ public class ConfigMenu extends FormMenu {
 	public MapModes getMode(Player player)
 	{
 		return editLevel.get(player.getUniqueId()).getMode();
+	}
+	
+	public ConfigMapModeMenu getMapModeMenu(Player player)
+	{
+		return editLevel.get(player.getUniqueId()).getMenu();
 	}
 	
 	public void setMode(Player player, ConfigMapModeMenu menu)
@@ -195,4 +182,26 @@ class EditMap
 	{
 		this.menu = menu;
 	}
+
+}
+
+class ConfigItem extends ItemHelper {
+
+    private final Consumer<Player> action;
+
+    public ConfigItem(String text, Consumer<Player> action) {
+        super(text);
+        this.action = action;
+    }
+    
+    public ConfigItem(String text, ElementButtonImageData image, Consumer<Player> action) {
+        super(text, image);
+        this.action = action;
+    }
+
+    public void itemResponse(Player player) {
+        if (action != null) {
+            action.accept(player);
+        }
+    }
 }

@@ -10,17 +10,11 @@ import cn.nukkit.utils.TextFormat;
 
 public class ConfigModesMenu extends ConfigBackMenu 
 {
-	private final ItemHelper editNormal = new ItemHelper(TextFormat.colorize(FormsLang.LISTMODES.toString().replace("%s", MapModes.NORMAL.getMode()))) {
-
-		@Override
-		public void itemResponse(Player player) 
-		{
-			ConfigMapNormalModeMenu menu = (ConfigMapNormalModeMenu) GameMenus.CONFIGMAPNORMALMODEMENU.getFormMenu();
-			((ConfigMenu) GameMenus.CONFIGMENU.getFormMenu()).setMode(player, menu);
-			menu.open(player);
-		}
-		
-	};
+	private final ItemHelper editNormal = new ConfigItem(TextFormat.colorize(FormsLang.LISTMODES.toString().replace("%s", MapModes.NORMAL.getMode())), player -> {
+		ConfigMapNormalModeMenu menu = (ConfigMapNormalModeMenu) GameMenus.CONFIGMAPNORMALMODEMENU.getFormMenu();
+		((ConfigMenu) GameMenus.CONFIGMENU.getFormMenu()).setMode(player, menu);
+		menu.open(player);
+	});
 	
 	public ConfigModesMenu(int id) 
 	{
@@ -36,7 +30,7 @@ public class ConfigModesMenu extends ConfigBackMenu
 	@Override
 	public String getTitle(Player player) 
 	{
-		return FormsLang.LISTMODESTITLE.toString();
+		return FormsLang.LISTMODESTITLE.toString().replace("%l", ((ConfigMenu) GameMenus.CONFIGMENU.getFormMenu()).getMap(player));
 	}
 
 	@Override

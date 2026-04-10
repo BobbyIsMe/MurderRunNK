@@ -8,6 +8,7 @@ import com.joshuacc.mrnk.menus.config.ConfigMapMenu;
 import com.joshuacc.mrnk.menus.config.ConfigMapNormalModeMenu;
 import com.joshuacc.mrnk.menus.config.ConfigMapNormalSettingsMenu;
 import com.joshuacc.mrnk.menus.config.ConfigMenu;
+import com.joshuacc.mrnk.menus.config.ConfigModesMenu;
 
 import cn.nukkit.Player;
 import cn.nukkit.form.element.ElementButton;
@@ -33,8 +34,8 @@ public abstract class FormMenu {
 		SPECTATORMENU(new SpectatorMenu(306)),
 		CONFIGMENU(new ConfigMenu(400)),
 		CONFIGMAPMENU(new ConfigMapMenu(401)),
-		CONFIGMODESMENU(new ConfigMapMenu(402)),
-		CONFIGMAPNORMALMODEMENU(new ConfigMapNormalModeMenu(403, MapModes.NORMAL)),
+		CONFIGMODESMENU(new ConfigModesMenu(402)),
+		CONFIGMAPNORMALMODEMENU(new ConfigMapNormalModeMenu(403)),
 		CONFIGMAPNORMALSETTINGSMENU(new ConfigMapNormalSettingsMenu(404)),;
 		
 		private FormMenu menu;

@@ -28,6 +28,7 @@ import com.joshuacc.mrnk.itemAbility.ItemBuilder;
 import com.joshuacc.mrnk.lang.ConfigLang;
 import com.joshuacc.mrnk.listeners.MRGameListener;
 import com.joshuacc.mrnk.main.MRTeam.MapModes;
+import com.joshuacc.mrnk.menus.FormMenu.GameMenus;
 import com.joshuacc.mrnk.npc.NPCClone;
 import com.joshuacc.mrnk.npc.NPCCorpse;
 import com.joshuacc.mrnk.npc.NPCLobby;
@@ -208,6 +209,7 @@ public class MRMain extends PluginBase {
 		PlayScoreboard.registerScoreboard(board);
 		
 		minigameMapLoader();
+		GameMenus.values();
 	}
 	
 	public static MRMain getInstance()

@@ -32,7 +32,7 @@ public enum ConfigLang {
 	NPCESCAPE("Npc-Join.Escape", "&cEscape Mode"),
 
 	//Messages when you execute the command or config something in the map
-	FAILCONFIG("Map-Config-Fail Message", "&cYou must set all locations for the map! (Vehicle is optional)"),
+	FAILCONFIG("Map-Config-Fail Message", "&cYou must set all locations for the map!"),
 	NOAVAILABLEMAPS("No-Available-Maps Message", "&cNo available maps in the list!"),
 	NOTAVAILABLEMAP("Not-Available-Map Message", "&cThis map is not joinable currently!"),
 	NOTPLAYER("Not-Player Message", "&cYou must be a player to do this command!"),

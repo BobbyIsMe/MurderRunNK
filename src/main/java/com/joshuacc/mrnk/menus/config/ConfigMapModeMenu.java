@@ -1,7 +1,6 @@
 package com.joshuacc.mrnk.menus.config;
 
 import java.util.ArrayList;
-import com.joshuacc.mrnk.items.ItemHelper;
 import com.joshuacc.mrnk.lang.FormsLang;
 import com.joshuacc.mrnk.main.MRTeam.MapModes;
 import com.joshuacc.mrnk.menus.FormMenu;
@@ -14,13 +13,14 @@ public abstract class ConfigMapModeMenu extends ConfigBackMenu {
 
 	private static final ElementButton editMap = new ElementButton(FormsLang.EDITMAP.toString());
 
-	private ArrayList<ItemHelper> items;
+	private final ArrayList<ConfigItem> items;
 	private MapModes mode;
 	
 	public ConfigMapModeMenu(int id, MapModes mode) 
 	{
 		super(id);
 		items = new ArrayList<>();
+		this.mode = mode;
 	}
 	
 	public MapModes getMapMode()
@@ -28,7 +28,7 @@ public abstract class ConfigMapModeMenu extends ConfigBackMenu {
 		return mode;
 	}
 	
-	public void registerItems(ItemHelper helper)
+	public void registerItems(ConfigItem helper)
 	{
 		items.add(helper);
 	}
@@ -37,19 +37,20 @@ public abstract class ConfigMapModeMenu extends ConfigBackMenu {
 	public String getTitle(Player player) 
 	{
 		ConfigMenu menu = (ConfigMenu) GameMenus.CONFIGMENU.getFormMenu();
-		return FormsLang.CONMAPMODETITLE.toString().replace("%l", menu.getMap(player)).replace("%l", menu.getMode(player).getMode());
+		return FormsLang.CONMAPMODETITLE.toString().replace("%l", menu.getMap(player)).replace("%s", mode.getMode());
 	}
 
 	@Override
 	public String getDesc() 
 	{
-		return null;
+		return FormsLang.CONMAPMODEDESC.toString().replace("%s", mode.getMode());
 	}
 	
 	@Override
 	public void addItems(Player player, FormWindowSimple form)
 	{
-		for(ItemHelper item : items)
+		form.addButton(editMap);
+		for(ConfigItem item : items) 
 		{
 			form.addButton(item);
 		}
@@ -62,7 +63,9 @@ public abstract class ConfigMapModeMenu extends ConfigBackMenu {
 		 if(button.getText().equals(editMap.getText()))
 		 {
 			 getEditMap().open(player);
+			 return;
 		 }
+		 
 		 configureMap(player, response);
 	}
 	

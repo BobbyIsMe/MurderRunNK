@@ -75,9 +75,9 @@ public class MRArenasConfig extends AbstractFiles {
 		config.set(mapName+"."+key, Integer.parseInt(value));
 	}
 	
-	public void setModeConfigValue(String mode, String key, Object value)
+	public void setModeConfigValue(String mode, String key, String value)
 	{
-		config.set(mapName+"."+mode+"."+key, value);
+		config.set(mapName+"."+key+"."+mode, Integer.parseInt(value));
 	}
 
 	public void toggleMapEnabled()

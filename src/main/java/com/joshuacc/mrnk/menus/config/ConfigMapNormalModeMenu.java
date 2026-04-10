@@ -8,9 +8,9 @@ import cn.nukkit.form.response.FormResponseSimple;
 
 public class ConfigMapNormalModeMenu extends ConfigMapModeMenu {
 
-	public ConfigMapNormalModeMenu(int id, MapModes mode) 
+	public ConfigMapNormalModeMenu(int id) 
 	{
-		super(id, mode);
+		super(id, MapModes.NORMAL);
 	}
 
 	@Override
