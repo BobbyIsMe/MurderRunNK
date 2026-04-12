@@ -21,7 +21,7 @@ import cn.nukkit.form.window.FormWindowCustom;
 public abstract class ConfigMapSettingsMenu extends FormMenu
 {
 
-	private ArrayList<ConfigItem> items;
+	private ArrayList<ElementInput> items;
 	private MRMain main;
 	
 	public ConfigMapSettingsMenu(int id) 
@@ -31,7 +31,7 @@ public abstract class ConfigMapSettingsMenu extends FormMenu
 		main = MRMain.getInstance();
 	}
 	
-	public void registerItem(ConfigItem item)
+	public void registerItem(ElementInput item)
 	{
 		items.add(item);
 	}
@@ -61,6 +61,10 @@ public abstract class ConfigMapSettingsMenu extends FormMenu
 		editForm.addElement(new ElementInput(FormsLang.SNGMINI.toString(), "mini", config.getIntFromMode(mode, "Minimum Players")));
 		editForm.addElement(new ElementInput(FormsLang.SNGMAX.toString(), "max", config.getIntFromMode(mode, "Maximum Players")));
 		
+		for(ElementInput input : items)
+		{
+			editForm.addElement(input);
+		}
 		return editForm;
 	}
 	

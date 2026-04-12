@@ -121,7 +121,6 @@ public class Claymore extends PerkBase {
 			EntityCreature entity = getEntityInSight(player, 4.2);
 			if(entity != null && entity instanceof Player)
 			{
-				player.sendMessage("test"); //TODO: DEBUG
 				Player target = (Player) entity;
 				Item item = player.getInventory().getItemInHand();
 				

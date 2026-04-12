@@ -95,7 +95,6 @@ public class ConfigMapMenu extends ConfigBackMenu
 		String map = ((ConfigMenu) GameMenus.CONFIGMENU.getFormMenu()).getMap(player);
 		MRArenasConfig mapConfig = MRMain.getInstance().getMapConfigs().get(map);
 		
-		
 		form.addButton(editTp);
 		form.addButton(editMap);
 		form.addButton(editSurvLoc);

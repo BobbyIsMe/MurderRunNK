@@ -349,7 +349,7 @@ public class MRPlayer {
 			player.setNameTag(TextUtils.formatPlayer(ConfigLang.LOBBYTAG.toString(), player));
 			main.getMRPlayerConfig().addPlayerData(player);
 		}
-
+		
 		@EventHandler
 		public void onInitializePlayer(PlayerLocallyInitializedEvent event) 
 		{
